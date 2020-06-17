@@ -34,6 +34,7 @@ import com.arangodb.velocystream.Request;
 import com.arangodb.velocystream.RequestType;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author Mark Vollmary
@@ -78,7 +79,9 @@ public abstract class InternalArangoCollection<A extends InternalArangoDB<E>, D 
         return name;
     }
 
+    public static final List<Long> elapsedTimesInsertDocumentRequestSerialize = new LinkedList<>();
     protected <T> Request insertDocumentRequest(final T value, final DocumentCreateOptions options) {
+        long startTime = System.nanoTime();
         final Request request = request(db.name(), RequestType.POST, PATH_API_DOCUMENT, name);
         final DocumentCreateOptions params = (options != null ? options : new DocumentCreateOptions());
         request.putQueryParam(ArangoRequestParam.WAIT_FOR_SYNC, params.getWaitForSync());
@@ -87,13 +90,19 @@ public abstract class InternalArangoCollection<A extends InternalArangoDB<E>, D 
         request.putQueryParam(SILENT, params.getSilent());
         request.putQueryParam(OVERWRITE, params.getOverwrite());
         request.putHeaderParam(TRANSACTION_ID, params.getStreamTransactionId());
+
         request.setBody(util(Serializer.CUSTOM).serialize(value));
+        elapsedTimesInsertDocumentRequestSerialize.add(System.nanoTime() - startTime);
         return request;
     }
+
+    public static final List<Long> elapsedTimesInsertDocumentDeserialize = new LinkedList<>();
 
     protected <T> ResponseDeserializer<DocumentCreateEntity<T>> insertDocumentResponseDeserializer(
             final T value, final DocumentCreateOptions options) {
         return response -> {
+            long startTime = System.nanoTime();
+
             final VPackSlice body = response.getBody();
             final DocumentCreateEntity<T> doc = util().deserialize(body, DocumentCreateEntity.class);
             final VPackSlice newDoc = body.get(NEW);
@@ -111,6 +120,7 @@ public abstract class InternalArangoCollection<A extends InternalArangoDB<E>, D 
                 values.put(DocumentField.Type.REV, doc.getRev());
                 executor.documentCache().setValues(value, values);
             }
+            elapsedTimesInsertDocumentDeserialize.add(System.nanoTime() - startTime);
             return doc;
         };
     }
