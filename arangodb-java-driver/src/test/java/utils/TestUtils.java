@@ -55,40 +55,46 @@ public enum TestUtils {
     private final ArangoTopology topology;
 
     TestUtils() {
-        arangoLicenseKey = readArangoLicenseKey();
-        log.info("Using arango license key: {}", arangoLicenseKey.replaceAll(".", "*"));
+        try {
+            arangoLicenseKey = readArangoLicenseKey();
+            log.info("Using arango license key: {}", arangoLicenseKey.replaceAll(".", "*"));
 
-        testDockerImage = readTestDockerImage();
-        log.info("Using docker image: {}", testDockerImage);
+            testDockerImage = readTestDockerImage();
+            log.info("Using docker image: {}", testDockerImage);
 
-        testArangodbVersion = readTestArangodbVersion();
-        log.info("Using version: {}", testArangodbVersion);
+            testArangodbVersion = readTestArangodbVersion();
+            log.info("Using version: {}", testArangodbVersion);
 
-        testContainersReuse = readTestcontainersReuseEnable();
-        log.info("Using testcontainers reuse: {}", testContainersReuse);
+            testContainersReuse = readTestcontainersReuseEnable();
+            log.info("Using testcontainers reuse: {}", testContainersReuse);
 
-        isEnterprise = readIsEnterprise();
-        log.info("isEnterprise: {}", isEnterprise);
+            isEnterprise = readIsEnterprise();
+            log.info("isEnterprise: {}", isEnterprise);
 
-        requestTimeout = readRequestTimeout();
-        log.info("Using requestTimeout: {}", requestTimeout);
+            requestTimeout = readRequestTimeout();
+            log.info("Using requestTimeout: {}", requestTimeout);
 
-        useProvidedDeployment = readUseProvidedDeployment();
-        log.info("Using provided deplyoment: {}", useProvidedDeployment);
+            useProvidedDeployment = readUseProvidedDeployment();
+            log.info("Using provided deplyoment: {}", useProvidedDeployment);
 
-        if (useProvidedDeployment) {
-            hosts = readHosts();
-            log.info("Using hosts: {}", hosts);
+            if (useProvidedDeployment) {
+                hosts = readHosts();
+                log.info("Using hosts: {}", hosts);
 
-            authentication = readAuthentication();
-            log.info("Using authentication: {}", authentication);
+                authentication = readAuthentication();
+                log.info("Using authentication: {}", authentication);
 
-            topology = readTopology();
-            log.info("Using topology: {}", topology);
-        } else {
-            hosts = null;
-            authentication = null;
-            topology = null;
+                topology = readTopology();
+                log.info("Using topology: {}", topology);
+            } else {
+                hosts = null;
+                authentication = null;
+                topology = null;
+            }
+        } catch (Exception e) {
+            log.error("Exception in TestUtils initializer", e);
+            System.exit(1);
+            throw new ExceptionInInitializerError(e);
         }
     }
 
@@ -140,7 +146,7 @@ public enum TestUtils {
     }
 
     private AuthenticationMethod readAuthentication() {
-        String[] parts = System.getProperty("test.arangodb.authentication").split(":");
+        String[] parts = System.getProperty("test.arangodb.authentication").split(":", 2);
         return AuthenticationMethod.ofBasic(parts[0], parts[1]);
     }
 
