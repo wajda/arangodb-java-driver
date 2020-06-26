@@ -590,3 +590,4 @@ Temporary Items
 .idea
 *.iml
 
+allure-results/

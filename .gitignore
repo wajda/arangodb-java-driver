@@ -115,3 +115,4 @@ codegen.iml
 arangodb-java-driver-bundle.iml
 
 lsp
+allure-results/
