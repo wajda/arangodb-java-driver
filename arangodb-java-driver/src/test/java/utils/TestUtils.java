@@ -43,19 +43,26 @@ public enum TestUtils {
     private static final String DEFAULT_DOCKER_IMAGE = "docker.io/arangodb/arangodb:3.6.2";
 
     private final Logger log = LoggerFactory.getLogger(TestUtils.class);
+    private final List<String> testGroups;
+    private final boolean useProvidedDeployment;
     private final String arangoLicenseKey;
     private final String testDockerImage;
     private final ArangoVersion testArangodbVersion;
     private final boolean testContainersReuse;
     private final boolean isEnterprise;
     private final int requestTimeout;
-    private final boolean useProvidedDeployment;
     private final List<HostDescription> hosts;
     private final AuthenticationMethod authentication;
     private final ArangoTopology topology;
 
     TestUtils() {
         try {
+            testGroups = readTestGroups();
+            log.info("Testing groups: {}", String.join(",", testGroups));
+
+            useProvidedDeployment = readUseProvidedDeployment();
+            log.info("Using provided deplyoment: {}", useProvidedDeployment);
+
             arangoLicenseKey = readArangoLicenseKey();
             log.info("Using arango license key: {}", arangoLicenseKey.replaceAll(".", "*"));
 
@@ -73,9 +80,6 @@ public enum TestUtils {
 
             requestTimeout = readRequestTimeout();
             log.info("Using requestTimeout: {}", requestTimeout);
-
-            useProvidedDeployment = readUseProvidedDeployment();
-            log.info("Using provided deplyoment: {}", useProvidedDeployment);
 
             if (useProvidedDeployment) {
                 hosts = readHosts();
@@ -96,6 +100,11 @@ public enum TestUtils {
             System.exit(1);
             throw new ExceptionInInitializerError(e);
         }
+    }
+
+    private List<String> readTestGroups() {
+        String testGroups = System.getProperty("groups");
+        return testGroups != null ? Arrays.asList(testGroups.split(",")) : Collections.emptyList();
     }
 
     private String readArangoLicenseKey() {
