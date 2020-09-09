@@ -45,12 +45,12 @@ jobs:
           - 11
           - 14
         docker-img:
-          - docker.io/arangodb/arangodb:3.5.4
-          - docker.io/arangodb/enterprise:3.5.4
-          - docker.io/arangodb/arangodb:3.6.2
-          - docker.io/arangodb/enterprise:3.6.2
-          - docker.io/arangodb/arangodb-preview:3.7.0-alpha.2
-          - docker.io/arangodb/enterprise-preview:3.7.0-alpha.2
+          - docker.io/arangodb/arangodb:3.5.5
+          - docker.io/arangodb/enterprise:3.5.5
+          - docker.io/arangodb/arangodb:3.6.6
+          - docker.io/arangodb/enterprise:3.6.6
+          - docker.io/arangodb/arangodb:3.7.2
+          - docker.io/arangodb/enterprise:3.7.2.1
 
     steps:
       - uses: actions/checkout@v1
@@ -82,7 +82,7 @@ jobs:
       - name: Info
         run: mvn -version
       - name: Analyze
-        run: mvn -e --no-transfer-progress clean verify sonar:sonar -Dgpg.skip -Dtest.docker.image="docker.io/arangodb/enterprise:3.6.2" -Darango.license.key="$ARANGO_LICENSE_KEY" -Dtestcontainers.reuse.enable=true
+        run: mvn -e --no-transfer-progress clean verify sonar:sonar -Dgpg.skip -Dtest.docker.image="docker.io/arangodb/enterprise:3.7.2" -Darango.license.key="$ARANGO_LICENSE_KEY" -Dtestcontainers.reuse.enable=true
         env:
           ARANGO_LICENSE_KEY: ${{secrets.ARANGO_LICENSE_KEY}}
           SONAR_LOGIN: ${{secrets.SONAR_LOGIN}}

@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 public enum TestUtils {
     INSTANCE;
 
-    private static final String DEFAULT_DOCKER_IMAGE = "docker.io/arangodb/arangodb:3.6.2";
+    private static final String DEFAULT_DOCKER_IMAGE = "docker.io/arangodb/arangodb:3.7.2";
 
     private final Logger log = LoggerFactory.getLogger(TestUtils.class);
     private final List<String> testGroups;
