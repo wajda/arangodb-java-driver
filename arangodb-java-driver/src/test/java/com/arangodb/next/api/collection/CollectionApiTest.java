@@ -23,12 +23,10 @@ package com.arangodb.next.api.collection;
 import com.arangodb.next.api.collection.entity.*;
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.api.reactive.ConversationManager;
-import com.arangodb.next.api.utils.CollectionApiProvider;
+import com.arangodb.next.api.utils.ArangoApiTest;
 import com.arangodb.next.api.utils.TestContext;
 import com.arangodb.next.communication.Conversation;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,9 +41,8 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @Tag("api")
 class CollectionApiTest {
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(CollectionApiProvider.class)
-    void getCollectionsAndGetCollectionInfo(TestContext ctx, CollectionApi collectionApi) {
+    @ArangoApiTest
+    void getCollectionsAndGetCollectionInfo(CollectionApi collectionApi) {
         SimpleCollectionEntity graphs = collectionApi
                 .getCollections(CollectionsReadParams.builder().excludeSystem(false).build())
                 .filter(c -> c.getName().equals("_graphs"))
@@ -68,8 +65,7 @@ class CollectionApiTest {
         assertThat(graphsInfo).isEqualTo(graphs);
     }
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(CollectionApiProvider.class)
+    @ArangoApiTest
     void createCollectionAndGetCollectionProperties(TestContext ctx, CollectionApi collectionApi) {
         CollectionCreateOptions options = CollectionCreateOptions.builder()
                 .name("myCollection-" + UUID.randomUUID().toString())
@@ -140,9 +136,8 @@ class CollectionApiTest {
         assertThat(changedCollectionProperties.getWaitForSync()).isEqualTo(!createdCollection.getWaitForSync());
     }
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(CollectionApiProvider.class)
-    void countAndDropCollection(TestContext ctx, CollectionApi collectionApi) {
+    @ArangoApiTest
+    void countAndDropCollection(CollectionApi collectionApi) {
         String name = "collection-" + UUID.randomUUID().toString();
         collectionApi.createCollection(
                 CollectionCreateOptions.builder().name(name).build(),
@@ -150,7 +145,7 @@ class CollectionApiTest {
         ).block();
 
         assertThat(collectionApi.existsCollection(name).block()).isTrue();
-        assertThat(collectionApi.getCollectionCount(name).block()).isEqualTo(0);
+        assertThat(collectionApi.getCollectionCount(name).block()).isZero();
 
         ConversationManager cm = collectionApi.getConversationManager();
         Conversation conversation = cm.createConversation(Conversation.Level.REQUIRED);
@@ -159,9 +154,8 @@ class CollectionApiTest {
         assertThat(cm.useConversation(conversation, collectionApi.existsCollection(name)).block()).isFalse();
     }
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(CollectionApiProvider.class)
-    void createAndDropSystemCollection(TestContext ctx, CollectionApi collectionApi) {
+    @ArangoApiTest
+    void createAndDropSystemCollection(CollectionApi collectionApi) {
         String name = "collection-" + UUID.randomUUID().toString();
         collectionApi.createCollection(
                 CollectionCreateOptions.builder().name(name).isSystem(true).build(),
@@ -177,8 +171,7 @@ class CollectionApiTest {
         assertThat(cm.useConversation(conversation, collectionApi.existsCollection(name)).block()).isFalse();
     }
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(CollectionApiProvider.class)
+    @ArangoApiTest
     void renameCollection(TestContext ctx, CollectionApi collectionApi) {
         assumeTrue(!ctx.isCluster());
 
@@ -194,9 +187,8 @@ class CollectionApiTest {
         assertThat(renamed.getName()).isEqualTo(newName);
     }
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(CollectionApiProvider.class)
-    void truncateCollection(TestContext ctx, CollectionApi collectionApi) {
+    @ArangoApiTest
+    void truncateCollection(CollectionApi collectionApi) {
 
         // FIXME: add some docs to the collection
 
@@ -207,8 +199,7 @@ class CollectionApiTest {
         assertThat(count).isEqualTo(0L);
     }
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(CollectionApiProvider.class)
+    @ArangoApiTest
     void getCollectionChecksum(TestContext ctx, CollectionApi collectionApi) {
         assumeTrue(!ctx.isCluster());
 
@@ -220,9 +211,8 @@ class CollectionApiTest {
         assertThat(collectionChecksumEntity.getRevision()).isNotNull();
     }
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(CollectionApiProvider.class)
-    void getCollectionStatistics(TestContext ctx, CollectionApi collectionApi) {
+    @ArangoApiTest
+    void getCollectionStatistics(CollectionApi collectionApi) {
         String name = "collection-" + UUID.randomUUID().toString();
         collectionApi.createCollection(CollectionCreateOptions.builder().name(name).build()).block();
         Object collectionStatistics = collectionApi.getCollectionStatistics(name).block();
@@ -230,32 +220,28 @@ class CollectionApiTest {
         assertThat(collectionStatistics).isNotNull();
     }
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(CollectionApiProvider.class)
-    void loadCollection(TestContext ctx, CollectionApi collectionApi) {
+    @ArangoApiTest
+    void loadCollection(CollectionApi collectionApi) {
         String name = "collection-" + UUID.randomUUID().toString();
         collectionApi.createCollection(CollectionCreateOptions.builder().name(name).build()).block();
         collectionApi.loadCollection(name).block();
     }
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(CollectionApiProvider.class)
-    void loadCollectionIndexes(TestContext ctx, CollectionApi collectionApi) {
+    @ArangoApiTest
+    void loadCollectionIndexes(CollectionApi collectionApi) {
         String name = "collection-" + UUID.randomUUID().toString();
         collectionApi.createCollection(CollectionCreateOptions.builder().name(name).build()).block();
         collectionApi.loadCollectionIndexes(name).block();
     }
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(CollectionApiProvider.class)
-    void recalculateCollectionCount(TestContext ctx, CollectionApi collectionApi) {
+    @ArangoApiTest
+    void recalculateCollectionCount(CollectionApi collectionApi) {
         String name = "collection-" + UUID.randomUUID().toString();
         collectionApi.createCollection(CollectionCreateOptions.builder().name(name).build()).block();
         collectionApi.recalculateCollectionCount(name).block();
     }
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(CollectionApiProvider.class)
+    @ArangoApiTest
     void getResponsibleShard(TestContext ctx, CollectionApi collectionApi) {
         assumeTrue(ctx.isCluster());
 
@@ -265,17 +251,15 @@ class CollectionApiTest {
         assertThat(responsibleShard).isNotNull();
     }
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(CollectionApiProvider.class)
-    void getCollectionRevision(TestContext ctx, CollectionApi collectionApi) {
+    @ArangoApiTest
+    void getCollectionRevision(CollectionApi collectionApi) {
         String name = "collection-" + UUID.randomUUID().toString();
         collectionApi.createCollection(CollectionCreateOptions.builder().name(name).build()).block();
         String revision = collectionApi.getCollectionRevision(name).block();
         assertThat(revision).isNotNull();
     }
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(CollectionApiProvider.class)
+    @ArangoApiTest
     void getCollectionShards(TestContext ctx, CollectionApi collectionApi) {
         assumeTrue(ctx.isCluster());
 
@@ -286,9 +270,8 @@ class CollectionApiTest {
         assertThat(shards).isNotEmpty();
     }
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(CollectionApiProvider.class)
-    void unloadCollection(TestContext ctx, CollectionApi collectionApi) {
+    @ArangoApiTest
+    void unloadCollection(CollectionApi collectionApi) {
         String name = "collection-" + UUID.randomUUID().toString();
         collectionApi.createCollection(CollectionCreateOptions.builder().name(name).build()).block();
         collectionApi.unloadCollection(name).block();
