@@ -49,7 +49,7 @@ public interface CommunicationConfig {
      * @see <a href=https://www.arangodb.com/docs/stable/architecture-deployment-modes.html>Deployment Modes</a>
      */
     @Value.Default
-    default ArangoTopology topology() {
+    default ArangoTopology getTopology() {
         return ArangoTopology.SINGLE_SERVER;
     }
 

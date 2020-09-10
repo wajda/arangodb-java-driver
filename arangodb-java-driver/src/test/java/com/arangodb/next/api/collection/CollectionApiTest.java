@@ -24,9 +24,9 @@ import com.arangodb.next.api.collection.entity.*;
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.api.reactive.ConversationManager;
 import com.arangodb.next.api.utils.ArangoApiTest;
+import com.arangodb.next.api.utils.ArangoApiTestClass;
 import com.arangodb.next.api.utils.TestContext;
 import com.arangodb.next.communication.Conversation;
-import org.junit.jupiter.api.Tag;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 /**
  * @author Michele Rastelli
  */
-@Tag("api")
+@ArangoApiTestClass
 class CollectionApiTest {
 
     @ArangoApiTest

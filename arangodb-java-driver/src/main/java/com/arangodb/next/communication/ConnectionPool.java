@@ -36,7 +36,7 @@ interface ConnectionPool {
             final AuthenticationMethod authentication,
             final ConnectionFactory connectionFactory) {
 
-        switch (config.topology()) {
+        switch (config.getTopology()) {
             case ACTIVE_FAILOVER:
                 return new ActiveFailoverConnectionPool(config, authentication, connectionFactory);
             case SINGLE_SERVER:

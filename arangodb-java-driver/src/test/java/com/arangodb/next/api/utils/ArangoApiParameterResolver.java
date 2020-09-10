@@ -41,12 +41,12 @@ public class ArangoApiParameterResolver implements ParameterResolver {
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
-        return resolve(parameterContext.getParameter().getType()) != null;
+        return resolve(parameterContext.getParameter().getType(), extensionContext) != null;
     }
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
-        Object o = resolve(parameterContext.getParameter().getType());
+        Object o = resolve(parameterContext.getParameter().getType(), extensionContext);
         if (o != null) {
             return o;
         } else {
@@ -54,11 +54,11 @@ public class ArangoApiParameterResolver implements ParameterResolver {
         }
     }
 
-    private Object resolve(Class<?> clazz) {
+    private Object resolve(Class<?> clazz, ExtensionContext extensionContext) {
         if (clazz == TestContext.class) {
             return testContext;
         } else if (clazz == CollectionApi.class) {
-            return testClient.db().collectionApi();
+            return testClient.db(extensionContext.getRequiredTestClass().getSimpleName()).collectionApi();
         } else {
             return null;
         }
