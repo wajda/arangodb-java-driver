@@ -23,15 +23,13 @@ package com.arangodb.next.api.database;
 
 import com.arangodb.next.api.database.entity.DatabaseCreateOptions;
 import com.arangodb.next.api.database.entity.DatabaseEntity;
-import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.api.database.entity.Sharding;
-import com.arangodb.next.api.utils.DatabaseApiProvider;
+import com.arangodb.next.api.entity.ReplicationFactor;
+import com.arangodb.next.api.utils.ArangoApiTest;
+import com.arangodb.next.api.utils.ArangoApiTestClass;
 import com.arangodb.next.api.utils.TestContext;
 import com.arangodb.next.communication.Conversation;
 import com.arangodb.next.exceptions.server.ArangoServerException;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.util.List;
 import java.util.UUID;
@@ -42,11 +40,10 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  * @author Michele Rastelli
  */
-@Tag("api")
+@ArangoApiTestClass
 class DatabaseApiTest {
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(DatabaseApiProvider.class)
+    @ArangoApiTest
     void createDatabase(TestContext ctx, DatabaseApi db) {
         String name = "db-" + UUID.randomUUID().toString();
         DatabaseEntity dbEntity = db.getConversationManager().requireConversation(
@@ -65,11 +62,14 @@ class DatabaseApiTest {
             assertThat(dbEntity.getReplicationFactor()).isEqualTo(ReplicationFactor.of(1));
             assertThat(dbEntity.getSharding()).isEqualTo(Sharding.FLEXIBLE);
         }
+
+        // cleanup
+        db.dropDatabase(name).block();
+
     }
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(DatabaseApiProvider.class)
-    void createAndDeleteDatabaseWithOptions(TestContext ctx, DatabaseApi db) {
+    @ArangoApiTest
+    void createAndDropDatabaseWithOptions(TestContext ctx, DatabaseApi db) {
         String name = "db-" + UUID.randomUUID().toString();
 
         Conversation conversation = db.getConversationManager().createConversation(Conversation.Level.REQUIRED);
@@ -122,8 +122,7 @@ class DatabaseApiTest {
         assertThat(((ArangoServerException) thrown).getEntity().getErrorNum()).isEqualTo(1228);
     }
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(DatabaseApiProvider.class)
+    @ArangoApiTest
     void getDatabase(TestContext ctx, DatabaseApi db) {
         DatabaseEntity dbEntity = db.getDatabase("_system").block();
 
@@ -140,18 +139,15 @@ class DatabaseApiTest {
         }
     }
 
-
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(DatabaseApiProvider.class)
-    void getDatabases(TestContext ctx, DatabaseApi db) {
+    @ArangoApiTest
+    void getDatabases(DatabaseApi db) {
         List<String> databases = db.getDatabases().collectList().block();
         assertThat(databases).isNotNull();
         assertThat(databases).contains("_system");
     }
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(DatabaseApiProvider.class)
-    void getAccessibleDatabases(TestContext ctx, DatabaseApi db) {
+    @ArangoApiTest
+    void getAccessibleDatabases(DatabaseApi db) {
         List<String> databases = db.getAccessibleDatabases().collectList().block();
         assertThat(databases).isNotNull();
         assertThat(databases).contains("_system");

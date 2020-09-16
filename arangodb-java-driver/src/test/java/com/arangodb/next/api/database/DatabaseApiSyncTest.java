@@ -22,15 +22,13 @@ package com.arangodb.next.api.database;
 
 import com.arangodb.next.api.database.entity.DatabaseCreateOptions;
 import com.arangodb.next.api.database.entity.DatabaseEntity;
-import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.api.database.entity.Sharding;
+import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.api.sync.ThreadConversation;
-import com.arangodb.next.api.utils.DatabaseApiSyncProvider;
+import com.arangodb.next.api.utils.ArangoApiTest;
+import com.arangodb.next.api.utils.ArangoApiTestClass;
 import com.arangodb.next.api.utils.TestContext;
 import com.arangodb.next.exceptions.server.ArangoServerException;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.util.UUID;
 
@@ -41,15 +39,15 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  * @author Michele Rastelli
  */
-@Tag("api")
+@ArangoApiTestClass
 class DatabaseApiSyncTest {
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(DatabaseApiSyncProvider.class)
+
+    @ArangoApiTest
     void createDatabase(TestContext ctx, DatabaseApiSync db) {
         String name = "db-" + UUID.randomUUID().toString();
         DatabaseEntity dbEntity;
-        try (ThreadConversation tc = db.getConversationManager().requireConversation()) {
+        try (ThreadConversation ignored = db.getConversationManager().requireConversation()) {
             db.createDatabase(name);
             dbEntity = db.getDatabase(name);
         }
@@ -65,15 +63,17 @@ class DatabaseApiSyncTest {
             assertThat(dbEntity.getReplicationFactor()).isEqualTo(ReplicationFactor.of(1));
             assertThat(dbEntity.getSharding()).isEqualTo(Sharding.FLEXIBLE);
         }
+
+        // cleanup
+        db.dropDatabase(name);
     }
 
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(DatabaseApiSyncProvider.class)
+    @ArangoApiTest
     void createAndDeleteDatabaseWithOptions(TestContext ctx, DatabaseApiSync db) {
         String name = "db-" + UUID.randomUUID().toString();
         DatabaseEntity dbEntity;
-        try (ThreadConversation tc = db.getConversationManager().requireConversation()) {
+        try (ThreadConversation ignored = db.getConversationManager().requireConversation()) {
             db.createDatabase(DatabaseCreateOptions
                     .builder()
                     .name(name)
@@ -110,8 +110,7 @@ class DatabaseApiSyncTest {
     }
 
 
-    @ParameterizedTest(name = "{0}")
-    @ArgumentsSource(DatabaseApiSyncProvider.class)
+    @ArangoApiTest
     void getDatabase(TestContext ctx, DatabaseApiSync db) {
         DatabaseEntity dbEntity = db.getDatabase("_system");
 

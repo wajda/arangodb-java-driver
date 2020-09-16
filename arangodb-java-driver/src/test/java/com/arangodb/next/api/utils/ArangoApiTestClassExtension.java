@@ -22,14 +22,11 @@ package com.arangodb.next.api.utils;
 
 import com.arangodb.next.api.database.DatabaseApiSync;
 import com.arangodb.next.api.reactive.impl.ArangoDBImpl;
-import com.arangodb.next.api.sync.ArangoDBSync;
-import com.arangodb.next.communication.ArangoTopology;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -41,23 +38,23 @@ public class ArangoApiTestClassExtension implements BeforeAllCallback, AfterAllC
     private final static List<TestContext> contexts = TestContextProvider.INSTANCE.get();
 
     @Override
-    public void afterAll(ExtensionContext context) throws Exception {
+    public void afterAll(ExtensionContext context) {
         String dbName = context.getRequiredTestClass().getSimpleName();
         doForeachTopology(dbApi -> dbApi.dropDatabase(dbName));
     }
 
     @Override
-    public void beforeAll(ExtensionContext context) throws Exception {
+    public void beforeAll(ExtensionContext context) {
         String dbName = context.getRequiredTestClass().getSimpleName();
         doForeachTopology(dbApi -> dbApi.createDatabase(dbName));
     }
 
     private void doForeachTopology(Consumer<DatabaseApiSync> action) {
-        Map<ArangoTopology, List<TestContext>> contextsByTopology = contexts.stream()
-                .collect(Collectors.groupingBy(it -> it.getConfig().getTopology()));
-        contextsByTopology.values().forEach(ctxList -> {
-            ArangoDBSync testClient = new ArangoDBImpl(ctxList.get(0).getConfig()).sync();
-            action.accept(testClient.db().databaseApi());
-        });
+        contexts.stream()
+                .collect(Collectors.groupingBy(it -> it.getConfig().getTopology()))
+                .values()
+                .stream()
+                .map(ctxList -> new ArangoDBImpl(ctxList.get(0).getConfig()).sync())
+                .forEach(testClient -> action.accept(testClient.db().databaseApi()));
     }
 }
