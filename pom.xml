@@ -12,5 +12,27 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- sonarcloud-->
+        <sonar.projectKey>arangodb_arangodb-java-driver</sonar.projectKey>
+        <sonar.organization>arangodb-1</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.login>${env.SONAR_LOGIN}</sonar.login>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <showWarnings>true</showWarnings>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
