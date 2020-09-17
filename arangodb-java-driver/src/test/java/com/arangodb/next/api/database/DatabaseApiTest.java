@@ -25,6 +25,7 @@ import com.arangodb.next.api.database.entity.DatabaseCreateOptions;
 import com.arangodb.next.api.database.entity.DatabaseEntity;
 import com.arangodb.next.api.database.entity.Sharding;
 import com.arangodb.next.api.entity.ReplicationFactor;
+import com.arangodb.next.api.reactive.ConversationManager;
 import com.arangodb.next.api.utils.ArangoApiTest;
 import com.arangodb.next.api.utils.ArangoApiTestClass;
 import com.arangodb.next.api.utils.TestContext;
@@ -46,7 +47,9 @@ class DatabaseApiTest {
     @ArangoApiTest
     void createDatabase(TestContext ctx, DatabaseApi db) {
         String name = "db-" + UUID.randomUUID().toString();
-        DatabaseEntity dbEntity = db.getConversationManager().requireConversation(
+        ConversationManager cm = db.getConversationManager();
+        Conversation conversation = cm.createConversation(Conversation.Level.REQUIRED);
+        DatabaseEntity dbEntity = cm.useConversation(conversation,
                 db.createDatabase(name)
                         .then(db.getDatabase(name))
         ).block();
@@ -64,8 +67,9 @@ class DatabaseApiTest {
         }
 
         // cleanup
-        db.dropDatabase(name).block();
-
+        cm.useConversation(conversation,
+                db.dropDatabase(name)
+        ).block();
     }
 
     @ArangoApiTest

@@ -50,27 +50,27 @@ class DatabaseApiSyncTest {
         try (ThreadConversation ignored = db.getConversationManager().requireConversation()) {
             db.createDatabase(name);
             dbEntity = db.getDatabase(name);
+
+            assertThat(dbEntity).isNotNull();
+            assertThat(dbEntity.getId()).isNotNull();
+            assertThat(dbEntity.getName()).isEqualTo(name);
+            assertThat(dbEntity.getPath()).isNotNull();
+            assertThat(dbEntity.isSystem()).isFalse();
+
+            if (ctx.isCluster() && ctx.isAtLeastVersion(3, 6)) {
+                assertThat(dbEntity.getWriteConcern()).isEqualTo(1);
+                assertThat(dbEntity.getReplicationFactor()).isEqualTo(ReplicationFactor.of(1));
+                assertThat(dbEntity.getSharding()).isEqualTo(Sharding.FLEXIBLE);
+            }
+
+            // cleanup
+            db.dropDatabase(name);
         }
-
-        assertThat(dbEntity).isNotNull();
-        assertThat(dbEntity.getId()).isNotNull();
-        assertThat(dbEntity.getName()).isEqualTo(name);
-        assertThat(dbEntity.getPath()).isNotNull();
-        assertThat(dbEntity.isSystem()).isFalse();
-
-        if (ctx.isCluster() && ctx.isAtLeastVersion(3, 6)) {
-            assertThat(dbEntity.getWriteConcern()).isEqualTo(1);
-            assertThat(dbEntity.getReplicationFactor()).isEqualTo(ReplicationFactor.of(1));
-            assertThat(dbEntity.getSharding()).isEqualTo(Sharding.FLEXIBLE);
-        }
-
-        // cleanup
-        db.dropDatabase(name);
     }
 
 
     @ArangoApiTest
-    void createAndDeleteDatabaseWithOptions(TestContext ctx, DatabaseApiSync db) {
+    void createAndDropDatabaseWithOptions(TestContext ctx, DatabaseApiSync db) {
         String name = "db-" + UUID.randomUUID().toString();
         DatabaseEntity dbEntity;
         try (ThreadConversation ignored = db.getConversationManager().requireConversation()) {
