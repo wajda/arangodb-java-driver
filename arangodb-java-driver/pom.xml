@@ -24,7 +24,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <arangodb.velocypack.version>2.2.0</arangodb.velocypack.version>
 
         <!-- javadoc-->
         <javadoc.opts/>
@@ -258,7 +257,8 @@
         </dependency>
         <dependency>
             <groupId>com.arangodb</groupId>
-            <artifactId>velocypack</artifactId>
+            <artifactId>jackson-dataformat-velocypack</artifactId>
+            <version>0.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -304,12 +304,6 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.6.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.arangodb</groupId>
-            <artifactId>jackson-dataformat-velocypack</artifactId>
-            <version>0.1.5</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -371,11 +365,6 @@
                 <version>Dysprosium-SR5</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.arangodb</groupId>
-                <artifactId>velocypack</artifactId>
-                <version>${arangodb.velocypack.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>

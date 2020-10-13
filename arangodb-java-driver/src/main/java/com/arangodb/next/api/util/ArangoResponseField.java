@@ -28,7 +28,7 @@ public final class ArangoResponseField {
     private ArangoResponseField() {
     }
 
-    public static final String ERROR = "error";
-    public static final String RESULT = "result";
+    public static final String ERROR_JSON_POINTER = "/error";
+    public static final String RESULT_JSON_POINTER = "/result";
 
 }

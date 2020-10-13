@@ -21,19 +21,18 @@
 package com.arangodb.next.api.database.impl;
 
 
-import com.arangodb.next.api.reactive.ArangoDatabase;
 import com.arangodb.next.api.database.DatabaseApi;
+import com.arangodb.next.api.database.entity.DatabaseCreateOptions;
+import com.arangodb.next.api.database.entity.DatabaseEntity;
+import com.arangodb.next.api.reactive.ArangoDatabase;
 import com.arangodb.next.api.reactive.impl.ArangoClientImpl;
-import com.arangodb.next.entity.serde.DeserializationTypes;
 import com.arangodb.next.connection.ArangoRequest;
 import com.arangodb.next.connection.ArangoResponse;
-import com.arangodb.next.api.database.entity.DatabaseEntity;
-import com.arangodb.next.api.database.entity.DatabaseCreateOptions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static com.arangodb.next.api.util.ArangoRequestParam.SYSTEM;
-import static com.arangodb.next.api.util.ArangoResponseField.RESULT;
+import static com.arangodb.next.api.util.ArangoResponseField.RESULT_JSON_POINTER;
 
 
 /**
@@ -71,7 +70,7 @@ public final class DatabaseApiImpl extends ArangoClientImpl implements DatabaseA
                         .build()
         )
                 .map(ArangoResponse::getBody)
-                .map(bytes -> getSerde().deserializeField(RESULT, bytes, DatabaseEntity.class));
+                .map(bytes -> getSerde().deserializeAtJsonPointer(RESULT_JSON_POINTER, bytes, DatabaseEntity.class));
     }
 
     @Override
@@ -84,7 +83,7 @@ public final class DatabaseApiImpl extends ArangoClientImpl implements DatabaseA
                         .build()
         )
                 .map(ArangoResponse::getBody)
-                .map(bytes -> getSerde().<Iterable<String>>deserializeField(RESULT, bytes, DeserializationTypes.ITERABLE_OF_STRING))
+                .map(bytes -> getSerde().deserializeListAtJsonPointer(RESULT_JSON_POINTER, bytes, String.class))
                 .flatMapMany(Flux::fromIterable);
     }
 
@@ -98,7 +97,7 @@ public final class DatabaseApiImpl extends ArangoClientImpl implements DatabaseA
                         .build()
         )
                 .map(ArangoResponse::getBody)
-                .map(bytes -> getSerde().<Iterable<String>>deserializeField(RESULT, bytes, DeserializationTypes.ITERABLE_OF_STRING))
+                .map(bytes -> getSerde().deserializeListAtJsonPointer(RESULT_JSON_POINTER, bytes, String.class))
                 .flatMapMany(Flux::fromIterable);
     }
 

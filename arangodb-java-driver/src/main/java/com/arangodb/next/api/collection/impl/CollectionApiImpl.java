@@ -31,10 +31,7 @@ import com.arangodb.next.exceptions.server.CollectionOrViewNotFoundException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.lang.reflect.Type;
-
-import static com.arangodb.next.api.util.ArangoResponseField.RESULT;
-import static com.arangodb.next.entity.serde.DeserializationTypes.ITERABLE_OF_STRING;
+import static com.arangodb.next.api.util.ArangoResponseField.RESULT_JSON_POINTER;
 
 /**
  * @author Michele Rastelli
@@ -42,9 +39,6 @@ import static com.arangodb.next.entity.serde.DeserializationTypes.ITERABLE_OF_ST
 public final class CollectionApiImpl extends ArangoClientImpl implements CollectionApi {
 
     private static final String PATH_API = "/_api/collection";
-
-    private static final Type ITERABLE_OF_COLLECTION_ENTITY = new com.arangodb.velocypack.Type<Iterable<SimpleCollectionEntity>>() {
-    }.getType();
 
     private final String dbName;
 
@@ -68,7 +62,7 @@ public final class CollectionApiImpl extends ArangoClientImpl implements Collect
                                 .build()
                 )
                 .map(ArangoResponse::getBody)
-                .map(bytes -> getSerde().<Iterable<SimpleCollectionEntity>>deserializeField(RESULT, bytes, ITERABLE_OF_COLLECTION_ENTITY))
+                .map(bytes -> getSerde().deserializeListAtJsonPointer(RESULT_JSON_POINTER, bytes, SimpleCollectionEntity.class))
                 .flatMapMany(Flux::fromIterable);
     }
 
@@ -182,7 +176,7 @@ public final class CollectionApiImpl extends ArangoClientImpl implements Collect
                         .path(PATH_API + "/" + name + "/count")
                         .build())
                 .map(ArangoResponse::getBody)
-                .map(bytes -> getSerde().deserializeField("count", bytes, Long.class));
+                .map(bytes -> getSerde().deserializeAtJsonPointer("/count", bytes, Long.class));
     }
 
     @Override
@@ -214,7 +208,7 @@ public final class CollectionApiImpl extends ArangoClientImpl implements Collect
                         .path(PATH_API + "/" + name + "/figures")
                         .build())
                 .map(ArangoResponse::getBody)
-                .map(bytes -> getSerde().deserializeField("figures", bytes, Object.class));
+                .map(bytes -> getSerde().deserializeAtJsonPointer("/figures", bytes, Object.class));
     }
 
     @Override
@@ -271,7 +265,7 @@ public final class CollectionApiImpl extends ArangoClientImpl implements Collect
                         .body(getSerde().serialize(document))
                         .build())
                 .map(ArangoResponse::getBody)
-                .map(bytes -> getSerde().deserializeField("shardId", bytes, String.class));
+                .map(bytes -> getSerde().deserializeAtJsonPointer("/shardId", bytes, String.class));
     }
 
     @Override
@@ -283,7 +277,7 @@ public final class CollectionApiImpl extends ArangoClientImpl implements Collect
                         .path(PATH_API + "/" + name + "/revision")
                         .build())
                 .map(ArangoResponse::getBody)
-                .map(bytes -> getSerde().deserializeField("revision", bytes, String.class));
+                .map(bytes -> getSerde().deserializeAtJsonPointer("/revision", bytes, String.class));
     }
 
     @Override
@@ -295,7 +289,7 @@ public final class CollectionApiImpl extends ArangoClientImpl implements Collect
                         .path(PATH_API + "/" + name + "/shards")
                         .build())
                 .map(ArangoResponse::getBody)
-                .map(bytes -> getSerde().<Iterable<String>>deserializeField("shards", bytes, ITERABLE_OF_STRING))
+                .map(bytes -> getSerde().deserializeListAtJsonPointer("/shards", bytes, String.class))
                 .flatMapMany(Flux::fromIterable);
     }
 

@@ -22,7 +22,7 @@ package com.arangodb.next.entity.model;
 
 
 import com.arangodb.next.entity.GenerateBuilder;
-import com.arangodb.velocypack.annotations.VPackPOJOBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -31,9 +31,9 @@ import java.util.Map;
  * @author Michele Rastelli
  */
 @GenerateBuilder
+@JsonDeserialize(builder = VersionBuilder.class)
 public interface Version {
 
-    @VPackPOJOBuilder
     static VersionBuilder builder() {
         return new VersionBuilder();
     }

@@ -23,7 +23,7 @@ package com.arangodb.next.api.database.entity;
 
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.entity.GenerateBuilder;
-import com.arangodb.velocypack.annotations.VPackPOJOBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import javax.annotation.Nullable;
 
@@ -31,9 +31,9 @@ import javax.annotation.Nullable;
  * @author Michele Rastelli
  */
 @GenerateBuilder
+@JsonDeserialize(builder = DatabaseEntityBuilder.class)
 public interface DatabaseEntity {
 
-    @VPackPOJOBuilder
     static DatabaseEntityBuilder builder() {
         return new DatabaseEntityBuilder();
     }

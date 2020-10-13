@@ -23,7 +23,8 @@ package com.arangodb.next.entity.model;
 
 import com.arangodb.next.connection.HostDescription;
 import com.arangodb.next.entity.GenerateBuilder;
-import com.arangodb.velocypack.annotations.VPackPOJOBuilder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,15 +33,16 @@ import java.util.stream.Collectors;
  * @author Michele Rastelli
  */
 @GenerateBuilder
+@JsonDeserialize(builder = ClusterEndpointsBuilder.class)
 public interface ClusterEndpoints extends ArangoEntity {
 
-    @VPackPOJOBuilder
     static ClusterEndpointsBuilder builder() {
         return new ClusterEndpointsBuilder();
     }
 
     Set<ClusterEndpointsEntry> getEndpoints();
 
+    @JsonIgnore
     default Set<HostDescription> getHostDescriptions() {
         return getEndpoints().stream()
                 .map(ClusterEndpointsEntry::getEndpoint)

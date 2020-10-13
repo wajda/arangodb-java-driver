@@ -22,15 +22,15 @@ package com.arangodb.next.api.collection.entity;
 
 
 import com.arangodb.next.entity.GenerateBuilder;
-import com.arangodb.velocypack.annotations.VPackPOJOBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * @author Michele Rastelli
  */
 @GenerateBuilder
+@JsonDeserialize(builder = CollectionChecksumEntityBuilder.class)
 public interface CollectionChecksumEntity {
 
-    @VPackPOJOBuilder
     static CollectionChecksumEntityBuilder builder() {
         return new CollectionChecksumEntityBuilder();
     }

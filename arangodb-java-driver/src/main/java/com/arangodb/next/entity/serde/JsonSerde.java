@@ -20,38 +20,21 @@
 
 package com.arangodb.next.entity.serde;
 
-import com.arangodb.velocypack.VPackParser;
-import com.arangodb.velocypack.VPackSlice;
-
-import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Michele Rastelli
  */
 public final class JsonSerde extends ArangoSerde {
 
-    private final VPackParser parser = new VPackParser.Builder().build();
-
-    @Override
-    public VPackSlice createVPackSlice(final byte[] buffer) {
-        return parser.fromJson(new String(buffer, StandardCharsets.UTF_8));
+    public JsonSerde() {
+        super(new ObjectMapper());
     }
 
+    // TODO
     @Override
-    public byte[] serialize(final Object value) {
-        return parser.toJson(serializeToVPackSlice(value), true).getBytes(StandardCharsets.UTF_8);
-    }
-
-    @Override
-    public byte[] serialize(final Object value, final Type type) {
-        return parser.toJson(serializeToVPackSlice(value, type), true).getBytes(StandardCharsets.UTF_8);
-    }
-
-    @Override
-    public <T> T deserialize(final byte[] buffer, final Type type) {
-        return deserialize(parser.fromJson(new String(buffer, StandardCharsets.UTF_8)), type);
+    public String toJsonString(byte[] buffer) {
+        throw new UnsupportedOperationException();
     }
 
 }

@@ -21,7 +21,7 @@
 package com.arangodb.next.entity.model;
 
 import com.arangodb.next.entity.GenerateBuilder;
-import com.arangodb.velocypack.annotations.VPackPOJOBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * @author Michele Rastelli
@@ -30,9 +30,9 @@ import com.arangodb.velocypack.annotations.VPackPOJOBuilder;
  * Documentation</a>
  */
 @GenerateBuilder
+@JsonDeserialize(builder = EngineBuilder.class)
 public interface Engine {
 
-    @VPackPOJOBuilder
     static EngineBuilder builder() {
         return new EngineBuilder();
     }

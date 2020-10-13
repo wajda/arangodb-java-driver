@@ -18,22 +18,23 @@
  * Copyright holder is ArangoDB GmbH, Cologne, Germany
  */
 
-package com.arangodb.next.entity.model;
+package com.arangodb.next.entity.serde;
 
-import com.arangodb.next.entity.GenerateBuilder;
-import com.arangodb.velocypack.annotations.VPackPOJOBuilder;
+import com.arangodb.jackson.dataformat.velocypack.VPackMapper;
 
 /**
  * @author Michele Rastelli
  */
-@GenerateBuilder
-public interface SuccessEntity<T> extends ArangoEntity {
+public final class VPackSerde extends ArangoSerde {
 
-    @VPackPOJOBuilder
-    static <U> SuccessEntityBuilder<U> builder() {
-        return new SuccessEntityBuilder<>();
+    public VPackSerde() {
+        super(new VPackMapper());
     }
 
-    T getResult();
+    // TODO
+    @Override
+    public String toJsonString(byte[] buffer) {
+        throw new UnsupportedOperationException();
+    }
 
 }

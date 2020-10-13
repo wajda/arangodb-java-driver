@@ -31,13 +31,12 @@ import com.arangodb.next.connection.ArangoResponse;
 import com.arangodb.next.entity.model.Engine;
 import com.arangodb.next.entity.model.ServerRole;
 import com.arangodb.next.entity.model.Version;
-import com.arangodb.next.entity.serde.DeserializationTypes;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
-import static com.arangodb.next.api.util.ArangoResponseField.RESULT;
+import static com.arangodb.next.api.util.ArangoResponseField.RESULT_JSON_POINTER;
 
 /**
  * @author Michele Rastelli
@@ -114,7 +113,7 @@ public final class ArangoDatabaseImpl extends ArangoClientImpl implements Arango
                         .build()
         )
                 .map(ArangoResponse::getBody)
-                .map(bytes -> getSerde().deserializeField("role", bytes, ServerRole.class));
+                .map(bytes -> getSerde().deserializeAtJsonPointer("/role", bytes, ServerRole.class));
     }
 
     @Override
@@ -127,9 +126,10 @@ public final class ArangoDatabaseImpl extends ArangoClientImpl implements Arango
                         .build()
         )
                 .map(ArangoResponse::getBody)
-                .map(bytes -> getSerde().<Map<String, String>>deserializeField(RESULT, bytes, DeserializationTypes.MAP_OF_STRING_STRING))
+                .map(bytes -> getSerde().deserializeAtJsonPointer(RESULT_JSON_POINTER, bytes, Map.class))
                 .map(Map::keySet)
-                .flatMapMany(Flux::fromIterable);
+                .flatMapMany(Flux::fromIterable)
+                .cast(String.class);
     }
 
 }

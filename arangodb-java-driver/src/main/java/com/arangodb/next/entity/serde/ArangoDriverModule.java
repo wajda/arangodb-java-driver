@@ -20,22 +20,29 @@
 
 package com.arangodb.next.entity.serde;
 
+import com.arangodb.next.api.entity.ReplicationFactor;
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import java.lang.reflect.Type;
-import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * @author Michele Rastelli
  */
-public final class DeserializationTypes {
+public enum ArangoDriverModule implements Supplier<Module> {
+    INSTANCE;
 
-    private DeserializationTypes() {
+    private final SimpleModule module;
+
+    ArangoDriverModule() {
+        module = new SimpleModule();
+        module.addSerializer(ReplicationFactor.class, VPackSerializers.REPLICATION_FACTOR);
+        module.addDeserializer(ReplicationFactor.class, VPackDeserializers.REPLICATION_FACTOR);
     }
 
-    public static final Type ITERABLE_OF_STRING = new com.arangodb.velocypack.Type<Iterable<String>>() {
-    }.getType();
-
-    public static final Type MAP_OF_STRING_STRING = new com.arangodb.velocypack.Type<Map<String, String>>() {
-    }.getType();
+    @Override
+    public Module get() {
+        return module;
+    }
 
 }

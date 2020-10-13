@@ -23,7 +23,7 @@ package com.arangodb.next.api.collection.entity;
 
 
 import com.arangodb.next.entity.GenerateBuilder;
-import com.arangodb.velocypack.annotations.VPackPOJOBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import javax.annotation.Nullable;
 
@@ -32,9 +32,9 @@ import javax.annotation.Nullable;
  * @author Michele Rastelli
  */
 @GenerateBuilder
+@JsonDeserialize(builder = KeyOptionsBuilder.class)
 public interface KeyOptions {
 
-    @VPackPOJOBuilder
     static KeyOptionsBuilder builder() {
         return new KeyOptionsBuilder();
     }

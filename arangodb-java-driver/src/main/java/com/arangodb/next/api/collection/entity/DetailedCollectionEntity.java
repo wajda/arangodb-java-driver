@@ -22,7 +22,7 @@ package com.arangodb.next.api.collection.entity;
 
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.entity.GenerateBuilder;
-import com.arangodb.velocypack.annotations.VPackPOJOBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -32,9 +32,9 @@ import java.util.List;
  * @see <a href="https://www.arangodb.com/docs/stable/http/collection-creating.html">API Documentation</a>
  */
 @GenerateBuilder
+@JsonDeserialize(builder = DetailedCollectionEntityBuilder.class)
 public interface DetailedCollectionEntity extends CollectionEntity {
 
-    @VPackPOJOBuilder
     static DetailedCollectionEntityBuilder builder() {
         return new DetailedCollectionEntityBuilder();
     }

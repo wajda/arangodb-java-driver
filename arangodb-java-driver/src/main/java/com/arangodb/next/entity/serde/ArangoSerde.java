@@ -21,24 +21,30 @@
 package com.arangodb.next.entity.serde;
 
 import com.arangodb.next.connection.ContentType;
-import com.arangodb.velocypack.VPack;
-import com.arangodb.velocypack.VPackSlice;
+import com.arangodb.next.exceptions.SerdeException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.lang.reflect.Type;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * @author Michele Rastelli
  */
 public abstract class ArangoSerde {
 
-    private final VPack vPack = new VPack.Builder()
-            .registerModule(new VPackDriverModule())
-            .build();
+    private final ObjectMapper mapper;
+
+    public ArangoSerde(final ObjectMapper mapper) {
+        this.mapper = mapper;
+        mapper.registerModule(ArangoDriverModule.INSTANCE.get());
+    }
+
+    public abstract String toJsonString(final byte[] buffer);
 
     public static ArangoSerde of(final ContentType contentType) {
         switch (contentType) {
             case VPACK:
-                return new VpackSerde();
+                return new VPackSerde();
             case JSON:
                 return new JsonSerde();
             default:
@@ -46,48 +52,48 @@ public abstract class ArangoSerde {
         }
     }
 
-    abstract VPackSlice createVPackSlice(byte[] buffer);
-
-    public abstract byte[] serialize(Object value);
-
-    public abstract byte[] serialize(Object value, Type type);
-
-    public abstract <T> T deserialize(byte[] buffer, Type type);
-
-    public final String toJsonString(final byte[] buffer) {
-        if (buffer.length == 0) {
-            return "";
-        }
-        return createVPackSlice(buffer).toString();
+    public final byte[] serialize(final Object value) {
+        return wrapSerdeException(() ->
+                mapper.writeValueAsBytes(value)
+        );
     }
 
-    public final <T> T deserialize(final VPackSlice slice, final Type type) {
-        return vPack.deserialize(slice, type);
+    public final <T> byte[] serialize(final Object value, final Class<T> clazz) {
+        return wrapSerdeException(() ->
+                mapper.writerFor(clazz).writeValueAsBytes(value)
+        );
     }
 
     public final <T> T deserialize(final byte[] buffer, final Class<T> clazz) {
-        return deserialize(buffer, (Type) clazz);
+        return wrapSerdeException(() ->
+                mapper.readerFor(clazz).readValue(buffer)
+        );
     }
 
-    public final <T> T deserialize(final VPackSlice slice, final Class<T> clazz) {
-        return deserialize(slice, (Type) clazz);
+    public final <T> List<T> deserializeList(final byte[] buffer, final Class<T> clazz) {
+        return wrapSerdeException(() ->
+                mapper.readerFor(clazz).<T>readValues(buffer).readAll()
+        );
     }
 
-    public final <T> T deserializeField(final String fieldName, final byte[] buffer, final Class<T> clazz) {
-        return deserializeField(fieldName, buffer, (Type) clazz);
+    public final <T> T deserializeAtJsonPointer(final String jsonPointer, final byte[] buffer, final Class<T> clazz) {
+        return wrapSerdeException(() ->
+                mapper.readerFor(clazz).at(jsonPointer).readValue(buffer)
+        );
     }
 
-    public final <T> T deserializeField(final String fieldName, final byte[] buffer, final Type type) {
-        VPackSlice slice = createVPackSlice(buffer);
-        return deserialize(slice.get(fieldName), type);
+    public final <T> List<T> deserializeListAtJsonPointer(final String jsonPointer, final byte[] buffer, final Class<T> clazz) {
+        return wrapSerdeException(() ->
+                mapper.readerFor(clazz).at(jsonPointer).<T>readValues(buffer).readAll()
+        );
     }
 
-    protected final VPackSlice serializeToVPackSlice(final Object value) {
-        return vPack.serialize(value);
-    }
-
-    protected final VPackSlice serializeToVPackSlice(final Object value, final Type type) {
-        return vPack.serialize(value, new VPack.SerializeOptions().type(type));
+    protected final <V> V wrapSerdeException(Callable<V> callable) {
+        try {
+            return callable.call();
+        } catch (Exception e) {
+            throw SerdeException.builder().cause(e).build();
+        }
     }
 
 }

@@ -21,8 +21,8 @@
 package com.arangodb.next.entity.model;
 
 import com.arangodb.next.entity.GeneratePackagePrivateBuilder;
-import com.arangodb.velocypack.annotations.SerializedName;
-import com.arangodb.velocypack.annotations.VPackCreator;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Michele Rastelli
@@ -30,8 +30,8 @@ import com.arangodb.velocypack.annotations.VPackCreator;
 @GeneratePackagePrivateBuilder
 public abstract class ClusterEndpointsEntry {
 
-    @VPackCreator
-    public static ClusterEndpointsEntry of(@SerializedName("endpoint") final String endpoint) {
+    @JsonCreator
+    public static ClusterEndpointsEntry of(@JsonProperty("endpoint") final String endpoint) {
         return new ClusterEndpointsEntryBuilder().endpoint(endpoint).build();
     }
 

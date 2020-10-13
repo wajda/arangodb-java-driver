@@ -20,12 +20,21 @@
 
 package com.arangodb.next.entity.serde;
 
-import com.arangodb.next.api.collection.entity.*;
+import com.arangodb.next.api.collection.entity.CollectionStatus;
+import com.arangodb.next.api.collection.entity.CollectionType;
+import com.arangodb.next.api.collection.entity.KeyType;
+import com.arangodb.next.api.collection.entity.ShardingStrategy;
 import com.arangodb.next.api.database.entity.Sharding;
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.api.entity.SatelliteReplicationFactor;
 import com.arangodb.next.entity.model.Engine;
 import com.arangodb.velocypack.VPackDeserializer;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+
+import java.io.IOException;
 
 
 /**
@@ -36,15 +45,21 @@ public final class VPackDeserializers {
     private VPackDeserializers() {
     }
 
-    public static final VPackDeserializer<ReplicationFactor> REPLICATION_FACTOR = (parent, vpack, context) -> {
-        if (vpack.isString() && vpack.getAsString().equals(SatelliteReplicationFactor.VALUE)) {
-            return ReplicationFactor.ofSatellite();
-        } else if (vpack.isInteger()) {
-            return ReplicationFactor.of(vpack.getAsInt());
-        } else {
-            throw new IllegalArgumentException("Unknown value for replication factor: " + vpack);
+    static final JsonDeserializer<ReplicationFactor> REPLICATION_FACTOR = new JsonDeserializer<ReplicationFactor>() {
+        @Override
+        public ReplicationFactor deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+            if (JsonToken.VALUE_NUMBER_INT.equals(p.getCurrentToken())) {
+                return ReplicationFactor.of(p.getValueAsInt());
+            } else if (JsonToken.VALUE_STRING.equals(p.getCurrentToken())
+                    && SatelliteReplicationFactor.VALUE.equals(p.getValueAsString())) {
+                return ReplicationFactor.ofSatellite();
+            } else {
+                throw new IllegalArgumentException("Unknown value for replication factor!");
+            }
         }
     };
+
+    // TODO
 
     //region DatabaseApi
     public static final VPackDeserializer<Sharding> SHARDING = (parent, vpack, context) ->

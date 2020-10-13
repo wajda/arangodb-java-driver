@@ -21,15 +21,15 @@
 package com.arangodb.next.entity.model;
 
 import com.arangodb.next.entity.GenerateBuilder;
-import com.arangodb.velocypack.annotations.VPackPOJOBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * @author Michele Rastelli
  */
 @GenerateBuilder
+@JsonDeserialize(builder = ErrorEntityBuilder.class)
 public interface ErrorEntity extends ArangoEntity {
 
-    @VPackPOJOBuilder
     static ErrorEntityBuilder builder() {
         return new ErrorEntityBuilder();
     }

@@ -21,16 +21,16 @@
 package com.arangodb.next.api.collection.entity;
 
 import com.arangodb.next.entity.GenerateBuilder;
-import com.arangodb.velocypack.annotations.VPackPOJOBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * @author Michele Rastelli
  * @see <a href="https://www.arangodb.com/docs/stable/http/collection-creating.html">API Documentation</a>
  */
 @GenerateBuilder
+@JsonDeserialize(builder = SimpleCollectionEntityBuilder.class)
 public interface SimpleCollectionEntity extends CollectionEntity {
 
-    @VPackPOJOBuilder
     static SimpleCollectionEntityBuilder builder() {
         return new SimpleCollectionEntityBuilder();
     }

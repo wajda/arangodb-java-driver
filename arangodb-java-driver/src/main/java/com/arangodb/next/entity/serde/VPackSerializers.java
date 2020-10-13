@@ -28,25 +28,39 @@ import com.arangodb.next.api.entity.NumericReplicationFactor;
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.api.entity.SatelliteReplicationFactor;
 import com.arangodb.velocypack.VPackSerializer;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+
+import java.io.IOException;
 
 /**
- * @author Mark Vollmary
+ * @author Michele Rastelli
  */
-public final class VPackSerializers {
+final class VPackSerializers {
 
     private VPackSerializers() {
     }
 
-    public static final VPackSerializer<ReplicationFactor> REPLICATION_FACTOR =
-            (builder, attribute, value, context) -> {
-                if (value instanceof NumericReplicationFactor) {
-                    builder.add(attribute, ((NumericReplicationFactor) value).getValue());
-                } else if (value instanceof SatelliteReplicationFactor) {
-                    builder.add(attribute, ((SatelliteReplicationFactor) value).getValue());
-                } else {
-                    throw new IllegalArgumentException("Unknown class for replication factor: " + value.getClass().getName());
+    static final JsonSerializer<ReplicationFactor> REPLICATION_FACTOR =
+            new JsonSerializer<ReplicationFactor>() {
+                @Override
+                public void serialize(ReplicationFactor value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+                    if (value instanceof NumericReplicationFactor) {
+                        gen.writeNumber(((NumericReplicationFactor) value).getValue());
+                    } else if (value instanceof SatelliteReplicationFactor) {
+                        gen.writeString(((SatelliteReplicationFactor) value).getValue());
+                    } else {
+                        throw new IllegalArgumentException("Unknown class for replication factor: " + value.getClass().getName());
+                    }
                 }
             };
+
+
+
+    // TODO
+
+
 
     //region DatabaseApi
     public static final VPackSerializer<Sharding> SHARDING =
