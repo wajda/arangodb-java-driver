@@ -22,6 +22,8 @@ package com.arangodb.next.entity.serde;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * @author Michele Rastelli
  */
@@ -31,10 +33,9 @@ public final class JsonSerde extends ArangoSerde {
         super(new ObjectMapper());
     }
 
-    // TODO
     @Override
     public String toJsonString(byte[] buffer) {
-        throw new UnsupportedOperationException();
+        return new String(buffer, StandardCharsets.UTF_8);
     }
 
 }

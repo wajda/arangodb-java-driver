@@ -22,6 +22,7 @@ package com.arangodb.next.entity.serde;
 
 import com.arangodb.next.connection.ContentType;
 import com.arangodb.next.exceptions.SerdeException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
@@ -36,6 +37,9 @@ public abstract class ArangoSerde {
 
     public ArangoSerde(final ObjectMapper mapper) {
         this.mapper = mapper;
+        // TODO: allow providing custom mapper (eg. configured with custom serde features)
+        // TODO: set (DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true) in tests
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.registerModule(ArangoDriverModule.INSTANCE.get());
     }
 

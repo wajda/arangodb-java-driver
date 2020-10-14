@@ -27,7 +27,6 @@ import com.arangodb.next.api.collection.entity.ShardingStrategy;
 import com.arangodb.next.api.database.entity.Sharding;
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.api.entity.SatelliteReplicationFactor;
-import com.arangodb.next.entity.model.Engine;
 import com.arangodb.velocypack.VPackDeserializer;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -65,9 +64,6 @@ public final class VPackDeserializers {
     public static final VPackDeserializer<Sharding> SHARDING = (parent, vpack, context) ->
             Sharding.of(vpack.getAsString());
     //endregion
-
-    public static final VPackDeserializer<Engine.StorageEngineName> STORAGE_ENGINE_NAME = (parent, vpack, context) ->
-            Engine.StorageEngineName.of(vpack.getAsString());
 
     //region CollectionApi
     public static final VPackDeserializer<CollectionType> COLLECTION_TYPE = (parent, vpack, context) ->

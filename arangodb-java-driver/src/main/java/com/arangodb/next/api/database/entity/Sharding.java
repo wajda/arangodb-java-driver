@@ -21,16 +21,19 @@
 package com.arangodb.next.api.database.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * @author Michele Rastelli
  */
 public enum Sharding {
-
     FLEXIBLE("flexible"),
     SINGLE("single");
 
     private final String value;
 
+    @JsonCreator
     public static Sharding of(final String value) {
         for (Sharding e : values()) {
             if (e.value.equals(value)) {
@@ -47,6 +50,7 @@ public enum Sharding {
         value = v;
     }
 
+    @JsonValue
     public String getValue() {
         return value;
     }

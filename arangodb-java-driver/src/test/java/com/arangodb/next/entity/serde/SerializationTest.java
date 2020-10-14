@@ -20,12 +20,10 @@
 
 package com.arangodb.next.entity.serde;
 
+import com.arangodb.next.api.database.entity.Sharding;
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.connection.ContentType;
-import com.arangodb.next.entity.model.ClusterEndpoints;
-import com.arangodb.next.entity.model.ClusterEndpointsEntry;
-import com.arangodb.next.entity.model.ErrorEntity;
-import com.arangodb.next.entity.model.Version;
+import com.arangodb.next.entity.model.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -101,7 +99,26 @@ class SerializationTest {
                 contentType,
                 ReplicationFactor.class
         );
+    }
 
+    @ParameterizedTest
+    @EnumSource(ContentType.class)
+    void sharding(ContentType contentType) {
+        verify(
+                Sharding.of(""),
+                contentType,
+                Sharding.class
+        );
+    }
+
+    @ParameterizedTest
+    @EnumSource(ContentType.class)
+    void storageEngineName(ContentType contentType) {
+        verify(
+                Engine.StorageEngineName.ROCKSDB,
+                contentType,
+                Engine.StorageEngineName.class
+        );
     }
 
     private void verify(Object original, ContentType contentType, Class<?> clazz) {

@@ -21,6 +21,7 @@
 package com.arangodb.next.entity.model;
 
 import com.arangodb.next.entity.GenerateBuilder;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
@@ -38,22 +39,12 @@ public interface Engine {
     }
 
     enum StorageEngineName {
-        MMFILES("mmfiles"), ROCKSDB("rocksdb");
 
-        private final String value;
+        @JsonProperty("mmfiles")
+        MMFILES,
 
-        StorageEngineName(final String name) {
-            value = name;
-        }
-
-        public static StorageEngineName of(final String value) {
-            for (StorageEngineName e : values()) {
-                if (e.value.equals(value)) {
-                    return e;
-                }
-            }
-            throw new IllegalArgumentException("Unknown value for StorageEngineName: " + value);
-        }
+        @JsonProperty("rocksdb")
+        ROCKSDB
 
     }
 

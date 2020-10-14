@@ -21,6 +21,7 @@
 package com.arangodb.next.entity.serde;
 
 import com.arangodb.jackson.dataformat.velocypack.VPackMapper;
+import com.arangodb.velocypack.VPackSlice;
 
 /**
  * @author Michele Rastelli
@@ -31,10 +32,14 @@ public final class VPackSerde extends ArangoSerde {
         super(new VPackMapper());
     }
 
-    // TODO
     @Override
     public String toJsonString(byte[] buffer) {
-        throw new UnsupportedOperationException();
+        try {
+            return new VPackSlice(buffer).toString();
+        } catch (Exception e) {
+            // FIXME
+            return "[INVALID VPackSlice]";
+        }
     }
 
 }
