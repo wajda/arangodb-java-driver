@@ -153,11 +153,14 @@ public final class HttpConnection extends ArangoConnection {
     }
 
     private ConnectionProvider createConnectionProvider() {
-        return ConnectionProvider.fixed(
-                "http",
-                config.getMaxConnections(),
-                config.getTimeout(),
-                config.getTtl());
+        return ConnectionProvider.builder("http")
+                .maxConnections(config.getMaxConnections())
+                .build();
+
+        // FIXME:
+        //      config.getMaxConnections()
+        //      config.getTimeout()
+        //      config.getTtl()
     }
 
     private HttpClient getClient() {

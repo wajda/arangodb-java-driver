@@ -154,12 +154,13 @@ public final class VstConnection extends ArangoConnection {
     }
 
     private ConnectionProvider createConnectionProvider() {
-        return ConnectionProvider.fixed(
-                "tcp",
-                1,
-                config.getTimeout(),
-                config.getTtl()
-        );
+        return ConnectionProvider.builder("tcp")
+                .maxConnections(1)
+                .build();
+
+        // FIXME:
+//                config.getTimeout()
+//                config.getTtl()
     }
 
     private Mono<Void> authenticate(final Connection connection) {

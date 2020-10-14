@@ -26,6 +26,7 @@ import com.arangodb.next.entity.serde.ArangoSerde;
 import com.arangodb.velocypack.VPackBuilder;
 import com.arangodb.velocypack.VPackSlice;
 import com.arangodb.velocypack.ValueType;
+import reactor.util.retry.Retry;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -67,7 +68,7 @@ public class ConnectionTestUtils {
 
     public static void performRequest(ArangoConnection connection, int retries) {
         ArangoResponse response = connection.execute(VERSION_REQUEST)
-                .retry(retries, t -> t instanceof IOException || t instanceof TimeoutException)
+                .retryWhen(Retry.max(retries).filter(t -> t instanceof IOException || t instanceof TimeoutException))
                 .block();
         verifyGetResponseVPack(response);
     }

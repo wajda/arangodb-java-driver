@@ -25,6 +25,7 @@ import com.arangodb.next.connection.ArangoResponse;
 import com.arangodb.next.connection.ConnectionTestUtils;
 import com.arangodb.next.connection.HostDescription;
 import com.arangodb.velocypack.VPackSlice;
+import reactor.util.retry.Retry;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -45,7 +46,7 @@ class CommunicationTestUtils {
 
     static void executeRequest(ArangoCommunication communication, int retries) {
         ArangoResponse response = communication.execute(ConnectionTestUtils.VERSION_REQUEST)
-                .retry(retries, t -> t instanceof IOException || t instanceof TimeoutException)
+                .retryWhen(Retry.max(retries).filter(t -> t instanceof IOException || t instanceof TimeoutException))
                 .block();
         verifyGetResponseVPack(response);
     }
