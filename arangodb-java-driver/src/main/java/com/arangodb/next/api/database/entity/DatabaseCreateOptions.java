@@ -22,6 +22,7 @@ package com.arangodb.next.api.database.entity;
 
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.entity.GenerateBuilder;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.annotation.Nullable;
 
@@ -45,6 +46,7 @@ public interface DatabaseCreateOptions {
      * @since ArangoDB 3.6.0
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     Options getOptions();
 
     @GenerateBuilder
@@ -59,6 +61,7 @@ public interface DatabaseCreateOptions {
          * which will replicate the collection to every DB-server, and 1, which disables replication. (cluster only)
          */
         @Nullable
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         ReplicationFactor getReplicationFactor();
 
         /**
@@ -68,12 +71,14 @@ public interface DatabaseCreateOptions {
          * time however. The value of writeConcern can not be larger than replicationFactor. (cluster only)
          */
         @Nullable
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         Integer getWriteConcern();
 
         /**
          * @return The sharding method to use for new collections in this database.
          */
         @Nullable
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         Sharding getSharding();
 
     }

@@ -34,7 +34,7 @@ public final class JsonSerde extends ArangoSerde {
     }
 
     @Override
-    public String toJsonString(byte[] buffer) {
+    public String toJsonString(final byte[] buffer) {
         return new String(buffer, StandardCharsets.UTF_8);
     }
 

@@ -21,6 +21,8 @@
 package com.arangodb.next.api.collection.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Michele Rastelli
  */
@@ -29,44 +31,31 @@ public enum ShardingStrategy {
     /**
      * default sharding used by ArangoDB Community Edition before version 3.4
      */
-    COMMUNITY_COMPAT("community-compat"),
+    @JsonProperty("community-compat")
+    COMMUNITY_COMPAT,
 
     /**
      * default sharding used by ArangoDB Enterprise Edition before version 3.4
      */
-    ENTERPRISE_COMPAT("enterprise-compat"),
+    @JsonProperty("enterprise-compat")
+    ENTERPRISE_COMPAT,
 
     /**
      * default sharding used by smart edge collections in ArangoDB Enterprise Edition before version 3.4
      */
-    ENTERPRISE_SMART_EDGE_COMPAT("enterprise-smart-edge-compat"),
+    @JsonProperty("enterprise-smart-edge-compat")
+    ENTERPRISE_SMART_EDGE_COMPAT,
 
     /**
      * default sharding used for new collections starting from version 3.4 (excluding smart edge collections)
      */
-    HASH("hash"),
+    @JsonProperty("hash")
+    HASH,
 
     /**
      * default sharding used for new smart edge collections starting from version 3.4
      */
-    ENTERPRISE_HASH_SMART_EDGE("enterprise-hash-smart-edge");
+    @JsonProperty("enterprise-hash-smart-edge")
+    ENTERPRISE_HASH_SMART_EDGE
 
-    private final String value;
-
-    ShardingStrategy(final String shardingStrategyValue) {
-        value = shardingStrategyValue;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public static ShardingStrategy of(final String value) {
-        for (ShardingStrategy shardingStrategy : ShardingStrategy.values()) {
-            if (shardingStrategy.value.equals(value)) {
-                return shardingStrategy;
-            }
-        }
-        throw new IllegalArgumentException("Unknown ShardingStrategy value: " + value);
-    }
 }

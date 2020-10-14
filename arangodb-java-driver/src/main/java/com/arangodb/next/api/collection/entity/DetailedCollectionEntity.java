@@ -22,6 +22,7 @@ package com.arangodb.next.api.collection.entity;
 
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.entity.GenerateBuilder;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import javax.annotation.Nullable;
@@ -44,6 +45,7 @@ public interface DetailedCollectionEntity extends CollectionEntity {
      * @see CollectionCreateOptions#getReplicationFactor()
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     ReplicationFactor getReplicationFactor();
 
     /**
@@ -51,6 +53,7 @@ public interface DetailedCollectionEntity extends CollectionEntity {
      * @see CollectionCreateOptions#getMinReplicationFactor()
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     Integer getMinReplicationFactor();
 
     /**
@@ -68,6 +71,7 @@ public interface DetailedCollectionEntity extends CollectionEntity {
      * @see CollectionCreateOptions#getShardKeys()
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     List<String> getShardKeys();
 
     /**
@@ -75,6 +79,7 @@ public interface DetailedCollectionEntity extends CollectionEntity {
      * @see CollectionCreateOptions#getNumberOfShards()
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     Integer getNumberOfShards();
 
     /**
@@ -82,6 +87,7 @@ public interface DetailedCollectionEntity extends CollectionEntity {
      * @see CollectionCreateOptions#getDistributeShardsLike()
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     String getDistributeShardsLike();
 
     /**
@@ -89,6 +95,7 @@ public interface DetailedCollectionEntity extends CollectionEntity {
      * @see CollectionCreateOptions#getShardingStrategy()
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     ShardingStrategy getShardingStrategy();
 
     /**
@@ -96,12 +103,14 @@ public interface DetailedCollectionEntity extends CollectionEntity {
      * @see CollectionCreateOptions#getSmartJoinAttribute()
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     String getSmartJoinAttribute();
 
     /**
      * @see CollectionCreateOptions#getCacheEnabled()
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     Boolean getCacheEnabled();
 
 }

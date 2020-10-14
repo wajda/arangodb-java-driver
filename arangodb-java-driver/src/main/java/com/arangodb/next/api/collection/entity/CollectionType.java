@@ -20,6 +20,9 @@
 
 package com.arangodb.next.api.collection.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * @author Mark Vollmary
  * @author Michele Rastelli
@@ -42,10 +45,12 @@ public enum CollectionType {
         value = typeValue;
     }
 
+    @JsonValue
     public int getValue() {
         return value;
     }
 
+    @JsonCreator
     public static CollectionType of(final int value) {
         for (CollectionType cType : CollectionType.values()) {
             if (cType.value == value) {

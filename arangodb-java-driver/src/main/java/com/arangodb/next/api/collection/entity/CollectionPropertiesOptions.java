@@ -21,6 +21,8 @@
 package com.arangodb.next.api.collection.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.annotation.Nullable;
 
 /**
@@ -34,6 +36,7 @@ public interface CollectionPropertiesOptions {
      * Default: <code>false</code>
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     Boolean getWaitForSync();
 
 }

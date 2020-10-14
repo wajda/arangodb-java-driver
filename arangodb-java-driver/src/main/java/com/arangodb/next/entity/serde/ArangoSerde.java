@@ -35,15 +35,15 @@ public abstract class ArangoSerde {
 
     private final ObjectMapper mapper;
 
-    public ArangoSerde(final ObjectMapper mapper) {
-        this.mapper = mapper;
+    public ArangoSerde(final ObjectMapper objectMapper) {
+        this.mapper = objectMapper;
         // TODO: allow providing custom mapper (eg. configured with custom serde features)
         // TODO: set (DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true) in tests
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.registerModule(ArangoDriverModule.INSTANCE.get());
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.registerModule(ArangoDriverModule.INSTANCE.get());
     }
 
-    public abstract String toJsonString(final byte[] buffer);
+    public abstract String toJsonString(byte[] buffer);
 
     public static ArangoSerde of(final ContentType contentType) {
         switch (contentType) {
@@ -92,7 +92,7 @@ public abstract class ArangoSerde {
         );
     }
 
-    protected final <V> V wrapSerdeException(Callable<V> callable) {
+    protected final <V> V wrapSerdeException(final Callable<V> callable) {
         try {
             return callable.call();
         } catch (Exception e) {

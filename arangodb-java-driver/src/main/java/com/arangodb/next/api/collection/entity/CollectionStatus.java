@@ -20,6 +20,9 @@
 
 package com.arangodb.next.api.collection.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * @author Mark Vollmary
  * @author Michele Rastelli
@@ -39,10 +42,12 @@ public enum CollectionStatus {
         value = statusValue;
     }
 
+    @JsonValue
     public int getValue() {
         return value;
     }
 
+    @JsonCreator
     public static CollectionStatus of(final int value) {
         for (CollectionStatus cStatus : CollectionStatus.values()) {
             if (cStatus.value == value) {

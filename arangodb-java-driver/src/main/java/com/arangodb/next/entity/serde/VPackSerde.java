@@ -33,7 +33,7 @@ public final class VPackSerde extends ArangoSerde {
     }
 
     @Override
-    public String toJsonString(byte[] buffer) {
+    public String toJsonString(final byte[] buffer) {
         try {
             return new VPackSlice(buffer).toString();
         } catch (Exception e) {

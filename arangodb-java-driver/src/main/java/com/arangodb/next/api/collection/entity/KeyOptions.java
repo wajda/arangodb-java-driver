@@ -23,6 +23,7 @@ package com.arangodb.next.api.collection.entity;
 
 
 import com.arangodb.next.entity.GenerateBuilder;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import javax.annotation.Nullable;
@@ -45,24 +46,28 @@ public interface KeyOptions {
      * the _key attribute of documents is considered an error.
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     Boolean getAllowUserKeys();
 
     /**
      * @return specifies the type of the key generator
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     KeyType getType();
 
     /**
      * @return increment value for autoincrement key generator. Not used for other key generator types.
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     Integer getIncrement();
 
     /**
      * @return Initial offset value for autoincrement key generator. Not used for other key generator types.
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     Integer getOffset();
 
 }

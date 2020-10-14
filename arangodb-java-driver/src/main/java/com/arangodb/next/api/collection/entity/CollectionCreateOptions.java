@@ -23,6 +23,7 @@ package com.arangodb.next.api.collection.entity;
 
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.entity.GenerateBuilder;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -49,6 +50,7 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      * @apiNote cluster only
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     ReplicationFactor getReplicationFactor();
 
     /**
@@ -60,12 +62,14 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      * @apiNote cluster only
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     Integer getMinReplicationFactor();
 
     /**
      * @return additional options for key generation
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     KeyOptions getKeyOptions();
 
     /**
@@ -77,6 +81,7 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      * @apiNote cluster only
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     List<String> getShardKeys();
 
     /**
@@ -85,6 +90,7 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      * @apiNote cluster only
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     Integer getNumberOfShards();
 
     /**
@@ -94,6 +100,7 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      * Default: <code>false</code>
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     Boolean getIsSystem();
 
     /**
@@ -101,6 +108,7 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      * Default: {@link CollectionType#DOCUMENT}
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     CollectionType getType();
 
     /**
@@ -112,6 +120,7 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      * @apiNote enterprise cluster only
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     String getDistributeShardsLike();
 
     /**
@@ -125,6 +134,7 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      * @apiNote cluster only
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     ShardingStrategy getShardingStrategy();
 
     /**
@@ -139,12 +149,14 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      * - value stored in the smartJoinAttribute the must be a string
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     String getSmartJoinAttribute();
 
     /**
      * @return enables in-memory caching of documents and primary index entries
      */
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     Boolean getCacheEnabled();
 
 }

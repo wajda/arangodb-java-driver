@@ -20,14 +20,9 @@
 
 package com.arangodb.next.entity.serde;
 
-import com.arangodb.next.api.collection.entity.CollectionType;
-import com.arangodb.next.api.collection.entity.KeyType;
-import com.arangodb.next.api.collection.entity.ShardingStrategy;
-import com.arangodb.next.api.database.entity.Sharding;
 import com.arangodb.next.api.entity.NumericReplicationFactor;
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.api.entity.SatelliteReplicationFactor;
-import com.arangodb.velocypack.VPackSerializer;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -45,7 +40,7 @@ final class VPackSerializers {
     static final JsonSerializer<ReplicationFactor> REPLICATION_FACTOR =
             new JsonSerializer<ReplicationFactor>() {
                 @Override
-                public void serialize(ReplicationFactor value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+                public void serialize(final ReplicationFactor value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
                     if (value instanceof NumericReplicationFactor) {
                         gen.writeNumber(((NumericReplicationFactor) value).getValue());
                     } else if (value instanceof SatelliteReplicationFactor) {
@@ -55,27 +50,4 @@ final class VPackSerializers {
                     }
                 }
             };
-
-
-
-    // TODO
-
-
-
-    //region DatabaseApi
-    public static final VPackSerializer<Sharding> SHARDING =
-            (builder, attribute, value, context) -> builder.add(attribute, value.getValue());
-    //endregion
-
-    //region CollectionApi
-    public static final VPackSerializer<ShardingStrategy> SHARDING_STRATEGY =
-            (builder, attribute, value, context) -> builder.add(attribute, value.getValue());
-
-    public static final VPackSerializer<KeyType> KEY_TYPE =
-            (builder, attribute, value, context) -> builder.add(attribute, value.getValue());
-
-    public static final VPackSerializer<CollectionType> COLLECTION_TYPE =
-            (builder, attribute, value, context) -> builder.add(attribute, value.getValue());
-    //endregion
-
 }

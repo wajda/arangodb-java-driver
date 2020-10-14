@@ -22,6 +22,7 @@ package com.arangodb.next.entity.model;
 
 
 import com.arangodb.next.entity.GenerateBuilder;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import javax.annotation.Nullable;
@@ -45,6 +46,7 @@ public interface Version {
     String getVersion();
 
     @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     Map<String, String> getDetails();
 
 }
