@@ -28,7 +28,6 @@ import com.arangodb.velocypack.VPackSlice;
 import com.arangodb.velocypack.ValueType;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
@@ -39,6 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class ConnectionTestUtils {
     public static final ConnectionSchedulerFactory DEFAULT_SCHEDULER_FACTORY = new ConnectionSchedulerFactory(4);
+    private static final String AQL_QUERY_VALUE = new String(new char[1_000_000]).replace('\0', 'x');
 
     public static final ArangoRequest VERSION_REQUEST = ArangoRequest.builder()
             .database("_system")
@@ -47,20 +47,21 @@ public class ConnectionTestUtils {
             .putQueryParams("details", Optional.of("true"))
             .build();
 
-    /**
-     * @param slice input
-     * @return a byte array from VPackSlice buffer, truncating final null bytes
-     */
-    private static byte[] extractBytes(final VPackSlice slice) {
-        return Arrays.copyOf(slice.getBuffer(), slice.getByteSize());
-    }
-
     public static ArangoRequest postRequest() {
         return ArangoRequest.builder()
                 .database("_system")
                 .path("/_api/query")
                 .requestType(ArangoRequest.RequestType.POST)
-                .body(extractBytes(createParseQueryRequestBody()))
+                .body(createParseQueryRequestBody().toByteArray())
+                .build();
+    }
+
+    public static ArangoRequest bigRequest() {
+        return ArangoRequest.builder()
+                .database("_system")
+                .path("/_api/cursor")
+                .requestType(ArangoRequest.RequestType.POST)
+                .body(createBigAqlQueryRequestBody().toByteArray())
                 .build();
     }
 
@@ -103,6 +104,27 @@ public class ConnectionTestUtils {
         builder.add("query", "FOR i IN 1..100 RETURN i * 3");
         builder.close();
         return builder.slice();
+    }
+
+    private static VPackSlice createBigAqlQueryRequestBody() {
+        final VPackBuilder builder = new VPackBuilder();
+        builder.add(ValueType.OBJECT);
+        builder.add("query", "RETURN @value");
+        builder.add("bindVars", ValueType.OBJECT);
+        builder.add("value", AQL_QUERY_VALUE);
+        builder.close();
+        builder.close();
+        return builder.slice();
+    }
+
+    public static void verifyBigAqlQueryResponseVPack(ArangoResponse response) {
+        assertThat(response).isNotNull();
+        assertThat(response.getVersion()).isEqualTo(1);
+        assertThat(response.getType()).isEqualTo(2);
+        assertThat(response.getResponseCode()).isEqualTo(201);
+
+        VPackSlice responseBodySlice = new VPackSlice(response.getBody());
+        assertThat(responseBodySlice.get("result").arrayIterator().next().getAsString()).isEqualTo(AQL_QUERY_VALUE);
     }
 
 }

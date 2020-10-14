@@ -24,10 +24,8 @@ import com.arangodb.next.connection.*;
 import deployments.ContainerDeployment;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import utils.ArangoVstMaxSizeSupportExtension;
 
 import static com.arangodb.next.connection.ConnectionTestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,13 +34,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Michele Rastelli
  */
 @Testcontainers
-@ExtendWith(ArangoVstMaxSizeSupportExtension.class)
 class MultiChunkConnectionTest {
 
-    private static final int CHUNK_SIZE = 8;
+    private static final int CHUNK_SIZE = 1_000;
     @Container
-    private static final ContainerDeployment deployment =
-            ContainerDeployment.ofSingleServerNoAuth(String.valueOf(CHUNK_SIZE));
+    private static final ContainerDeployment deployment = ContainerDeployment.ofSingleServerNoAuth();
     private static HostDescription host;
     private final ConnectionConfig config;
 
@@ -74,6 +70,16 @@ class MultiChunkConnectionTest {
         assertThat(connection).isNotNull();
         ArangoResponse response = connection.execute(ConnectionTestUtils.postRequest()).block();
         verifyPostResponseVPack(response);
+        connection.close().block();
+    }
+
+    @Test
+    void bigRequest() {
+        ArangoConnection connection = new ConnectionFactoryImpl(config, ArangoProtocol.VST, DEFAULT_SCHEDULER_FACTORY)
+                .create(host, null).block();
+        assertThat(connection).isNotNull();
+        ArangoResponse response = connection.execute(ConnectionTestUtils.bigRequest()).block();
+        verifyBigAqlQueryResponseVPack(response);
         connection.close().block();
     }
 

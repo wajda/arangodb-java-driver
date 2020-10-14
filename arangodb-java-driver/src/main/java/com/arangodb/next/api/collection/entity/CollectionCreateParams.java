@@ -35,8 +35,12 @@ public interface CollectionCreateParams {
         return new CollectionCreateParamsBuilder();
     }
 
+    // FIXME: should serialize to 0 or 1
+    // https://www.arangodb.com/docs/stable/http/collection-creating.html
     Optional<Boolean> getWaitForSyncReplication();
 
+    // FIXME: should serialize to 0 or 1
+    // https://www.arangodb.com/docs/stable/http/collection-creating.html
     Optional<Boolean> getEnforceReplicationFactor();
 
 }

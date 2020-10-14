@@ -76,10 +76,6 @@ public abstract class ContainerDeployment implements Startable {
         return new SingleServerNoAuthDeployment();
     }
 
-    public static ContainerDeployment ofSingleServerNoAuth(String vstMaxSize) {
-        return new SingleServerNoAuthDeployment(vstMaxSize);
-    }
-
     public static ContainerDeployment ofProvidedDeployment() {
         return new ProvidedDeployment(
                 TestUtils.INSTANCE.getHosts(),
