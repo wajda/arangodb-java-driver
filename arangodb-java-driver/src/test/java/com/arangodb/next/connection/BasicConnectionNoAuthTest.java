@@ -27,7 +27,6 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.core.Exceptions;
-import reactor.core.publisher.Flux;
 
 import java.io.IOException;
 
@@ -81,11 +80,14 @@ class BasicConnectionNoAuthTest {
     @ParameterizedTest
     @EnumSource(ArangoProtocol.class)
     void parallelLoop(ArangoProtocol protocol) {
-        new ConnectionFactoryImpl(config, protocol, DEFAULT_SCHEDULER_FACTORY).create(host, deployment.getAuthentication())
-                .flatMapMany(c ->
-                        Flux.range(0, 1_000)
-                                .flatMap(i -> c.execute(ConnectionTestUtils.VERSION_REQUEST))
-                                .doOnNext(ConnectionTestUtils::verifyGetResponseVPack))
+        new ConnectionFactoryImpl(config, protocol, DEFAULT_SCHEDULER_FACTORY)
+                .create(host, deployment.getAuthentication())
+                .flatMap(c -> c
+                        .execute(ConnectionTestUtils.VERSION_REQUEST)
+                        .doOnNext(ConnectionTestUtils::verifyGetResponseVPack)
+                        .repeat(1_000)
+                        .then()
+                )
                 .then().block();
     }
 

@@ -141,17 +141,14 @@ class BasicConnectionTest {
     @ParameterizedTest
     @EnumSource(ArangoProtocol.class)
     void parallelLoop(ArangoProtocol protocol) {
-        new ConnectionFactoryImpl(config, protocol, DEFAULT_SCHEDULER_FACTORY).create(host, deployment.getAuthentication())
-                .flatMapMany(c ->
-                        Flux.range(0, 1_000)
-                                .flatMap(i -> c.execute(ConnectionTestUtils.VERSION_REQUEST))
-                                .doOnNext(response -> {
-                                    assertThat(response).isNotNull();
-                                    assertThat(response.getVersion()).isEqualTo(1);
-                                    assertThat(response.getType()).isEqualTo(2);
-                                    assertThat(response.getResponseCode()).isEqualTo(200);
-                                    verifyGetResponseVPack(response);
-                                }))
+        new ConnectionFactoryImpl(config, protocol, DEFAULT_SCHEDULER_FACTORY)
+                .create(host, deployment.getAuthentication())
+                .flatMap(c -> c
+                        .execute(ConnectionTestUtils.VERSION_REQUEST)
+                        .doOnNext(ConnectionTestUtils::verifyGetResponseVPack)
+                        .repeat(1_000)
+                        .then()
+                )
                 .then().block();
     }
 
