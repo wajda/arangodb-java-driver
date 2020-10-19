@@ -36,7 +36,6 @@ import reactor.netty.http.client.HttpClientResponse;
 import reactor.netty.resources.ConnectionProvider;
 
 import javax.annotation.Nullable;
-import java.time.Duration;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
@@ -125,7 +124,7 @@ public final class HttpConnection extends ArangoConnection {
                 .request(requestTypeToHttpMethod(request.getRequestType())).uri(url)
                 .send(Mono.just(IOUtils.createBuffer(request.getBody())))
                 .responseSingle(this::buildResponse)
-                .timeout(Duration.ofMillis(config.getTimeout()))
+                .timeout(config.getTimeout())
                 .doOnNext(response -> connected = true)
                 .doOnError(throwable -> close().subscribe());
     }
@@ -155,19 +154,17 @@ public final class HttpConnection extends ArangoConnection {
     private ConnectionProvider createConnectionProvider() {
         return ConnectionProvider.builder("http")
                 .maxConnections(config.getMaxConnections())
+                .pendingAcquireTimeout(config.getTimeout())
+                .maxIdleTime(config.getTtl())
                 .build();
-
-        // FIXME:
-        //      config.getMaxConnections()
-        //      config.getTimeout()
-        //      config.getTtl()
     }
 
     private HttpClient getClient() {
         return applySslContext(
                 HttpClient
                         .create(connectionProvider)
-                        .tcpConfiguration(tcpClient -> tcpClient.option(CONNECT_TIMEOUT_MILLIS, config.getTimeout()))
+                        .tcpConfiguration(tcpClient -> tcpClient
+                                .option(CONNECT_TIMEOUT_MILLIS, Math.toIntExact(config.getTimeout().toMillis())))
                         .protocol(HttpProtocol.HTTP11)
                         .keepAlive(true)
                         .baseUrl((config.getUseSsl() ? "https://" : "http://") + host.getHost() + ":" + host.getPort())

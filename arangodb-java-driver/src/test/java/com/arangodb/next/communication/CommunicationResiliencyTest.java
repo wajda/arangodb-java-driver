@@ -37,6 +37,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.core.Exceptions;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
@@ -81,7 +82,7 @@ class CommunicationResiliencyTest {
                 .protocol(protocol)
                 .connectionConfig(
                         ConnectionConfig.builder()
-                                .timeout(1000)
+                                .timeout(Duration.ofMillis(1000))
                                 .build())
                 .build()).block();
         assertThat(communication).isNotNull();

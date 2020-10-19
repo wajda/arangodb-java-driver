@@ -25,12 +25,10 @@ import com.arangodb.next.entity.GenerateBuilder;
 import io.netty.handler.ssl.SslContext;
 import org.immutables.value.Value;
 
-import javax.annotation.Nullable;
 import java.time.Duration;
 import java.util.Optional;
 
-import static com.arangodb.next.ArangoDefaults.CHUNK_DEFAULT_CONTENT_SIZE;
-import static com.arangodb.next.ArangoDefaults.DEFAULT_TIMEOUT;
+import static com.arangodb.next.ArangoDefaults.*;
 
 /**
  * @author Michele Rastelli
@@ -70,19 +68,20 @@ public interface ConnectionConfig {
     }
 
     /**
-     * @return connect, request and pool acquisition timeout timeout (millisecond)
+     * @return connect, request and pool acquisition timeout
      */
     @Value.Default
-    default int getTimeout() {
-        return (int) DEFAULT_TIMEOUT;
+    default Duration getTimeout() {
+        return Duration.ofMillis(DEFAULT_TIMEOUT);
     }
 
     /**
-     * @return the {@link Duration} after which the channel will be closed (resolution: ms), if {@code null} there is no
-     * max idle time
+     * @return the {@link Duration} after which the channel will be closed
      */
-    @Nullable
-    Duration getTtl();
+    @Value.Default
+    default Duration getTtl() {
+        return Duration.ofMillis(DEFAULT_TTL);
+    }
 
     /**
      * @return VelocyStream Chunk content-size (bytes), used by VstConnection only

@@ -31,6 +31,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.core.Exceptions;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.concurrent.TimeoutException;
 
 import static com.arangodb.next.connection.ConnectionTestUtils.*;
@@ -70,7 +71,7 @@ class ConnectionResiliencyTest {
     @EnumSource(ArangoProtocol.class)
     void requestTimeout(ArangoProtocol protocol) throws InterruptedException {
         HostDescription host = deployment.getHosts().get(0);
-        ConnectionConfig testConfig = config.timeout(1000).build();
+        ConnectionConfig testConfig = config.timeout(Duration.ofMillis(1000)).build();
         ArangoConnection connection = new ConnectionFactoryImpl(testConfig, protocol, DEFAULT_SCHEDULER_FACTORY)
                 .create(host, deployment.getAuthentication()).block();
         assertThat(connection).isNotNull();
@@ -96,7 +97,7 @@ class ConnectionResiliencyTest {
     @EnumSource(ArangoProtocol.class)
     void VstConnectionTimeout(ArangoProtocol protocol) {
         HostDescription host = deployment.getHosts().get(0);
-        ConnectionConfig testConfig = config.timeout(1000).build();
+        ConnectionConfig testConfig = config.timeout(Duration.ofMillis(1000)).build();
         deployment.getProxiedHosts().forEach(it -> it.getProxy().setConnectionCut(true));
         Throwable thrown = catchThrowable(() ->
                 new ConnectionFactoryImpl(testConfig, protocol, DEFAULT_SCHEDULER_FACTORY)
@@ -165,7 +166,7 @@ class ConnectionResiliencyTest {
     void reconnect(ArangoProtocol protocol) throws InterruptedException {
         HostDescription host = deployment.getHosts().get(0);
         ConnectionConfig testConfig = config
-                .timeout(1000)
+                .timeout(Duration.ofMillis(1000))
                 .build();
         ArangoConnection connection = new ConnectionFactoryImpl(testConfig, protocol, DEFAULT_SCHEDULER_FACTORY)
                 .create(host, deployment.getAuthentication()).block();

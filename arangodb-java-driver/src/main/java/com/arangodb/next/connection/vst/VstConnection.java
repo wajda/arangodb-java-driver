@@ -39,7 +39,6 @@ import reactor.netty.tcp.TcpClient;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.function.Supplier;
 
 import static com.arangodb.next.connection.ConnectionSchedulerFactory.THREAD_PREFIX;
@@ -94,7 +93,7 @@ public final class VstConnection extends ArangoConnection {
             throw new IllegalStateException("Already initialized!");
         }
         initialized = true;
-        return publishOnScheduler(this::connect).timeout(Duration.ofMillis(config.getTimeout()))
+        return publishOnScheduler(this::connect).timeout(config.getTimeout())
                 .then(Mono.defer(this::checkAuthenticated))
                 .map(it -> this);
     }
@@ -107,7 +106,7 @@ public final class VstConnection extends ArangoConnection {
                     final long id = increaseAndGetMessageCounter();
                     return execute(c, id, RequestConverter.encodeRequest(id, request, config.getChunkSize()));
                 })
-                .timeout(Duration.ofMillis(config.getTimeout()))
+                .timeout(config.getTimeout())
                 .doOnError(this::handleError);
     }
 
@@ -156,11 +155,9 @@ public final class VstConnection extends ArangoConnection {
     private ConnectionProvider createConnectionProvider() {
         return ConnectionProvider.builder("tcp")
                 .maxConnections(1)
+                .pendingAcquireTimeout(config.getTimeout())
+                .maxIdleTime(config.getTtl())
                 .build();
-
-        // FIXME:
-//                config.getTimeout()
-//                config.getTtl()
     }
 
     private Mono<Void> authenticate(final Connection connection) {
@@ -308,7 +305,7 @@ public final class VstConnection extends ArangoConnection {
     private TcpClient createTcpClient() {
         assertCorrectThread();
         return applySslContext(TcpClient.create(createConnectionProvider()))
-                .option(CONNECT_TIMEOUT_MILLIS, config.getTimeout())
+                .option(CONNECT_TIMEOUT_MILLIS, Math.toIntExact(config.getTimeout().toMillis()))
                 .host(host.getHost())
                 .port(host.getPort())
                 .doOnDisconnected(c -> handleError(new IOException("Connection closed!")))

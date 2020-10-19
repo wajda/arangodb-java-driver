@@ -33,7 +33,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.core.Exceptions;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.AbstractMap;
 import java.util.List;
@@ -96,8 +95,9 @@ class ActiveFailoverResiliencyTest {
         for (int j = 0; j < 5; j++) {
             executeRequest(communication, 2);
             leaderProxy.disableProxy();
+
             assertThat(Exceptions.unwrap(catchThrowable(() -> executeRequest(communication, 2))))
-                    .isInstanceOf(IOException.class);
+                    .isInstanceOf(IllegalStateException.class);
             leaderProxy.enableProxy();
         }
 

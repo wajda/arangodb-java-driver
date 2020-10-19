@@ -29,6 +29,7 @@ import com.arangodb.next.connection.ContentType;
 import deployments.ContainerDeployment;
 import utils.TestUtils;
 
+import java.time.Duration;
 import java.util.AbstractMap;
 import java.util.stream.Stream;
 
@@ -54,7 +55,7 @@ public class TestContext {
                         .topology(deployment.getTopology())
                         .connectionConfig(ConnectionConfig
                                 .builder()
-                                .timeout(TestUtils.INSTANCE.getRequestTimeout())
+                                .timeout(Duration.ofMillis(TestUtils.INSTANCE.getRequestTimeout()))
                                 .build())
                         .build()
                 )

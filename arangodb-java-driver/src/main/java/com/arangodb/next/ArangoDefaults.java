@@ -21,6 +21,7 @@
 package com.arangodb.next;
 
 import static reactor.netty.resources.ConnectionProvider.DEFAULT_POOL_ACQUIRE_TIMEOUT;
+import static reactor.netty.resources.ConnectionProvider.DEFAULT_POOL_MAX_IDLE_TIME;
 
 /**
  * @author Mark Vollmary
@@ -30,6 +31,7 @@ public final class ArangoDefaults {
 
     public static final int CHUNK_DEFAULT_CONTENT_SIZE = 30_000;
     public static final long DEFAULT_TIMEOUT = DEFAULT_POOL_ACQUIRE_TIMEOUT;
+    public static final long DEFAULT_TTL = DEFAULT_POOL_MAX_IDLE_TIME;
     private static final int INTEGER_BYTES = Integer.SIZE / Byte.SIZE;
     private static final int LONG_BYTES = Long.SIZE / Byte.SIZE;
     public static final int HEADER_SIZE = INTEGER_BYTES + INTEGER_BYTES + LONG_BYTES + LONG_BYTES;
