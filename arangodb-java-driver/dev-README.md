@@ -103,7 +103,7 @@ Check results [here](https://github.com/arangodb/arangodb-java-driver/actions?qu
 
 ## SonarCloud
 
-Check results [here](https://sonarcloud.io/dashboard?id=arangodb_arangodb-java-driver).
+Check results [here](https://sonarcloud.io/dashboard?branch=next&id=arangodb_arangodb-java-driver).
 
 
 ## check dependecies updates
