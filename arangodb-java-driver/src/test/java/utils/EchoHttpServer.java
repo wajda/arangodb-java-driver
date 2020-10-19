@@ -54,7 +54,7 @@ public class EchoHttpServer {
                                 .delete("/**", EchoHttpServer::echo)
                                 .head("/**", EchoHttpServer::echo)
                                 .options("/**", EchoHttpServer::echo))
-                        .tcpConfiguration(tcp -> tcp.doOnBound(done::complete))
+                        .doOnBound(done::complete)
                         .bindNow().onDispose().block()
         ).start();
 

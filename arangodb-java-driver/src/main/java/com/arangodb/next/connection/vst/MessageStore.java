@@ -24,7 +24,7 @@ import com.arangodb.next.connection.ArangoResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.MonoProcessor;
+import reactor.core.publisher.Sinks;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +37,7 @@ final class MessageStore {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageStore.class);
 
-    private final Map<Long, MonoProcessor<ArangoResponse>> pendingRequests = new HashMap<>();
+    private final Map<Long, Sinks.One<ArangoResponse>> pendingRequests = new HashMap<>();
 
     /**
      * Adds a pending request to the store
@@ -50,10 +50,10 @@ final class MessageStore {
         if (pendingRequests.containsKey(messageId)) {
             throw new IllegalStateException("Key already present: " + messageId);
         }
-        final MonoProcessor<ArangoResponse> response = MonoProcessor.create();
+        final Sinks.One<ArangoResponse> response = Sinks.one();
         pendingRequests.put(messageId, response);
         LOGGER.atDebug().addArgument(pendingRequests::size).log("pendingRequests.size(): {}");
-        return response;
+        return response.asMono();
     }
 
     /**
@@ -64,9 +64,9 @@ final class MessageStore {
      */
     void resolve(final long messageId, final ArangoResponse response) {
         LOGGER.debug("Resolving message [{}]: {}", messageId, response);
-        final MonoProcessor<ArangoResponse> future = pendingRequests.remove(messageId);
+        final Sinks.One<ArangoResponse> future = pendingRequests.remove(messageId);
         if (future != null) {
-            future.onNext(response);
+            future.tryEmitValue(response);
         }
     }
 
@@ -77,7 +77,7 @@ final class MessageStore {
      */
     void clear(final Throwable t) {
         LOGGER.debug("clear()");
-        pendingRequests.values().forEach(future -> future.onError(t));
+        pendingRequests.values().forEach(future -> future.tryEmitError(t));
         pendingRequests.clear();
     }
 

@@ -143,7 +143,7 @@ final class ArangoCommunicationImpl implements ArangoCommunication {
                 .addArgument(() -> serde.toJsonString(request.getBody()))
                 .log("execute(): {}, {}");
 
-        return Mono.subscriberContext()
+        return Mono.deferContextual(Mono::just)
                 .flatMap(ctx -> ctx
                         .<Conversation>getOrEmpty(ArangoCommunication.CONVERSATION_CTX)
                         .map(Optional::of)

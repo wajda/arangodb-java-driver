@@ -66,7 +66,7 @@ class CommunicationTestUtils {
 
     static String executeStatusRequest(ArangoCommunication communication, Conversation conversation) {
         ArangoResponse response = communication.execute(STATUS_REQUEST)
-                .subscriberContext(ctx -> ctx.put(ArangoCommunication.CONVERSATION_CTX, conversation))
+                .contextWrite(ctx -> ctx.put(ArangoCommunication.CONVERSATION_CTX, conversation))
                 .block();
         return getHostFromStatusResponseVPack(response);
     }

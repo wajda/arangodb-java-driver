@@ -65,7 +65,7 @@ public final class ConversationManagerImpl implements ConversationManager {
 
     @Override
     public <T> Mono<T> useConversation(final Conversation conversation, final Mono<T> publisher) {
-        return publisher.subscriberContext(sCtx -> {
+        return publisher.contextWrite(sCtx -> {
             if (sCtx.hasKey(ArangoCommunication.CONVERSATION_CTX)) {
                 throw new IllegalStateException("Already existing conversation: " + sCtx.get(ArangoCommunication.CONVERSATION_CTX));
             }
@@ -75,7 +75,7 @@ public final class ConversationManagerImpl implements ConversationManager {
 
     @Override
     public <T> Flux<T> useConversation(final Conversation conversation, final Flux<T> publisher) {
-        return publisher.subscriberContext(sCtx -> {
+        return publisher.contextWrite(sCtx -> {
             if (sCtx.hasKey(ArangoCommunication.CONVERSATION_CTX)) {
                 throw new IllegalStateException("Already existing conversation: " + sCtx.get(ArangoCommunication.CONVERSATION_CTX));
             }

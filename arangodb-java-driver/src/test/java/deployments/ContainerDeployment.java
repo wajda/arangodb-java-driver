@@ -152,7 +152,7 @@ public abstract class ContainerDeployment implements Startable {
 
         String request = "{\"username\":\"" + getUser() + "\",\"password\":\"" + getPassword() + "\"}";
         String response = HttpClient.create()
-                .tcpConfiguration(tcp -> tcp.secure(c -> c.sslContext(sslContext)))
+                .secure(c -> c.sslContext(sslContext))
                 .post()
                 .uri("https://" + getHosts().get(0).getHost() + ":" + getHosts().get(0).getPort() + "/_db/_system/_open/auth")
                 .send(Mono.just(Unpooled.wrappedBuffer(request.getBytes())))

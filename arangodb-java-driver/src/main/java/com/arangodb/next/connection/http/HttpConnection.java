@@ -39,7 +39,6 @@ import javax.annotation.Nullable;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import static io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS;
 import static io.netty.handler.codec.http.HttpHeaderNames.*;
 
 /**
@@ -163,8 +162,7 @@ public final class HttpConnection extends ArangoConnection {
         return applySslContext(
                 HttpClient
                         .create(connectionProvider)
-                        .tcpConfiguration(tcpClient -> tcpClient
-                                .option(CONNECT_TIMEOUT_MILLIS, Math.toIntExact(config.getTimeout().toMillis())))
+                        .responseTimeout(config.getTimeout())
                         .protocol(HttpProtocol.HTTP11)
                         .keepAlive(true)
                         .baseUrl((config.getUseSsl() ? "https://" : "http://") + host.getHost() + ":" + host.getPort())

@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.MonoProcessor;
+import reactor.core.publisher.Sinks;
 import reactor.core.scheduler.Scheduler;
 import reactor.netty.Connection;
 import reactor.netty.DisposableChannel;
@@ -60,12 +60,12 @@ public final class VstConnection extends ArangoConnection {
     private final Scheduler scheduler;
     private final VstReceiver vstReceiver;
     // mono that will be resolved when the closing process is finished
-    private final MonoProcessor<Void> closed;
+    private final Sinks.Empty<Void> closed;
     private volatile boolean initialized = false;
     private volatile boolean closing = false;
     // state managed by scheduler thread arango-vst-X
     private long mId = 0L;
-    private MonoProcessor<Connection> session;
+    private Sinks.One<Connection> session;
     private ConnectionState connectionState = ConnectionState.DISCONNECTED;
 
     public VstConnection(final HostDescription hostDescription,
@@ -76,7 +76,7 @@ public final class VstConnection extends ArangoConnection {
         LOGGER.debug("VstConnection({})", connectionConfig);
         host = hostDescription;
         config = connectionConfig;
-        closed = MonoProcessor.create();
+        closed = Sinks.empty();
         messageStore = new MessageStore();
         scheduler = schedulerFactory.getScheduler();
         vstReceiver = new VstReceiver(messageStore::resolve);
@@ -127,7 +127,7 @@ public final class VstConnection extends ArangoConnection {
     @Override
     public synchronized Mono<Void> close() {
         if (closing) {
-            return closed;
+            return closed.asMono();
         }
         closing = true;
 
@@ -137,12 +137,12 @@ public final class VstConnection extends ArangoConnection {
             if (connectionState == ConnectionState.DISCONNECTED) {
                 return publishOnScheduler(vstReceiver::shutDown);
             } else {
-                return session
+                return session.asMono()
                         .doOnNext(DisposableChannel::dispose)
                         .flatMap(DisposableChannel::onDispose)
                         .publishOn(scheduler)
                         .doFinally(s -> vstReceiver.shutDown())
-                        .then(closed);
+                        .then(closed.asMono());
             }
         });
     }
@@ -266,13 +266,13 @@ public final class VstConnection extends ArangoConnection {
             messageStore.clear(t);
             mId = 0L;
             if (session != null) {
-                session.cancel();
+                session.tryEmitError(t);
                 session = null;
             }
 
             // completes the closing process
             if (closing) {
-                closed.onComplete();
+                closed.tryEmitEmpty();
             }
 
         }).subscribe();
@@ -286,10 +286,10 @@ public final class VstConnection extends ArangoConnection {
         LOGGER.debug("connect()");
 
         if (connectionState == ConnectionState.CONNECTED || connectionState == ConnectionState.CONNECTING) {
-            return session;
+            return session.asMono();
         } else if (connectionState == ConnectionState.DISCONNECTED) {
             // crate a pending session
-            session = MonoProcessor.create();
+            session = Sinks.one();
             connectionState = ConnectionState.CONNECTING;
             return createTcpClient()
                     .connect()
@@ -325,7 +325,7 @@ public final class VstConnection extends ArangoConnection {
             throw Exceptions.bubble(new IOException("Connection closed!"));
         }
         connectionState = ConnectionState.CONNECTED;
-        session.onNext(connection);
+        session.tryEmitValue(connection);
     }
 
     private enum ConnectionState {
