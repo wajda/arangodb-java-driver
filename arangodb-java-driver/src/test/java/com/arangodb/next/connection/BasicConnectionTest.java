@@ -33,7 +33,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.core.Exceptions;
-import reactor.core.publisher.Flux;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
@@ -75,8 +74,10 @@ class BasicConnectionTest {
         return Stream.of(
                 Arguments.of(ArangoProtocol.VST, deployment.getAuthentication()),
                 Arguments.of(ArangoProtocol.VST, deployment.getJwtAuthentication()),
-                Arguments.of(ArangoProtocol.HTTP, deployment.getAuthentication()),
-                Arguments.of(ArangoProtocol.HTTP, deployment.getJwtAuthentication())
+                Arguments.of(ArangoProtocol.HTTP11, deployment.getAuthentication()),
+                Arguments.of(ArangoProtocol.HTTP11, deployment.getJwtAuthentication()),
+                Arguments.of(ArangoProtocol.HTTP2, deployment.getAuthentication()),
+                Arguments.of(ArangoProtocol.HTTP2, deployment.getJwtAuthentication())
         );
     }
 
@@ -89,8 +90,10 @@ class BasicConnectionTest {
         return Stream.of(
                 Arguments.of(ArangoProtocol.VST, AuthenticationMethod.ofBasic(deployment.getUser(), "wrong")),
                 Arguments.of(ArangoProtocol.VST, AuthenticationMethod.ofJwt("root", "invalid.jwt.token")),
-                Arguments.of(ArangoProtocol.HTTP, AuthenticationMethod.ofBasic(deployment.getUser(), "wrong")),
-                Arguments.of(ArangoProtocol.HTTP, AuthenticationMethod.ofJwt("root", "invalid.jwt.token"))
+                Arguments.of(ArangoProtocol.HTTP11, AuthenticationMethod.ofBasic(deployment.getUser(), "wrong")),
+                Arguments.of(ArangoProtocol.HTTP11, AuthenticationMethod.ofJwt("root", "invalid.jwt.token")),
+                Arguments.of(ArangoProtocol.HTTP2, AuthenticationMethod.ofBasic(deployment.getUser(), "wrong")),
+                Arguments.of(ArangoProtocol.HTTP2, AuthenticationMethod.ofJwt("root", "invalid.jwt.token"))
         );
     }
 

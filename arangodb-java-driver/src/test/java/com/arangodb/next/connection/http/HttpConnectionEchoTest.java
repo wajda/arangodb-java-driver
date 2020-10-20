@@ -24,12 +24,14 @@ import com.arangodb.next.connection.*;
 import com.arangodb.velocypack.VPackBuilder;
 import com.arangodb.velocypack.VPackSlice;
 import com.arangodb.velocypack.ValueType;
+import org.assertj.core.data.MapEntry;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import reactor.netty.DisposableServer;
 import utils.EchoHttpServer;
 
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,11 +51,15 @@ class HttpConnectionEchoTest {
             .build();
 
     private final String body = "{\"message\": \"Hello World!\"}";
+
+    private final Map.Entry<String, String> headerParam = MapEntry.entry("header-param-key", "headerParamValue");
+    private final Map.Entry<String, Optional<String>> queryParam = MapEntry.entry("query-param-key", Optional.of("queryParamValue"));
+
     private final ArangoRequest request = ArangoRequest.builder()
             .database("database")
             .path("/path")
-            .putHeaderParams("headerParamKey", "headerParamValue")
-            .putQueryParams("queryParamKey", Optional.of("queryParamValue"))
+            .putHeaderParams(headerParam)
+            .putQueryParams(queryParam)
             .requestType(ArangoRequest.RequestType.POST)
             .body(body.getBytes())
             .build();
@@ -71,7 +77,7 @@ class HttpConnectionEchoTest {
 
     @Test
     void execute() {
-        HttpConnection connection = new HttpConnection(host, authentication, config);
+        HttpConnection connection = new Http11Connection(host, authentication, config);
         ArangoResponse response = connection.execute(request).block();
 
         // authorization
@@ -85,8 +91,8 @@ class HttpConnectionEchoTest {
         assertThat(receivedString).isEqualTo(body);
 
         // headers
-        assertThat(response.getMeta()).containsKey("headerParamKey");
-        assertThat(response.getMeta().get("headerParamKey")).isEqualTo("headerParamValue");
+        assertThat(response.getMeta()).containsKey(headerParam.getKey());
+        assertThat(response.getMeta().get(headerParam.getKey())).isEqualTo(headerParam.getValue());
 
         // accept header
         assertThat(response.getMeta()).containsKey("accept");
@@ -94,11 +100,8 @@ class HttpConnectionEchoTest {
 
         // uri & params
         assertThat(response.getMeta()).containsKey("uri");
-        assertThat(response.getMeta().get("uri")).isEqualTo("/_db/database/path?queryParamKey=queryParamValue");
-
-        // host
-        assertThat(response.getMeta()).containsKey("host");
-        assertThat(response.getMeta().get("host")).isEqualTo("localhost:9000");
+        assertThat(response.getMeta().get("uri"))
+                .isEqualTo("/_db/database/path?" + queryParam.getKey() + "=" + queryParam.getValue().get());
 
         // responseCode
         assertThat(response.getResponseCode()).isEqualTo(200);
@@ -106,7 +109,7 @@ class HttpConnectionEchoTest {
 
     @Test
     void executeVPack() {
-        HttpConnection connection = new HttpConnection(host, authentication, ConnectionConfig.builder().from(config)
+        HttpConnection connection = new Http11Connection(host, authentication, ConnectionConfig.builder().from(config)
                 .contentType(ContentType.VPACK)
                 .build());
 
@@ -134,7 +137,7 @@ class HttpConnectionEchoTest {
 
     @Test
     void executeEmptyBody() {
-        HttpConnection connection = new HttpConnection(host, AuthenticationMethod.ofBasic("user", "password"), config);
+        HttpConnection connection = new Http11Connection(host, AuthenticationMethod.ofBasic("user", "password"), config);
 
         ArangoResponse response = connection.execute(ArangoRequest.builder().from(request).body().build()).block();
 
@@ -145,7 +148,7 @@ class HttpConnectionEchoTest {
 
     @Test
     void executeBasicAuthentication() {
-        HttpConnection connection = new HttpConnection(host, AuthenticationMethod.ofBasic("user", "password"), config);
+        HttpConnection connection = new Http11Connection(host, AuthenticationMethod.ofBasic("user", "password"), config);
 
         ArangoResponse response = connection.execute(request).block();
 

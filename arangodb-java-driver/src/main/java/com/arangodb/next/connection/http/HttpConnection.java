@@ -46,23 +46,24 @@ import static io.netty.handler.codec.http.HttpHeaderNames.*;
  * @author Michele Rastelli
  */
 
-public final class HttpConnection extends ArangoConnection {
+abstract class HttpConnection extends ArangoConnection {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpConnection.class);
 
     private static final String CONTENT_TYPE_APPLICATION_JSON = "application/json; charset=UTF-8";
     private static final String CONTENT_TYPE_VPACK = "application/x-velocypack";
+
     private final HostDescription host;
-    private final ConnectionConfig config;
     private final ConnectionProvider connectionProvider;
     private final HttpClient client;
+    private final ConnectionConfig config;
     private final CookieStore cookieStore;
     private volatile boolean initialized = false;
     private volatile boolean connected = false;
 
-    public HttpConnection(final HostDescription hostDescription,
-                          @Nullable final AuthenticationMethod authenticationMethod,
-                          final ConnectionConfig connectionConfig) {
+    protected HttpConnection(final HostDescription hostDescription,
+                             @Nullable final AuthenticationMethod authenticationMethod,
+                             final ConnectionConfig connectionConfig) {
         super(authenticationMethod);
         LOGGER.debug("HttpConnection({})", connectionConfig);
         host = hostDescription;
@@ -70,6 +71,12 @@ public final class HttpConnection extends ArangoConnection {
         connectionProvider = createConnectionProvider();
         client = getClient();
         cookieStore = new CookieStore();
+    }
+
+    protected abstract HttpProtocol getProtocol();
+
+    protected ConnectionConfig getConfig() {
+        return config;
     }
 
     private static String buildUrl(final ArangoRequest request) {
@@ -163,7 +170,7 @@ public final class HttpConnection extends ArangoConnection {
                 HttpClient
                         .create(connectionProvider)
                         .responseTimeout(config.getTimeout())
-                        .protocol(HttpProtocol.HTTP11)
+                        .protocol(getProtocol())
                         .keepAlive(true)
                         .baseUrl((config.getUseSsl() ? "https://" : "http://") + host.getHost() + ":" + host.getPort())
                         .headers(headers -> getAuthentication().ifPresent(

@@ -44,8 +44,10 @@ public class TestContext {
     public static Stream<TestContext> createContexts(final ContainerDeployment deployment) {
         return Stream.of(
                 new AbstractMap.SimpleEntry<>(ArangoProtocol.VST, ContentType.VPACK),
-                new AbstractMap.SimpleEntry<>(ArangoProtocol.HTTP, ContentType.VPACK),
-                new AbstractMap.SimpleEntry<>(ArangoProtocol.HTTP, ContentType.JSON)
+                new AbstractMap.SimpleEntry<>(ArangoProtocol.HTTP11, ContentType.VPACK),
+                new AbstractMap.SimpleEntry<>(ArangoProtocol.HTTP11, ContentType.JSON),
+                new AbstractMap.SimpleEntry<>(ArangoProtocol.HTTP2, ContentType.VPACK),
+                new AbstractMap.SimpleEntry<>(ArangoProtocol.HTTP2, ContentType.JSON)
         )
                 .map(it -> CommunicationConfig.builder()
                         .protocol(it.getKey())

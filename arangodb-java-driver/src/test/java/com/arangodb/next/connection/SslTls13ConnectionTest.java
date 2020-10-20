@@ -75,8 +75,10 @@ class SslTls13ConnectionTest {
         return Stream.of(
                 Arguments.of(ArangoProtocol.VST, deployment.getAuthentication()),
                 Arguments.of(ArangoProtocol.VST, deployment.getJwtAuthentication()),
-                Arguments.of(ArangoProtocol.HTTP, deployment.getAuthentication()),
-                Arguments.of(ArangoProtocol.HTTP, deployment.getJwtAuthentication())
+                Arguments.of(ArangoProtocol.HTTP11, deployment.getAuthentication()),
+                Arguments.of(ArangoProtocol.HTTP11, deployment.getJwtAuthentication()),
+                Arguments.of(ArangoProtocol.HTTP2, deployment.getAuthentication()),
+                Arguments.of(ArangoProtocol.HTTP2, deployment.getJwtAuthentication())
         );
     }
 

@@ -22,7 +22,8 @@
 package com.arangodb.next.connection;
 
 
-import com.arangodb.next.connection.http.HttpConnection;
+import com.arangodb.next.connection.http.Http11Connection;
+import com.arangodb.next.connection.http.Http2Connection;
 import com.arangodb.next.connection.vst.VstConnection;
 import reactor.core.publisher.Mono;
 
@@ -60,8 +61,11 @@ public final class ConnectionFactoryImpl implements ConnectionFactory {
             case VST:
                 connection = new VstConnection(host, authentication, config, schedulerFactory);
                 break;
-            case HTTP:
-                connection = new HttpConnection(host, authentication, config);
+            case HTTP11:
+                connection = new Http11Connection(host, authentication, config);
+                break;
+            case HTTP2:
+                connection = new Http2Connection(host, authentication, config);
                 break;
             default:
                 throw new IllegalArgumentException(String.valueOf(protocol));

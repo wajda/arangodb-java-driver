@@ -34,8 +34,13 @@ public enum ArangoProtocol {
     VST,
 
     /**
-     * HTTP
+     * HTTP 1.1
      */
-    HTTP
+    HTTP11,
+
+    /**
+     * HTTP 2
+     */
+    HTTP2
 
 }
