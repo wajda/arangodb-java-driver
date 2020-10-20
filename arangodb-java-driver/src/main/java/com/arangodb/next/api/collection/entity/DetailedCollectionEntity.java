@@ -36,10 +36,6 @@ import java.util.List;
 @JsonDeserialize(builder = DetailedCollectionEntityBuilder.class)
 public interface DetailedCollectionEntity extends CollectionEntity {
 
-    static DetailedCollectionEntityBuilder builder() {
-        return new DetailedCollectionEntityBuilder();
-    }
-
     /**
      * @apiNote cluster only
      * @see CollectionCreateOptions#getReplicationFactor()

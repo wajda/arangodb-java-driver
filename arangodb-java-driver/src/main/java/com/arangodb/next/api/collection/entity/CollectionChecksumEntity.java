@@ -31,10 +31,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonDeserialize(builder = CollectionChecksumEntityBuilder.class)
 public interface CollectionChecksumEntity {
 
-    static CollectionChecksumEntityBuilder builder() {
-        return new CollectionChecksumEntityBuilder();
-    }
-
     /**
      * @return The calculated checksum as a number.
      */

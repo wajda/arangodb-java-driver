@@ -40,24 +40,24 @@ public interface DatabaseEntity {
     }
 
     /**
-     * @return the name of the current database
+     * @return the name of the database
      */
     String getName();
 
     /**
-     * @return the id of the current database
+     * @return the id of the database
      */
     String getId();
 
     /**
-     * @return the filesystem path of the current database
+     * @return the filesystem path of the database
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     String getPath();
 
     /**
-     * @return whether or not the current database is the _system database
+     * @return whether or not the database is the _system database
      */
     Boolean isSystem();
 

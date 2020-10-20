@@ -35,7 +35,7 @@ public abstract class ArangoSerde {
 
     private final ObjectMapper mapper;
 
-    public ArangoSerde(final ObjectMapper objectMapper) {
+    protected ArangoSerde(final ObjectMapper objectMapper) {
         this.mapper = objectMapper;
         // TODO: allow providing custom mapper (eg. configured with custom serde features)
         // TODO: set (DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true) in tests

@@ -30,9 +30,4 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @GenerateBuilder
 @JsonDeserialize(builder = SimpleCollectionEntityBuilder.class)
 public interface SimpleCollectionEntity extends CollectionEntity {
-
-    static SimpleCollectionEntityBuilder builder() {
-        return new SimpleCollectionEntityBuilder();
-    }
-
 }
