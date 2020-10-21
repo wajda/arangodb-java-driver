@@ -26,11 +26,8 @@ import com.arangodb.next.entity.serde.ArangoSerde;
 import com.arangodb.velocypack.VPackBuilder;
 import com.arangodb.velocypack.VPackSlice;
 import com.arangodb.velocypack.ValueType;
-import reactor.util.retry.Retry;
 
-import java.io.IOException;
 import java.util.Optional;
-import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -64,13 +61,6 @@ public class ConnectionTestUtils {
                 .requestType(ArangoRequest.RequestType.POST)
                 .body(createBigAqlQueryRequestBody().toByteArray())
                 .build();
-    }
-
-    public static void performRequest(ArangoConnection connection, int retries) {
-        ArangoResponse response = connection.execute(VERSION_REQUEST)
-                .retryWhen(Retry.max(retries).filter(t -> t instanceof IOException || t instanceof TimeoutException))
-                .block();
-        verifyGetResponseVPack(response);
     }
 
     public static void performRequest(ArangoConnection connection) {
