@@ -92,7 +92,9 @@ class ActiveFailoverResiliencyTest {
 
         ProxiedHost leaderProxy = proxiedHosts.get(leader);
 
-        for (int j = 0; j < 5; j++) {
+        // FIXME: cycle more times once HTTP2 reconnection works faster
+        for (int j = 0; j < 2; j++) {
+            System.out.println(j);
             executeRequest(communication, 2);
             leaderProxy.disableProxy();
 
