@@ -21,6 +21,7 @@
 
 package com.arangodb.next.communication;
 
+import com.arangodb.next.connection.ArangoProtocol;
 import com.arangodb.next.connection.AuthenticationMethod;
 import com.arangodb.next.connection.HostDescription;
 import com.arangodb.velocypack.VPackSlice;
@@ -45,6 +46,9 @@ class CommunicationPerformanceTest {
             .authenticationMethod(authentication)
             .connectionsPerHost(4)
             .acquireHostList(false)
+            .protocol(ArangoProtocol.VST)
+//            .protocol(ArangoProtocol.HTTP11)
+//            .protocol(ArangoProtocol.HTTP2)
             .build();
 
     private volatile long chunkStart;
@@ -53,12 +57,11 @@ class CommunicationPerformanceTest {
     @SuppressWarnings("squid:S2699")
         // Tests should include assertions
     void infiniteParallelLoop() {
-        int requests = 10_000_000;
-        int chunkSize = 1_000_000;
+        int requests = 1_000_000;
+        int chunkSize = 100_000;
         chunkStart = new Date().getTime();
 
         long start = new Date().getTime();
-
         ArangoCommunication.create(config)
                 .flatMapMany(communication -> Flux.range(1, requests)
                         .doOnNext(i -> {
@@ -69,7 +72,7 @@ class CommunicationPerformanceTest {
                                 chunkStart = new Date().getTime();
                             }
                         })
-                        .flatMap(i -> communication.execute(VERSION_REQUEST))
+                        .flatMap(i -> communication.execute(VERSION_REQUEST), 20)
                         .doOnNext(v -> new VPackSlice(v.getBody()).get("server"))
                 )
                 .then()

@@ -45,7 +45,7 @@ class ConnectionPerformanceTest {
 
     @Test
     void infiniteParallelLoop() {
-        int requests = 1_000_000;
+        int requests = 400_000;
         int connections = 4;
         long start = new Date().getTime();
 
@@ -60,14 +60,18 @@ class ConnectionPerformanceTest {
     }
 
     private CompletableFuture<Void> requestBatch(int requests) {
-        return new ConnectionFactoryImpl(config, ArangoProtocol.VST, DEFAULT_SCHEDULER_FACTORY).create(host, authentication)
+        return new ConnectionFactoryImpl(config,
+//                ArangoProtocol.VST,
+//                ArangoProtocol.HTTP11,
+                ArangoProtocol.HTTP2,
+                DEFAULT_SCHEDULER_FACTORY).create(host, authentication)
                 .flatMapMany(connection ->
                         Flux.range(0, requests)
                                 .doOnNext(i -> {
-                                    if (i % 100_000 == 0)
+                                    if (i % 10_000 == 0)
                                         System.out.println(i);
                                 })
-                                .flatMap(i -> connection.execute(VERSION_REQUEST))
+                                .flatMap(i -> connection.execute(VERSION_REQUEST), 10)
                                 .doOnNext(ConnectionTestUtils::verifyGetResponseVPack)
                 )
                 .then().toFuture();
