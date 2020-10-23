@@ -18,32 +18,21 @@
  * Copyright holder is ArangoDB GmbH, Cologne, Germany
  */
 
-package com.arangodb.next.entity.model;
+package com.arangodb.next.communication;
 
 import com.arangodb.next.entity.GeneratePackagePrivateBuilder;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.arangodb.next.entity.model.ErrorEntity;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * @author Michele Rastelli
- * @see <a
- * href="https://www.arangodb.com/docs/stable/http/miscellaneous-functions.html#return-server-database-engine-type">API
- * Documentation</a>
  */
 @GeneratePackagePrivateBuilder
-@JsonDeserialize(builder = EngineBuilder.class)
-public interface Engine {
+@JsonDeserialize(builder = MockErrorEntityBuilder.class)
+public interface MockErrorEntity extends ErrorEntity {
 
-    enum StorageEngineName {
-
-        @JsonProperty("mmfiles")
-        MMFILES,
-
-        @JsonProperty("rocksdb")
-        ROCKSDB
-
+    static MockErrorEntityBuilder builder() {
+        return new MockErrorEntityBuilder();
     }
-
-    StorageEngineName getName();
 
 }

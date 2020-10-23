@@ -21,13 +21,13 @@
 package com.arangodb.next.api.collection.entity;
 
 
-import com.arangodb.next.entity.GenerateBuilder;
+import com.arangodb.next.entity.GeneratePackagePrivateBuilder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * @author Michele Rastelli
  */
-@GenerateBuilder
+@GeneratePackagePrivateBuilder
 @JsonDeserialize(builder = CollectionChecksumEntityBuilder.class)
 public interface CollectionChecksumEntity {
 

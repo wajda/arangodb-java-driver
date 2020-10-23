@@ -20,19 +20,15 @@
 
 package com.arangodb.next.entity.model;
 
-import com.arangodb.next.entity.GenerateBuilder;
+import com.arangodb.next.entity.GeneratePackagePrivateBuilder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * @author Michele Rastelli
  */
-@GenerateBuilder
+@GeneratePackagePrivateBuilder
 @JsonDeserialize(builder = ErrorEntityBuilder.class)
 public interface ErrorEntity extends ArangoEntity {
-
-    static ErrorEntityBuilder builder() {
-        return new ErrorEntityBuilder();
-    }
 
     String getErrorMessage();
 

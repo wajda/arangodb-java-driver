@@ -23,7 +23,7 @@ package com.arangodb.next.entity.serde;
 import com.arangodb.next.api.database.entity.Sharding;
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.connection.ContentType;
-import com.arangodb.next.entity.model.*;
+import com.arangodb.next.entity.model.Engine;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -33,53 +33,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Michele Rastelli
  */
 class SerializationTest {
-
-    @ParameterizedTest
-    @EnumSource(ContentType.class)
-    void version(ContentType contentType) {
-        verify(
-                Version.builder()
-                        .server("server")
-                        .version("version")
-                        .license("license")
-                        .putDetails("bla", "bla")
-                        .build(),
-                contentType,
-                Version.class
-        );
-    }
-
-    @ParameterizedTest
-    @EnumSource(ContentType.class)
-    void clusterEndpoints(ContentType contentType) {
-        verify(
-                ClusterEndpoints.builder()
-                        .error(false)
-                        .code(200)
-                        .addEndpoints(
-                                ClusterEndpointsEntry.of("tcp://172.28.3.1:8529"),
-                                ClusterEndpointsEntry.of("tcp://172.28.3.2:8529")
-                        )
-                        .build(),
-                contentType,
-                ClusterEndpoints.class
-        );
-    }
-
-    @ParameterizedTest
-    @EnumSource(ContentType.class)
-    void errorEntity(ContentType contentType) {
-        verify(
-                ErrorEntity.builder()
-                        .error(false)
-                        .code(200)
-                        .errorNum(109)
-                        .errorMessage("error 109")
-                        .build(),
-                contentType,
-                ErrorEntity.class
-        );
-    }
 
     @ParameterizedTest
     @EnumSource(ContentType.class)

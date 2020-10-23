@@ -20,13 +20,13 @@
 
 package com.arangodb.next.connection.vst;
 
-import com.arangodb.next.entity.GenerateBuilder;
+import com.arangodb.next.entity.GeneratePackagePrivateBuilder;
 
 
 /**
  * @author Michele Rastelli
  */
-@GenerateBuilder
+@GeneratePackagePrivateBuilder
 interface AuthenticationRequest {
 
     String getUser();

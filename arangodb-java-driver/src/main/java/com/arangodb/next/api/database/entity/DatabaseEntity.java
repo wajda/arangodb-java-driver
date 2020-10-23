@@ -22,7 +22,7 @@ package com.arangodb.next.api.database.entity;
 
 
 import com.arangodb.next.api.entity.ReplicationFactor;
-import com.arangodb.next.entity.GenerateBuilder;
+import com.arangodb.next.entity.GeneratePackagePrivateBuilder;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -31,13 +31,9 @@ import javax.annotation.Nullable;
 /**
  * @author Michele Rastelli
  */
-@GenerateBuilder
+@GeneratePackagePrivateBuilder
 @JsonDeserialize(builder = DatabaseEntityBuilder.class)
 public interface DatabaseEntity {
-
-    static DatabaseEntityBuilder builder() {
-        return new DatabaseEntityBuilder();
-    }
 
     /**
      * @return the name of the database

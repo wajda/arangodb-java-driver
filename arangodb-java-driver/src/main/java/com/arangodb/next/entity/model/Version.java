@@ -21,7 +21,7 @@
 package com.arangodb.next.entity.model;
 
 
-import com.arangodb.next.entity.GenerateBuilder;
+import com.arangodb.next.entity.GeneratePackagePrivateBuilder;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -31,13 +31,9 @@ import java.util.Map;
 /**
  * @author Michele Rastelli
  */
-@GenerateBuilder
+@GeneratePackagePrivateBuilder
 @JsonDeserialize(builder = VersionBuilder.class)
 public interface Version {
-
-    static VersionBuilder builder() {
-        return new VersionBuilder();
-    }
 
     String getServer();
 

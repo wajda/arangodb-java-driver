@@ -22,9 +22,7 @@ package com.arangodb.next.communication;
 
 
 import com.arangodb.next.connection.*;
-import com.arangodb.next.entity.model.ClusterEndpoints;
 import com.arangodb.next.entity.model.ClusterEndpointsEntry;
-import com.arangodb.next.entity.model.ErrorEntity;
 import com.arangodb.next.entity.serde.ArangoSerde;
 import com.arangodb.next.exceptions.NoHostsAvailableException;
 import com.arangodb.next.exceptions.server.ArangoServerException;
@@ -212,7 +210,7 @@ public class AcquireHostListMockTest {
                         ArangoResponse.builder()
                                 .responseCode(500)
                                 .body(
-                                        ArangoSerde.of(contentType).serialize(ErrorEntity
+                                        ArangoSerde.of(contentType).serialize(MockErrorEntity
                                                 .builder()
                                                 .errorMessage("Error 8000")
                                                 .errorNum(8000)
@@ -254,7 +252,7 @@ public class AcquireHostListMockTest {
                                 ArangoResponse.builder()
                                         .responseCode(500)
                                         .body(
-                                                ArangoSerde.of(contentType).serialize(ErrorEntity
+                                                ArangoSerde.of(contentType).serialize(MockErrorEntity
                                                         .builder()
                                                         .errorMessage("Error 8000")
                                                         .errorNum(8000)
@@ -333,7 +331,7 @@ public class AcquireHostListMockTest {
             byte[] responseBody = ArangoSerde
                     .of(contentType)
                     .serialize(
-                            ClusterEndpoints.builder()
+                            MockClusterEndpoints.builder()
                                     .error(false)
                                     .code(200)
                                     .endpoints(getHosts().stream()

@@ -142,7 +142,7 @@ public class ActiveFailoverCommunicationMockTest {
     @ParameterizedTest
     @EnumSource(ContentType.class)
     void executeThrowing503ShouldTriggerFindLeader(ContentType contentType) {
-        ErrorEntity error = ErrorEntity.builder()
+        ErrorEntity error = MockErrorEntity.builder()
                 .error(true)
                 .errorMessage("not a leader")
                 .errorNum(1496)
@@ -190,7 +190,7 @@ public class ActiveFailoverCommunicationMockTest {
         assertThat(thrown).isInstanceOf(ArangoServerException.class);
         ArangoServerException e = (ArangoServerException) thrown;
         assertThat(e.getResponseCode()).isEqualTo(503);
-        assertThat(e.getEntity()).isEqualTo(error);
+        assertThat(e.getEntity()).usingRecursiveComparison().isEqualTo(error);
 
         assertThat(connectionPool.getLeader()).isEqualTo(hosts.get(1));
     }
