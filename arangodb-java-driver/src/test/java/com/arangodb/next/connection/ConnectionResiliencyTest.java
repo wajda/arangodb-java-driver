@@ -25,14 +25,19 @@ import deployments.ProxiedHost;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.core.Exceptions;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Stream;
 
 import static com.arangodb.next.connection.ConnectionTestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,6 +60,18 @@ class ConnectionResiliencyTest {
     private static final ProxiedContainerDeployment deployment = ProxiedContainerDeployment.ofSingleServer();
     private final ConnectionConfigBuilder config;
 
+    static private Stream<Arguments> argumentsProvider() {
+        List<ArangoProtocol> protocols = new ArrayList<>();
+        protocols.add(ArangoProtocol.VST);
+        protocols.add(ArangoProtocol.HTTP11);
+
+        if (deployment.isAtLeastVersion(3, 7)) {
+            protocols.add(ArangoProtocol.HTTP2);
+        }
+
+        return protocols.stream().map(Arguments::arguments);
+    }
+
     ConnectionResiliencyTest() {
         config = ConnectionConfig.builder();
     }
@@ -68,7 +85,7 @@ class ConnectionResiliencyTest {
     }
 
     @ParameterizedTest
-    @EnumSource(ArangoProtocol.class)
+    @MethodSource("argumentsProvider")
     void requestTimeout(ArangoProtocol protocol) throws InterruptedException {
         HostDescription host = deployment.getHosts().get(0);
         ConnectionConfig testConfig = config.timeout(Duration.ofSeconds(1)).build();
@@ -94,7 +111,7 @@ class ConnectionResiliencyTest {
 
 
     @ParameterizedTest
-    @EnumSource(ArangoProtocol.class)
+    @MethodSource("argumentsProvider")
     void VstConnectionTimeout(ArangoProtocol protocol) {
         HostDescription host = deployment.getHosts().get(0);
         ConnectionConfig testConfig = config.timeout(Duration.ofSeconds(1)).build();
@@ -106,7 +123,7 @@ class ConnectionResiliencyTest {
     }
 
     @ParameterizedTest
-    @EnumSource(ArangoProtocol.class)
+    @MethodSource("argumentsProvider")
     void closeConnection(ArangoProtocol protocol) throws InterruptedException {
         HostDescription host = deployment.getHosts().get(0);
         ConnectionConfig testConfig = config.build();
@@ -124,7 +141,7 @@ class ConnectionResiliencyTest {
     }
 
     @ParameterizedTest
-    @EnumSource(ArangoProtocol.class)
+    @MethodSource("argumentsProvider")
     void closeConnectionTwice(ArangoProtocol protocol) throws InterruptedException {
         HostDescription host = deployment.getHosts().get(0);
         ConnectionConfig testConfig = config.build();
@@ -143,7 +160,7 @@ class ConnectionResiliencyTest {
     }
 
     @ParameterizedTest
-    @EnumSource(ArangoProtocol.class)
+    @MethodSource("argumentsProvider")
     void requestWhenDisconnected(ArangoProtocol protocol) throws InterruptedException {
         HostDescription host = deployment.getHosts().get(0);
         ConnectionConfig testConfig = config
@@ -164,7 +181,7 @@ class ConnectionResiliencyTest {
     }
 
     @ParameterizedTest
-    @EnumSource(ArangoProtocol.class)
+    @MethodSource("argumentsProvider")
     void reconnect(ArangoProtocol protocol) throws InterruptedException {
         HostDescription host = deployment.getHosts().get(0);
         ConnectionConfig testConfig = config

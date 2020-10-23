@@ -23,12 +23,16 @@ package com.arangodb.next.connection;
 import deployments.ContainerDeployment;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.core.Exceptions;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static com.arangodb.next.connection.ConnectionTestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,6 +49,18 @@ class BasicConnectionNoAuthTest {
     private static HostDescription host;
     private final ConnectionConfig config;
 
+    static private Stream<Arguments> argumentsProvider() {
+        List<ArangoProtocol> protocols = new ArrayList<>();
+        protocols.add(ArangoProtocol.VST);
+        protocols.add(ArangoProtocol.HTTP11);
+
+        if (deployment.isAtLeastVersion(3, 7)) {
+            protocols.add(ArangoProtocol.HTTP2);
+        }
+
+        return protocols.stream().map(Arguments::arguments);
+    }
+
     BasicConnectionNoAuthTest() {
         config = ConnectionConfig.builder()
                 .build();
@@ -56,7 +72,7 @@ class BasicConnectionNoAuthTest {
     }
 
     @ParameterizedTest
-    @EnumSource(ArangoProtocol.class)
+    @MethodSource("argumentsProvider")
     void getRequest(ArangoProtocol protocol) {
         ArangoConnection connection = new ConnectionFactoryImpl(config, protocol, DEFAULT_SCHEDULER_FACTORY)
                 .create(host, null).block();
@@ -67,7 +83,7 @@ class BasicConnectionNoAuthTest {
     }
 
     @ParameterizedTest
-    @EnumSource(ArangoProtocol.class)
+    @MethodSource("argumentsProvider")
     void postRequest(ArangoProtocol protocol) {
         ArangoConnection connection = new ConnectionFactoryImpl(config, protocol, DEFAULT_SCHEDULER_FACTORY)
                 .create(host, null).block();
@@ -78,7 +94,7 @@ class BasicConnectionNoAuthTest {
     }
 
     @ParameterizedTest
-    @EnumSource(ArangoProtocol.class)
+    @MethodSource("argumentsProvider")
     void parallelLoop(ArangoProtocol protocol) {
         new ConnectionFactoryImpl(config, protocol, DEFAULT_SCHEDULER_FACTORY)
                 .create(host, deployment.getAuthentication())
@@ -92,7 +108,7 @@ class BasicConnectionNoAuthTest {
     }
 
     @ParameterizedTest
-    @EnumSource(ArangoProtocol.class)
+    @MethodSource("argumentsProvider")
     void wrongHostFailure(ArangoProtocol protocol) {
         HostDescription wrongHost = HostDescription.of("wrongHost", 8529);
         Throwable thrown = catchThrowable(() -> new ConnectionFactoryImpl(config, protocol, DEFAULT_SCHEDULER_FACTORY).create(wrongHost, null)

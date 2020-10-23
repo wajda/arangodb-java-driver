@@ -28,7 +28,6 @@ import io.netty.handler.ssl.SslProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -67,12 +66,7 @@ class BasicConnectionTest {
                 .build();
     }
 
-    /**
-     * Provided arguments are:
-     * - ArangoProtocol
-     * - AuthenticationMethod
-     */
-    static private Stream<Arguments> argumentsProvider() throws IOException {
+    static private Stream<ArangoProtocol> protocolProvider() {
         List<ArangoProtocol> protocols = new ArrayList<>();
         protocols.add(ArangoProtocol.VST);
         protocols.add(ArangoProtocol.HTTP11);
@@ -81,9 +75,22 @@ class BasicConnectionTest {
             protocols.add(ArangoProtocol.HTTP2);
         }
 
+        return protocols.stream();
+    }
+
+    static private Stream<Arguments> protocolArgumentsProvider() {
+        return protocolProvider().map(Arguments::arguments);
+    }
+
+    /**
+     * Provided arguments are:
+     * - ArangoProtocol
+     * - AuthenticationMethod
+     */
+    static private Stream<Arguments> argumentsProvider() throws IOException {
         AuthenticationMethod authentication = deployment.getAuthentication();
         AuthenticationMethod jwtAuthentication = deployment.getJwtAuthentication();
-        return protocols.stream()
+        return protocolProvider()
                 .flatMap(p -> Stream.of(
                         Arguments.of(p, authentication),
                         Arguments.of(p, jwtAuthentication)));
@@ -156,7 +163,7 @@ class BasicConnectionTest {
     }
 
     @ParameterizedTest
-    @EnumSource(ArangoProtocol.class)
+    @MethodSource("protocolArgumentsProvider")
     void parallelLoop(ArangoProtocol protocol) {
         new ConnectionFactoryImpl(config, protocol, DEFAULT_SCHEDULER_FACTORY)
                 .create(host, deployment.getAuthentication())

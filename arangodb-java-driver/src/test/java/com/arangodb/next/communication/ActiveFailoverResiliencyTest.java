@@ -28,16 +28,19 @@ import deployments.ProxiedHost;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.core.Exceptions;
 
 import java.time.Duration;
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.arangodb.next.communication.CommunicationTestUtils.executeRequest;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,6 +56,18 @@ class ActiveFailoverResiliencyTest {
     @Container
     private final static ProxiedContainerDeployment deployment = ProxiedContainerDeployment.ofActiveFailover(3);
     private final CommunicationConfigBuilder config;
+
+    static private Stream<Arguments> argumentsProvider() {
+        List<ArangoProtocol> protocols = new ArrayList<>();
+        protocols.add(ArangoProtocol.VST);
+        protocols.add(ArangoProtocol.HTTP11);
+
+        if (deployment.isAtLeastVersion(3, 7)) {
+            protocols.add(ArangoProtocol.HTTP2);
+        }
+
+        return protocols.stream().map(Arguments::arguments);
+    }
 
     ActiveFailoverResiliencyTest() {
         config = CommunicationConfig.builder()
@@ -72,7 +87,7 @@ class ActiveFailoverResiliencyTest {
     }
 
     @ParameterizedTest
-    @EnumSource(ArangoProtocol.class)
+    @MethodSource("argumentsProvider")
     void retry(ArangoProtocol protocol) {
         CommunicationConfig testConfig = config
                 .protocol(protocol)

@@ -28,14 +28,17 @@ import com.arangodb.next.connection.HostDescription;
 import com.arangodb.next.exceptions.NoHostsAvailableException;
 import deployments.ContainerDeployment;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.core.Exceptions;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -51,6 +54,18 @@ class CommunicationTest {
     private final CommunicationConfigBuilder config;
     private final List<HostDescription> hosts;
 
+    static private Stream<Arguments> argumentsProvider() {
+        List<ArangoProtocol> protocols = new ArrayList<>();
+        protocols.add(ArangoProtocol.VST);
+        protocols.add(ArangoProtocol.HTTP11);
+
+        if (deployment.isAtLeastVersion(3, 7)) {
+            protocols.add(ArangoProtocol.HTTP2);
+        }
+
+        return protocols.stream().map(Arguments::arguments);
+    }
+
     CommunicationTest() {
         hosts = deployment.getHosts();
         config = CommunicationConfig.builder()
@@ -60,7 +75,7 @@ class CommunicationTest {
     }
 
     @ParameterizedTest
-    @EnumSource(ArangoProtocol.class)
+    @MethodSource("argumentsProvider")
     void create(ArangoProtocol protocol) {
         ArangoCommunication communication = ArangoCommunication.create(config
                 .protocol(protocol)
@@ -87,7 +102,7 @@ class CommunicationTest {
     }
 
     @ParameterizedTest
-    @EnumSource(ArangoProtocol.class)
+    @MethodSource("argumentsProvider")
     void executeWithConversation(ArangoProtocol protocol) {
         ArangoCommunication communication = ArangoCommunication.create(config
                 .protocol(protocol)
@@ -108,7 +123,7 @@ class CommunicationTest {
     }
 
     @ParameterizedTest
-    @EnumSource(ArangoProtocol.class)
+    @MethodSource("argumentsProvider")
     void acquireHostList(ArangoProtocol protocol) {
 
         ArangoCommunication communication = ArangoCommunication.create(config
@@ -133,7 +148,7 @@ class CommunicationTest {
     }
 
     @ParameterizedTest
-    @EnumSource(ArangoProtocol.class)
+    @MethodSource("argumentsProvider")
     void wrongHostConnectionFailure(ArangoProtocol protocol) {
         Throwable thrown = catchThrowable(() -> ArangoCommunication.create(config
                 .protocol(protocol)
