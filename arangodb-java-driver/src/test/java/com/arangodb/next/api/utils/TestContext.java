@@ -27,10 +27,13 @@ import com.arangodb.next.connection.ArangoProtocol;
 import com.arangodb.next.connection.ConnectionConfig;
 import com.arangodb.next.connection.ContentType;
 import deployments.ContainerDeployment;
+import org.assertj.core.data.MapEntry;
 import utils.TestUtils;
 
 import java.time.Duration;
-import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 /**
@@ -42,13 +45,17 @@ public class TestContext {
     private final CommunicationConfig config;
 
     public static Stream<TestContext> createContexts(final ContainerDeployment deployment) {
-        return Stream.of(
-                new AbstractMap.SimpleEntry<>(ArangoProtocol.VST, ContentType.VPACK),
-                new AbstractMap.SimpleEntry<>(ArangoProtocol.HTTP11, ContentType.VPACK),
-                new AbstractMap.SimpleEntry<>(ArangoProtocol.HTTP11, ContentType.JSON),
-                new AbstractMap.SimpleEntry<>(ArangoProtocol.HTTP2, ContentType.VPACK),
-                new AbstractMap.SimpleEntry<>(ArangoProtocol.HTTP2, ContentType.JSON)
-        )
+        List<Map.Entry<ArangoProtocol, ContentType>> contexts = new ArrayList<>();
+        contexts.add(MapEntry.entry(ArangoProtocol.VST, ContentType.VPACK));
+        contexts.add(MapEntry.entry(ArangoProtocol.HTTP11, ContentType.VPACK));
+        contexts.add(MapEntry.entry(ArangoProtocol.HTTP11, ContentType.JSON));
+
+        if (deployment.isAtLeastVersion(3, 7)) {
+            contexts.add(MapEntry.entry(ArangoProtocol.HTTP2, ContentType.VPACK));
+            contexts.add(MapEntry.entry(ArangoProtocol.HTTP2, ContentType.JSON));
+        }
+
+        return contexts.stream()
                 .map(it -> CommunicationConfig.builder()
                         .protocol(it.getKey())
                         .contentType(it.getValue())

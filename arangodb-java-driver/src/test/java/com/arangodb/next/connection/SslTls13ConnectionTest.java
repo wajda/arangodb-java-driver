@@ -39,6 +39,9 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.IOException;
 import java.security.KeyStore;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static com.arangodb.next.connection.ConnectionTestUtils.*;
@@ -72,14 +75,20 @@ class SslTls13ConnectionTest {
      * - AuthenticationMethod
      */
     static private Stream<Arguments> argumentsProvider() throws IOException {
-        return Stream.of(
-                Arguments.of(ArangoProtocol.VST, deployment.getAuthentication()),
-                Arguments.of(ArangoProtocol.VST, deployment.getJwtAuthentication()),
-                Arguments.of(ArangoProtocol.HTTP11, deployment.getAuthentication()),
-                Arguments.of(ArangoProtocol.HTTP11, deployment.getJwtAuthentication()),
-                Arguments.of(ArangoProtocol.HTTP2, deployment.getAuthentication()),
-                Arguments.of(ArangoProtocol.HTTP2, deployment.getJwtAuthentication())
-        );
+        List<ArangoProtocol> protocols = new ArrayList<>();
+        protocols.add(ArangoProtocol.VST);
+        protocols.add(ArangoProtocol.HTTP11);
+
+        if (deployment.isAtLeastVersion(3, 7)) {
+            protocols.add(ArangoProtocol.HTTP2);
+        }
+
+        AuthenticationMethod authentication = deployment.getAuthentication();
+        AuthenticationMethod jwtAuthentication = deployment.getJwtAuthentication();
+        return protocols.stream()
+                .flatMap(p -> Stream.of(
+                        Arguments.of(p, authentication),
+                        Arguments.of(p, jwtAuthentication)));
     }
 
     @BeforeAll
