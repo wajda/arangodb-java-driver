@@ -21,7 +21,7 @@ jobs:
 # FIXME
 #          - 8
           - 11
-          - 15
+          - 14
 
     steps:
       - uses: actions/checkout@v1
