@@ -42,7 +42,8 @@ jobs:
       fail-fast: false
       matrix:
         java-version:
-          - 8
+          # FIXME
+          #          - 8
           - 11
           - 14
         docker-img:
