@@ -25,6 +25,8 @@ import api.TestApi;
 import api.TestClientSync;
 import api.TestClientSyncImpl;
 import com.sun.tools.javac.Main;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -43,25 +45,28 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Michele Rastelli
  */
 class GenerateSyncApiProcessorTest {
-    private final static String SOURCE_DIR = "generated/source";
-    private final static String COMPILED_DIR = "generated/compiled";
+    private final static String GENERATED_DIR = "generated";
+    private final static String SOURCE_DIR = GENERATED_DIR + "/source";
+    private final static String COMPILED_DIR = GENERATED_DIR + "/compiled";
 
     @Test
     void loadGeneratedClasses() throws Exception {
         ClassLoader cl = new URLClassLoader(new URL[]{new File(COMPILED_DIR).toURI().toURL()});
 
-        String testApiSyncXClassName = "api.TestApiSyncX";
-        String testApiSyncXImplClassName = "api.TestApiSyncXImpl";
+        String testApiSyncClassName = TestApi.class.getCanonicalName() + "Sync";
+        String testApiSyncImplClassName = testApiSyncClassName + "Impl";
 
-        Class<?> testApiSyncXClass = cl.loadClass(testApiSyncXClassName);
-        Class<?> testApiSyncXImplClass = cl.loadClass(testApiSyncXImplClassName);
+        Class<?> testApiSyncXClass = cl.loadClass(testApiSyncClassName);
+        Class<?> testApiSyncXImplClass = cl.loadClass(testApiSyncImplClassName);
 
-        assertThat(testApiSyncXClass.getCanonicalName()).isEqualTo(testApiSyncXClassName);
-        assertThat(testApiSyncXImplClass.getCanonicalName()).isEqualTo(testApiSyncXImplClassName);
+        assertThat(testApiSyncXClass.getCanonicalName()).isEqualTo(testApiSyncClassName);
+        assertThat(testApiSyncXImplClass.getCanonicalName()).isEqualTo(testApiSyncImplClassName);
     }
 
     @BeforeAll
     static void generateAndCompile() throws IOException {
+        cleanup();
+
         // generate sources
         Main.compile(Stream
                 .concat(
@@ -83,6 +88,12 @@ class GenerateSyncApiProcessorTest {
                 )
                 .toArray(String[]::new)
         );
+    }
+
+    @AfterAll
+    static void cleanup() throws IOException {
+        // clean generated directory
+        FileUtils.deleteDirectory(new File(GENERATED_DIR));
     }
 
 }
