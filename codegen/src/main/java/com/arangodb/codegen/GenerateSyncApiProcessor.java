@@ -15,7 +15,7 @@ import java.util.Set;
 
 
 @SupportedAnnotationTypes("com.arangodb.codegen.GenerateSyncApi")
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class GenerateSyncApiProcessor extends AbstractProcessor {
     TypeElement syncParentClient;
     TypeElement syncParentClientImpl;

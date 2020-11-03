@@ -116,3 +116,6 @@ arangodb-java-driver-bundle.iml
 
 lsp
 allure-results/
+*.iml
+docker/jwtHeader
+docker/jwtSecret

@@ -18,10 +18,12 @@
  * Copyright holder is ArangoDB GmbH, Cologne, Germany
  */
 
+package com.arangodb.codegen;
+
+
 import api.TestApi;
 import api.TestClientSync;
 import api.TestClientSyncImpl;
-import com.arangodb.codegen.GenerateSyncApiProcessor;
 import com.sun.tools.javac.Main;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -40,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Michele Rastelli
  */
-class ProcessorTest {
+class GenerateSyncApiProcessorTest {
     private final static String SOURCE_DIR = "generated/source";
     private final static String COMPILED_DIR = "generated/compiled";
 
@@ -66,8 +68,7 @@ class ProcessorTest {
                         Stream.of("-d", SOURCE_DIR, "-proc:only",
                                 "-processor", GenerateSyncApiProcessor.class.getCanonicalName()),
                         Stream.of(TestApi.class, TestClientSync.class, TestClientSyncImpl.class)
-                                .map(i -> i.getCanonicalName().replace(".", "/") + ".java")
-                                .map(i -> "src/test/java/" + i)
+                                .map(i -> "src/test/java/" + i.getCanonicalName().replace(".", "/") + ".java")
                 )
                 .toArray(String[]::new)
         );
