@@ -36,14 +36,14 @@ import reactor.core.publisher.Mono;
 public interface ArangoDatabase extends ArangoClient {
 
     /**
-     * @return main entry point for the ArangoDB driver
-     */
-    ArangoDB arango();
-
-    /**
      * @return database name
      */
     String name();
+
+    /**
+     * @return main entry point for the ArangoDB driver
+     */
+    ArangoDB arango();
 
     /**
      * @return DatabaseApi for the current database

@@ -54,13 +54,14 @@ class GenerateSyncApiProcessorTest {
         ClassLoader cl = new URLClassLoader(new URL[]{new File(COMPILED_DIR).toURI().toURL()});
 
         String testApiSyncClassName = TestApi.class.getCanonicalName() + "Sync";
-        String testApiSyncImplClassName = testApiSyncClassName + "Impl";
+        String packageName = TestApi.class.getPackageName();
+        String testApiSyncImplClassName = packageName + ".impl." + TestApi.class.getSimpleName() + "SyncImpl";
 
-        Class<?> testApiSyncXClass = cl.loadClass(testApiSyncClassName);
-        Class<?> testApiSyncXImplClass = cl.loadClass(testApiSyncImplClassName);
+        Class<?> testApiSyncClass = cl.loadClass(testApiSyncClassName);
+        Class<?> testApiSyncImplClass = cl.loadClass(testApiSyncImplClassName);
 
-        assertThat(testApiSyncXClass.getCanonicalName()).isEqualTo(testApiSyncClassName);
-        assertThat(testApiSyncXImplClass.getCanonicalName()).isEqualTo(testApiSyncImplClassName);
+        assertThat(testApiSyncClass.getCanonicalName()).isEqualTo(testApiSyncClassName);
+        assertThat(testApiSyncImplClass.getCanonicalName()).isEqualTo(testApiSyncImplClassName);
     }
 
     @BeforeAll

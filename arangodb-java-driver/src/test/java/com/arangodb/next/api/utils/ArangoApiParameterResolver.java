@@ -21,6 +21,7 @@
 package com.arangodb.next.api.utils;
 
 import com.arangodb.next.api.collection.CollectionApi;
+import com.arangodb.next.api.collection.CollectionApiSync;
 import com.arangodb.next.api.database.DatabaseApi;
 import com.arangodb.next.api.database.DatabaseApiSync;
 import com.arangodb.next.api.reactive.ArangoDB;
@@ -65,6 +66,8 @@ public class ArangoApiParameterResolver implements ParameterResolver {
             return testContext;
         } else if (clazz == CollectionApi.class) {
             return db.collectionApi();
+        } else if (clazz == CollectionApiSync.class) {
+            return dbSync.collectionApi();
         } else if (clazz == DatabaseApi.class) {
             return db.databaseApi();
         } else if (clazz == DatabaseApiSync.class) {

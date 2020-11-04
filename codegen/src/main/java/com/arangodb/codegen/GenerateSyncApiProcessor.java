@@ -57,10 +57,12 @@ public class GenerateSyncApiProcessor extends AbstractProcessor {
                 List<MethodSpec> implMethods = extractMethodSpecImpl(element);
                 TypeSpec interfaceSpec = createInterface(element, implMethods);
                 JavaFile interfaceJavaFile = JavaFile.builder(getPackageName(element), interfaceSpec)
+                        .skipJavaLangImports(true)
                         .build();
 
                 TypeSpec implSpec = createImplementation(element, interfaceSpec, implMethods);
-                JavaFile implJavaFile = JavaFile.builder(getPackageName(element), implSpec)
+                JavaFile implJavaFile = JavaFile.builder(getPackageName(element) + ".impl", implSpec)
+                        .skipJavaLangImports(true)
                         .build();
 
                 try {
@@ -87,7 +89,15 @@ public class GenerateSyncApiProcessor extends AbstractProcessor {
     private MethodSpec mapMethod(MethodSymbol symbol) {
         String methodName = symbol.getSimpleName().toString();
         List<ParameterSpec> parameters = symbol.getParameters().stream()
-                .map(ParameterSpec::get)
+                .map(varSymbol -> ParameterSpec
+                        .builder(
+                                TypeName.get(varSymbol.asType()),
+                                varSymbol.getSimpleName().toString()
+                        )
+                        .addModifiers(varSymbol.getModifiers())
+                        .addModifiers(Modifier.FINAL)
+                        .build()
+                )
                 .collect(Collectors.toList());
         MethodSpec.Builder specBuilder = MethodSpec
                 .methodBuilder(methodName)
@@ -136,12 +146,17 @@ public class GenerateSyncApiProcessor extends AbstractProcessor {
 
     private TypeSpec createInterface(Element e, List<MethodSpec> methodImpls) {
         List<MethodSpec> methods = methodImpls.stream()
-                .map(m -> MethodSpec
-                        .methodBuilder(m.name)
-                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                        .returns(m.returnType)
-                        .addParameters(m.parameters)
-                        .build()
+                .map(m -> {
+                            List<ParameterSpec> parameters = m.parameters.stream()
+                                    .map(p -> ParameterSpec.builder(p.type, p.name).build())
+                                    .collect(Collectors.toList());
+                            return MethodSpec
+                                    .methodBuilder(m.name)
+                                    .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                                    .returns(m.returnType)
+                                    .addParameters(parameters)
+                                    .build();
+                        }
                 )
                 .collect(Collectors.toList());
 

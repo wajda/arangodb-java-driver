@@ -21,8 +21,9 @@
 package com.arangodb.next.api.sync;
 
 
-import com.arangodb.next.api.reactive.ArangoDatabase;
+import com.arangodb.next.api.collection.CollectionApiSync;
 import com.arangodb.next.api.database.DatabaseApiSync;
+import com.arangodb.next.api.reactive.ArangoDatabase;
 
 /**
  * @author Michele Rastelli
@@ -30,8 +31,23 @@ import com.arangodb.next.api.database.DatabaseApiSync;
 public interface ArangoDatabaseSync extends ArangoClientSync<ArangoDatabase> {
 
     /**
+     * @return database name
+     */
+    String name();
+
+    /**
+     * @return main entry point for the ArangoDB driver
+     */
+    ArangoDBSync arango();
+
+    /**
      * @return DatabaseApi for the current database
      */
     DatabaseApiSync databaseApi();
+
+    /**
+     * @return CollectionApi for the current database
+     */
+    CollectionApiSync collectionApi();
 
 }

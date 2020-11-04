@@ -21,11 +21,15 @@
 package com.arangodb.next.api.sync.impl;
 
 
-import com.arangodb.next.api.reactive.ArangoDatabase;
-import com.arangodb.next.api.database.impl.DatabaseApiImpl;
-import com.arangodb.next.api.sync.ArangoDatabaseSync;
+import com.arangodb.next.api.collection.CollectionApiSync;
+import com.arangodb.next.api.collection.impl.CollectionApiImpl;
+import com.arangodb.next.api.collection.impl.CollectionApiSyncImpl;
 import com.arangodb.next.api.database.DatabaseApiSync;
+import com.arangodb.next.api.database.impl.DatabaseApiImpl;
 import com.arangodb.next.api.database.impl.DatabaseApiSyncImpl;
+import com.arangodb.next.api.reactive.ArangoDatabase;
+import com.arangodb.next.api.sync.ArangoDBSync;
+import com.arangodb.next.api.sync.ArangoDatabaseSync;
 
 /**
  * @author Michele Rastelli
@@ -37,8 +41,23 @@ public final class ArangoDatabaseSyncImpl extends ClientSyncImpl<ArangoDatabase>
     }
 
     @Override
+    public String name() {
+        return reactive().name();
+    }
+
+    @Override
+    public ArangoDBSync arango() {
+        return new ArangoDBSyncImpl(reactive().arango());
+    }
+
+    @Override
     public DatabaseApiSync databaseApi() {
         return new DatabaseApiSyncImpl(new DatabaseApiImpl(reactive()));
+    }
+
+    @Override
+    public CollectionApiSync collectionApi() {
+        return new CollectionApiSyncImpl(new CollectionApiImpl(reactive()));
     }
 
 }
