@@ -155,6 +155,15 @@ public class GenerateSyncApiProcessor extends AbstractProcessor {
                                     .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                                     .returns(m.returnType)
                                     .addParameters(parameters)
+                                    .addJavadoc(
+                                            "Synchronous version of {@link $L#$L($L)}",
+                                            e.getSimpleName().toString(),
+                                            m.name,
+                                            m.parameters
+                                                    .stream()
+                                                    .map(p -> p.type.toString())
+                                                    .collect(Collectors.joining(", "))
+                                    )
                                     .build();
                         }
                 )
