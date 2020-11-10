@@ -82,6 +82,12 @@ class DatabaseApiSyncTest {
                             .writeConcern(2)
                             .replicationFactor(ReplicationFactor.of(2))
                             .build())
+                    .addUsers(DatabaseCreateOptions.DatabaseUser.builder()
+                            .username("testUser-" + name)
+                            .passwd("passwd")
+                            .isActive(true)
+                            .putExtra("key", "value")
+                            .build())
                     .build());
             dbEntity = db.getDatabase(name);
 

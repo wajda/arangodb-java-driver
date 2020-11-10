@@ -25,6 +25,8 @@ import com.arangodb.next.entity.GenerateBuilder;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michele Rastelli
@@ -48,6 +50,19 @@ public interface DatabaseCreateOptions {
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     Options getOptions();
+
+    /**
+     * A list of users to initially create for the new database.
+     * User information will not be changed for users that already exist.
+     * If users is not specified or does not contain any users, a default user
+     * root will be created with an empty string password. This ensures that the
+     * new database will be accessible after it is created.
+     *
+     * @return {@link DatabaseUser}
+     */
+    @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    List<DatabaseUser> getUsers();
 
     @GenerateBuilder
     interface Options {
@@ -81,6 +96,45 @@ public interface DatabaseCreateOptions {
         @JsonInclude(JsonInclude.Include.NON_NULL)
         Sharding getSharding();
 
+    }
+
+    @GenerateBuilder
+    interface DatabaseUser {
+
+        static DatabaseUserBuilder builder() {
+            return new DatabaseUserBuilder();
+        }
+
+        /**
+         * @return Login name of the user to be created.
+         */
+        String getUsername();
+
+        /**
+         * @return The user password as a string.
+         * @defaultValue <code>""</code>
+         */
+        @Nullable
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        String getPasswd();
+
+        /**
+         * @return A flag indicating whether the user account should be activated or not.
+         * If set to false, the user won't be able to log into the database.
+         * @defaultValue <code>true</code>
+         */
+        @Nullable
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        Boolean isActive();
+
+        /**
+         * @return A JSON object with extra user information. It is used by the web interface
+         * to store graph viewer settings and saved queries. Should not be set or
+         * modified by end users, as custom attributes will not be preserved.
+         */
+        @Nullable
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        Map<String, Object> getExtra();
     }
 
 }
