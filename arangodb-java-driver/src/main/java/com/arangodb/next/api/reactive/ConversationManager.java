@@ -38,7 +38,7 @@ public interface ConversationManager {
     Conversation createConversation(Conversation.Level level);
 
     /**
-     * Creates a new conversation and binds {@param publisher} to it. All the requests performed by {@param publisher}
+     * Creates a new conversation and binds {@code publisher} to it. All the requests performed by {@code publisher}
      * will be executed against the same coordinator. In case this is not possible it will behave according to the
      * specified conversation level {@link Conversation.Level}. Eg.:
      *
@@ -58,7 +58,7 @@ public interface ConversationManager {
     <T> Mono<T> requireConversation(Mono<T> publisher);
 
     /**
-     * Creates a new conversation and binds {@param publisher} to it. All the requests performed by {@param publisher}
+     * Creates a new conversation and binds {@code publisher} to it. All the requests performed by {@code publisher}
      * will be executed against the same coordinator. In case this is not possible it will behave according to the
      * specified conversation level {@link Conversation.Level}. Eg.:
      *
@@ -78,7 +78,7 @@ public interface ConversationManager {
     <T> Flux<T> requireConversation(Flux<T> publisher);
 
     /**
-     * Creates a new conversation and binds {@param publisher} to it. All the requests performed by {@param publisher}
+     * Creates a new conversation and binds {@code publisher} to it. All the requests performed by {@code publisher}
      * will be executed against the same coordinator. In case this is not possible it will behave according to the
      * specified conversation level {@link Conversation.Level}. Eg.:
      *
@@ -98,7 +98,7 @@ public interface ConversationManager {
     <T> Mono<T> preferConversation(Mono<T> publisher);
 
     /**
-     * Creates a new conversation and binds {@param publisher} to it. All the requests performed by {@param publisher}
+     * Creates a new conversation and binds {@code publisher} to it. All the requests performed by {@code publisher}
      * will be executed against the same coordinator. In case this is not possible it will behave according to the
      * specified conversation level {@link Conversation.Level}. Eg.:
      *
@@ -118,7 +118,7 @@ public interface ConversationManager {
     <T> Flux<T> preferConversation(Flux<T> publisher);
 
     /**
-     * Executes {@param publisher} within {@param conversation}
+     * Executes {@code publisher} within {@code conversation}
      *
      * @param conversation to use
      * @param publisher    to be executed
@@ -127,7 +127,7 @@ public interface ConversationManager {
     <T> Mono<T> useConversation(Conversation conversation, Mono<T> publisher);
 
     /**
-     * Executes {@param publisher} within {@param conversation}
+     * Executes {@code publisher} within {@code conversation}
      *
      * @param conversation to use
      * @param publisher    to be executed

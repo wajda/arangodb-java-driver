@@ -37,7 +37,7 @@ import java.util.List;
 public interface DetailedCollectionEntity extends CollectionEntity {
 
     /**
-     * @apiNote cluster only
+     * @note cluster only
      * @see CollectionCreateOptions#getReplicationFactor()
      */
     @Nullable
@@ -45,7 +45,7 @@ public interface DetailedCollectionEntity extends CollectionEntity {
     ReplicationFactor getReplicationFactor();
 
     /**
-     * @apiNote cluster only
+     * @note cluster only
      * @see CollectionCreateOptions#getMinReplicationFactor()
      */
     @Nullable
@@ -63,7 +63,7 @@ public interface DetailedCollectionEntity extends CollectionEntity {
     Boolean getWaitForSync();
 
     /**
-     * @apiNote cluster only
+     * @note cluster only
      * @see CollectionCreateOptions#getShardKeys()
      */
     @Nullable
@@ -71,7 +71,7 @@ public interface DetailedCollectionEntity extends CollectionEntity {
     List<String> getShardKeys();
 
     /**
-     * @apiNote cluster only
+     * @note cluster only
      * @see CollectionCreateOptions#getNumberOfShards()
      */
     @Nullable
@@ -87,7 +87,7 @@ public interface DetailedCollectionEntity extends CollectionEntity {
     String getDistributeShardsLike();
 
     /**
-     * @apiNote cluster only
+     * @note cluster only
      * @see CollectionCreateOptions#getShardingStrategy()
      */
     @Nullable

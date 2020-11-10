@@ -34,7 +34,7 @@ import reactor.core.publisher.Mono;
 public interface CollectionApi extends ArangoClient {
 
     /**
-     * @return all collections description
+     * @return all non-system collections description
      * @see <a href="https://www.arangodb.com/docs/stable/http/collection-getting.html#reads-all-collections">API
      * Documentation</a>
      */

@@ -24,9 +24,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
-        <!-- javadoc-->
-        <javadoc.opts/>
     </properties>
 
     <developers>
@@ -124,8 +121,8 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
-                            <additionalOptions>${javadoc.opts}</additionalOptions>
-                            <excludePackageNames>com.arangodb.internal</excludePackageNames>
+                            <additionalOptions>-tag note:a:"Note:" -tag defaultValue:a:"Default value:" </additionalOptions>
+                            <excludePackageNames>com.arangodb.**.impl</excludePackageNames>
                         </configuration>
                     </execution>
                 </executions>

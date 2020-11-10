@@ -46,8 +46,8 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      * are kept. Any two copies reside on different DBServers. Replication between them is synchronous, that is, every
      * write operation to the “leader” copy will be replicated to all “follower” replicas, before the write operation is
      * reported successful.
-     * Default: <code>1</code>
-     * @apiNote cluster only
+     * @defaultValue <code>1</code>
+     * @note cluster only
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -58,8 +58,8 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      * to be in sync on the different DBServers. If there are less then these many copies in the cluster a shard will
      * refuse to write. Writes to shards with enough up-to-date copies will succeed at the same time however. The value
      * of writeConcern can not be larger than replicationFactor.
-     * Default: <code>1</code>
-     * @apiNote cluster only
+     * @defaultValue <code>1</code>
+     * @note cluster only
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -76,9 +76,9 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      * @return this attribute determines which document attributes are used to determine the target shard
      * for documents. Documents are sent to shards based on the values of their shard key attributes. The values of all
      * shard key attributes in a document are hashed, and the hash value is used to determine the target shard.
-     * Default: <code>"_key"</code>
+     * @defaultValue <code>"_key"</code>
      * @apiNote Values of shard key attributes cannot be changed once set
-     * @apiNote cluster only
+     * @note cluster only
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -86,8 +86,8 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
 
     /**
      * @return this value determines the number of shards to create for the collection.
-     * Default: <code>1</code>
-     * @apiNote cluster only
+     * @defaultValue <code>1</code>
+     * @note cluster only
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -97,7 +97,7 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      * @return whether it is a system collection. System collection names should start with an underscore. End
      * users should normally create non-system collections only. API implementors may be required to create system
      * collections in very special occasions, but normally a regular collection will do.
-     * Default: <code>false</code>
+     * @defaultValue <code>false</code>
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -105,7 +105,7 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
 
     /**
      * @return the type of the collection to create.
-     * Default: {@link CollectionType#DOCUMENT}
+     * @defaultValue {@link CollectionType#DOCUMENT}
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -131,7 +131,7 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      * Defaults:
      * - {@link ShardingStrategy#HASH}
      * - {@link ShardingStrategy#ENTERPRISE_HASH_SMART_EDGE} for all smart edge collections (enterprise)
-     * @apiNote cluster only
+     * @note cluster only
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)

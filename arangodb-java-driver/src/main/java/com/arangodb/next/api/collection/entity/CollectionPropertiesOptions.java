@@ -33,7 +33,7 @@ public interface CollectionPropertiesOptions {
     /**
      * @return whether the data is synchronized to disk before returning from a document create, update, replace or
      * removal operation.
-     * Default: <code>false</code>
+     * @defaultValue <code>false</code>
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
