@@ -22,7 +22,7 @@ package com.arangodb.next.api.database;
 
 
 import com.arangodb.codegen.GenerateSyncApi;
-import com.arangodb.next.api.database.entity.DatabaseCreateOptions;
+import com.arangodb.next.api.database.options.DatabaseCreateOptions;
 import com.arangodb.next.api.database.entity.DatabaseEntity;
 import com.arangodb.next.api.reactive.ArangoClient;
 import reactor.core.publisher.Flux;
@@ -72,6 +72,8 @@ public interface DatabaseApi extends ArangoClient {
      * @return all existing databases
      * @see <a href="https://www.arangodb.com/docs/stable/http/database-database-management.html#list-of-databases">API
      * Documentation</a>
+     *
+     * @note You should use the [GET user API] (FIXME) to fetch the list of the available databases now.
      */
     Flux<String> getDatabases();
 

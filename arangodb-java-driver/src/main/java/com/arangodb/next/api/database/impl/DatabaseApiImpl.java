@@ -22,7 +22,7 @@ package com.arangodb.next.api.database.impl;
 
 
 import com.arangodb.next.api.database.DatabaseApi;
-import com.arangodb.next.api.database.entity.DatabaseCreateOptions;
+import com.arangodb.next.api.database.options.DatabaseCreateOptions;
 import com.arangodb.next.api.database.entity.DatabaseEntity;
 import com.arangodb.next.api.reactive.ArangoDatabase;
 import com.arangodb.next.api.reactive.impl.ArangoClientImpl;

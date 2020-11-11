@@ -23,7 +23,6 @@ package com.arangodb.next.api.database.entity;
 
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.entity.GeneratePackagePrivateBuilder;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import javax.annotation.Nullable;
@@ -49,7 +48,6 @@ public interface DatabaseEntity {
      * @return the filesystem path of the database
      */
     @Nullable
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     String getPath();
 
     /**
@@ -61,21 +59,18 @@ public interface DatabaseEntity {
      * @return the default sharding method for collections created in this database
      */
     @Nullable
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     Sharding getSharding();
 
     /**
      * @return the default replication factor for collections in this database
      */
     @Nullable
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     ReplicationFactor getReplicationFactor();
 
     /**
      * @return the default write concern for collections in this database
      */
     @Nullable
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     Integer getWriteConcern();
 
 }
