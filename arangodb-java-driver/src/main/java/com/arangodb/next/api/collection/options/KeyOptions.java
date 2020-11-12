@@ -19,9 +19,10 @@
  */
 
 
-package com.arangodb.next.api.collection.entity;
+package com.arangodb.next.api.collection.options;
 
 
+import com.arangodb.next.api.collection.entity.KeyType;
 import com.arangodb.next.entity.GenerateBuilder;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

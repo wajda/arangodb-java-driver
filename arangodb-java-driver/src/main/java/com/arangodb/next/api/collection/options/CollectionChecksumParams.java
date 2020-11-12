@@ -18,21 +18,34 @@
  * Copyright holder is ArangoDB GmbH, Cologne, Germany
  */
 
-package com.arangodb.next.api.collection.entity;
+package com.arangodb.next.api.collection.options;
 
 
 import com.arangodb.next.entity.GenerateBuilder;
 
+import java.util.Optional;
+
 /**
- * @author Mark Vollmary
- * @see <a href="https://www.arangodb.com/docs/stable/http/collection-modifying.html#change-properties-of-a-collection">API
- * Documentation</a>
+ * @author Michele Rastelli
  */
 @GenerateBuilder
-public interface CollectionChangePropertiesOptions extends CollectionPropertiesOptions {
+public interface CollectionChecksumParams {
 
-    static CollectionChangePropertiesOptionsBuilder builder() {
-        return new CollectionChangePropertiesOptionsBuilder();
+    String WITH_REVISIONS = "withRevisions";
+    String WITH_DATA = "withData";
+
+    static CollectionChecksumParamsBuilder builder() {
+        return new CollectionChecksumParamsBuilder();
     }
+
+    /**
+     * @return Whether or not to include document revision ids in the checksum calculation.
+     */
+    Optional<Boolean> getWithRevisions();
+
+    /**
+     * @return Whether or not to include document body data in the checksum calculation.
+     */
+    Optional<Boolean> getWithData();
 
 }

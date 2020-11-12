@@ -46,7 +46,7 @@ public interface DatabaseCreateOptions {
 
     /**
      * @return {@link Options}
-     * @since ArangoDB 3.6.0
+     * @since ArangoDB 3.6
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)

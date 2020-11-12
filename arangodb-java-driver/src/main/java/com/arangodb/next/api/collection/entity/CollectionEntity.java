@@ -20,6 +20,8 @@
 
 package com.arangodb.next.api.collection.entity;
 
+import com.arangodb.next.api.collection.options.CollectionCreateOptions;
+
 /**
  * @author Michele Rastelli
  */
@@ -34,6 +36,11 @@ public interface CollectionEntity {
      * @see CollectionCreateOptions#getIsSystem()
      */
     boolean getIsSystem();
+
+    /**
+     * @return The status of the collection
+     */
+    CollectionStatus getStatus();
 
     /**
      * @see CollectionCreateOptions#getType()

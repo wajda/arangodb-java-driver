@@ -18,30 +18,34 @@
  * Copyright holder is ArangoDB GmbH, Cologne, Germany
  */
 
-package com.arangodb.next.api.collection.entity;
+package com.arangodb.next.api.collection.options;
 
 
-import com.arangodb.next.entity.GenerateBuilder;
+import com.arangodb.next.api.collection.entity.CollectionSchema;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 /**
- * @author Mark Vollmary
  * @author Michele Rastelli
- * @see <a href="https://www.arangodb.com/docs/stable/http/collection-getting.html#reads-all-collections">API
- * Documentation</a>
  */
-@GenerateBuilder
-public interface CollectionsReadParams {
-
-    String EXCLUDE_SYSTEM_PARAM = "excludeSystem";
-
-    static CollectionsReadParamsBuilder builder() {
-        return new CollectionsReadParamsBuilder();
-    }
+public interface CollectionPropertiesOptions {
 
     /**
-     * @return whether or not system collections should be excluded from the result.
+     * @return whether the data is synchronized to disk before returning from a document create, update, replace or
+     * removal operation.
+     * @defaultValue <code>false</code>
      */
-    Optional<Boolean> getExcludeSystem();
+    @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    Boolean getWaitForSync();
+
+    /**
+     * @return the collection level schema for documents
+     * @since ArangoDB 3.7
+     */
+    @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    CollectionSchema getSchema();
+
 }

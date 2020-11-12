@@ -23,6 +23,7 @@ package com.arangodb.next.api.collection.impl;
 
 import com.arangodb.next.api.collection.CollectionApi;
 import com.arangodb.next.api.collection.entity.*;
+import com.arangodb.next.api.collection.options.*;
 import com.arangodb.next.api.reactive.ArangoDatabase;
 import com.arangodb.next.api.reactive.impl.ArangoClientImpl;
 import com.arangodb.next.connection.ArangoRequest;

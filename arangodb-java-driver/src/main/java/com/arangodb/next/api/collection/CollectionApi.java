@@ -23,6 +23,7 @@ package com.arangodb.next.api.collection;
 
 import com.arangodb.codegen.GenerateSyncApi;
 import com.arangodb.next.api.collection.entity.*;
+import com.arangodb.next.api.collection.options.*;
 import com.arangodb.next.api.reactive.ArangoClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

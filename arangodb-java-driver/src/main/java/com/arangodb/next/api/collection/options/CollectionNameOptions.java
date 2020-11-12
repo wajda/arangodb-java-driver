@@ -18,29 +18,16 @@
  * Copyright holder is ArangoDB GmbH, Cologne, Germany
  */
 
-package com.arangodb.next.api.collection.entity;
-
-
-import com.arangodb.next.entity.GenerateBuilder;
-
-import java.util.Optional;
+package com.arangodb.next.api.collection.options;
 
 /**
  * @author Michele Rastelli
  */
-@GenerateBuilder
-public interface CollectionCreateParams {
+public interface CollectionNameOptions {
 
-    static CollectionCreateParamsBuilder builder() {
-        return new CollectionCreateParamsBuilder();
-    }
-
-    // FIXME: should serialize to 0 or 1
-    // https://www.arangodb.com/docs/stable/http/collection-creating.html
-    Optional<Boolean> getWaitForSyncReplication();
-
-    // FIXME: should serialize to 0 or 1
-    // https://www.arangodb.com/docs/stable/http/collection-creating.html
-    Optional<Boolean> getEnforceReplicationFactor();
+    /**
+     * @return The name of the collection
+     */
+    String getName();
 
 }

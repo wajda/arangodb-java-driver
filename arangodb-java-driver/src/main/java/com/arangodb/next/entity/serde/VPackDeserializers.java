@@ -23,6 +23,7 @@ package com.arangodb.next.entity.serde;
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.api.entity.SatelliteReplicationFactor;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -51,4 +52,11 @@ public final class VPackDeserializers {
             }
         }
     };
+
+    public static class RawJsonDeserializer extends JsonDeserializer<String> {
+        @Override
+        public String deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            return p.readValueAsTree().toString();
+        }
+    }
 }

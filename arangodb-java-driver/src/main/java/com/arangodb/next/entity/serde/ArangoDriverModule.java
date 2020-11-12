@@ -36,7 +36,6 @@ public enum ArangoDriverModule implements Supplier<Module> {
 
     ArangoDriverModule() {
         module = new SimpleModule();
-        module.addSerializer(ReplicationFactor.class, VPackSerializers.REPLICATION_FACTOR);
         module.addDeserializer(ReplicationFactor.class, VPackDeserializers.REPLICATION_FACTOR);
     }
 

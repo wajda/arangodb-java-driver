@@ -18,9 +18,11 @@
  * Copyright holder is ArangoDB GmbH, Cologne, Germany
  */
 
-package com.arangodb.next.api.collection.entity;
+package com.arangodb.next.api.collection.options;
 
 
+import com.arangodb.next.api.collection.entity.CollectionType;
+import com.arangodb.next.api.collection.entity.ShardingStrategy;
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.entity.GenerateBuilder;
 import com.fasterxml.jackson.annotation.JsonInclude;

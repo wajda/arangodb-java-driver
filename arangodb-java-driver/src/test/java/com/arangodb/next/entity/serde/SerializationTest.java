@@ -20,6 +20,7 @@
 
 package com.arangodb.next.entity.serde;
 
+import com.arangodb.next.api.collection.entity.CollectionSchema;
 import com.arangodb.next.api.database.entity.Sharding;
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.connection.ContentType;
@@ -36,8 +37,31 @@ class SerializationTest {
 
     @ParameterizedTest
     @EnumSource(ContentType.class)
+    void collectionSchema(ContentType contentType) {
+        CollectionSchema collectionSchema = CollectionSchema.builder()
+                .level(CollectionSchema.Level.NEW)
+                .rule(("{  " +
+                        "           \"properties\": {" +
+                        "               \"number\": {" +
+                        "                   \"type\": \"number\"" +
+                        "               }" +
+                        "           }" +
+                        "       }")
+                        .replaceAll("\\s", ""))
+                .message("The document has problems!")
+                .build();
+
+        testRoundTrip(
+                collectionSchema,
+                contentType,
+                CollectionSchema.class
+        );
+    }
+
+    @ParameterizedTest
+    @EnumSource(ContentType.class)
     void satelliteReplicationFactor(ContentType contentType) {
-        verify(
+        testRoundTrip(
                 ReplicationFactor.ofSatellite(),
                 contentType,
                 ReplicationFactor.class
@@ -47,7 +71,7 @@ class SerializationTest {
     @ParameterizedTest
     @EnumSource(ContentType.class)
     void numericReplicationFactor(ContentType contentType) {
-        verify(
+        testRoundTrip(
                 ReplicationFactor.of(3),
                 contentType,
                 ReplicationFactor.class
@@ -57,7 +81,7 @@ class SerializationTest {
     @ParameterizedTest
     @EnumSource(ContentType.class)
     void sharding(ContentType contentType) {
-        verify(
+        testRoundTrip(
                 Sharding.of(""),
                 contentType,
                 Sharding.class
@@ -67,16 +91,17 @@ class SerializationTest {
     @ParameterizedTest
     @EnumSource(ContentType.class)
     void storageEngineName(ContentType contentType) {
-        verify(
+        testRoundTrip(
                 Engine.StorageEngineName.ROCKSDB,
                 contentType,
                 Engine.StorageEngineName.class
         );
     }
 
-    private void verify(Object original, ContentType contentType, Class<?> clazz) {
+    private void testRoundTrip(Object original, ContentType contentType, Class<?> clazz) {
         ArangoSerde serde = ArangoSerde.of(contentType);
         byte[] serialized = serde.serialize(original, clazz);
+        System.out.println(serde.toJsonString(serialized));
         Object deserialized = serde.deserialize(serialized, clazz);
         assertThat(deserialized).isEqualTo(original);
     }

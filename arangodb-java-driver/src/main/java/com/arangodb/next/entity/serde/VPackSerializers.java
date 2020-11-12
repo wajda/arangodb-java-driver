@@ -20,11 +20,9 @@
 
 package com.arangodb.next.entity.serde;
 
-import com.arangodb.next.api.entity.NumericReplicationFactor;
-import com.arangodb.next.api.entity.ReplicationFactor;
-import com.arangodb.next.api.entity.SatelliteReplicationFactor;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
@@ -32,22 +30,18 @@ import java.io.IOException;
 /**
  * @author Michele Rastelli
  */
-final class VPackSerializers {
+public final class VPackSerializers {
 
     private VPackSerializers() {
     }
 
-    static final JsonSerializer<ReplicationFactor> REPLICATION_FACTOR =
-            new JsonSerializer<ReplicationFactor>() {
-                @Override
-                public void serialize(final ReplicationFactor value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
-                    if (value instanceof NumericReplicationFactor) {
-                        gen.writeNumber(((NumericReplicationFactor) value).getValue());
-                    } else if (value instanceof SatelliteReplicationFactor) {
-                        gen.writeString(((SatelliteReplicationFactor) value).getValue());
-                    } else {
-                        throw new IllegalArgumentException("Unknown class for replication factor: " + value.getClass().getName());
-                    }
-                }
-            };
+    private static final ObjectMapper jsonMapper = new ObjectMapper();
+
+    public static class RawJsonSerializer extends JsonSerializer<String> {
+        @Override
+        public void serialize(String value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+            gen.writeTree(jsonMapper.readTree(value));
+        }
+    }
+
 }

@@ -18,16 +18,25 @@
  * Copyright holder is ArangoDB GmbH, Cologne, Germany
  */
 
-package com.arangodb.next.api.collection.entity;
+package com.arangodb.next.api.collection.options;
+
+
+import com.arangodb.next.entity.GenerateBuilder;
+
+import java.util.Optional;
 
 /**
  * @author Michele Rastelli
  */
-public interface CollectionNameOptions {
+@GenerateBuilder
+public interface CollectionDropParams {
 
-    /**
-     * @return The name of the collection
-     */
-    String getName();
+    String IS_SYSTEM_PARAM = "isSystem";
+
+    static CollectionDropParamsBuilder builder() {
+        return new CollectionDropParamsBuilder();
+    }
+
+    Optional<Boolean> getIsSystem();
 
 }

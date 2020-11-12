@@ -20,6 +20,8 @@
 
 package com.arangodb.next.api.collection.entity;
 
+import com.arangodb.next.api.collection.options.CollectionCreateOptions;
+import com.arangodb.next.api.collection.options.KeyOptions;
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.entity.GeneratePackagePrivateBuilder;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -61,6 +63,13 @@ public interface DetailedCollectionEntity extends CollectionEntity {
      * @see CollectionCreateOptions#getWaitForSync()
      */
     Boolean getWaitForSync();
+
+    /**
+     * @see CollectionCreateOptions#getSchema()
+     * @since ArangoDB 3.7
+     */
+    @Nullable
+    CollectionSchema getSchema();
 
     /**
      * @note cluster only

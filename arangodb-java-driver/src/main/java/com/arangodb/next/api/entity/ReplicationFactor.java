@@ -21,6 +21,8 @@
 package com.arangodb.next.api.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * @author Michele Rastelli
  */
@@ -34,6 +36,7 @@ public interface ReplicationFactor {
         return new SatelliteReplicationFactorBuilder().build();
     }
 
+    @JsonValue
     Object getValue();
 
 }

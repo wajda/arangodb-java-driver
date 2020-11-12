@@ -18,25 +18,21 @@
  * Copyright holder is ArangoDB GmbH, Cologne, Germany
  */
 
-package com.arangodb.next.api.collection.entity;
+package com.arangodb.next.api.collection.options;
 
 
 import com.arangodb.next.entity.GenerateBuilder;
 
-import java.util.Optional;
-
 /**
  * @author Michele Rastelli
+ * @see <a href="https://www.arangodb.com/docs/stable/http/collection-modifying.html#rename-collection">API
+ * Documentation</a>
  */
 @GenerateBuilder
-public interface CollectionDropParams {
+public interface CollectionRenameOptions extends CollectionNameOptions {
 
-    String IS_SYSTEM_PARAM = "isSystem";
-
-    static CollectionDropParamsBuilder builder() {
-        return new CollectionDropParamsBuilder();
+    static CollectionRenameOptionsBuilder builder() {
+        return new CollectionRenameOptionsBuilder();
     }
-
-    Optional<Boolean> getIsSystem();
 
 }

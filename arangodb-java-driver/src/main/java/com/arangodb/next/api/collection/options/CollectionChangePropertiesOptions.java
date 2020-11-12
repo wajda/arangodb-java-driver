@@ -18,21 +18,21 @@
  * Copyright holder is ArangoDB GmbH, Cologne, Germany
  */
 
-package com.arangodb.next.api.collection.entity;
+package com.arangodb.next.api.collection.options;
 
 
 import com.arangodb.next.entity.GenerateBuilder;
 
 /**
- * @author Michele Rastelli
- * @see <a href="https://www.arangodb.com/docs/stable/http/collection-modifying.html#rename-collection">API
+ * @author Mark Vollmary
+ * @see <a href="https://www.arangodb.com/docs/stable/http/collection-modifying.html#change-properties-of-a-collection">API
  * Documentation</a>
  */
 @GenerateBuilder
-public interface CollectionRenameOptions extends CollectionNameOptions {
+public interface CollectionChangePropertiesOptions extends CollectionPropertiesOptions {
 
-    static CollectionRenameOptionsBuilder builder() {
-        return new CollectionRenameOptionsBuilder();
+    static CollectionChangePropertiesOptionsBuilder builder() {
+        return new CollectionChangePropertiesOptionsBuilder();
     }
 
 }

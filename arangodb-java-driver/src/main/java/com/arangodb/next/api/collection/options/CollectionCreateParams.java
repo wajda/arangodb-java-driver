@@ -18,7 +18,7 @@
  * Copyright holder is ArangoDB GmbH, Cologne, Germany
  */
 
-package com.arangodb.next.api.collection.entity;
+package com.arangodb.next.api.collection.options;
 
 
 import com.arangodb.next.entity.GenerateBuilder;
@@ -29,23 +29,24 @@ import java.util.Optional;
  * @author Michele Rastelli
  */
 @GenerateBuilder
-public interface CollectionChecksumParams {
+public interface CollectionCreateParams {
 
-    String WITH_REVISIONS = "withRevisions";
-    String WITH_DATA = "withData";
-
-    static CollectionChecksumParamsBuilder builder() {
-        return new CollectionChecksumParamsBuilder();
+    static CollectionCreateParamsBuilder builder() {
+        return new CollectionCreateParamsBuilder();
     }
 
     /**
-     * @return Whether or not to include document revision ids in the checksum calculation.
+     * @return if <code>true</code> the server will only report success back to the client if all replicas have created
+     * the collection. Set to <code>false</code> if you want faster server responses and don't care about full replication.
+     * @defaultValue <code>true</code>
      */
-    Optional<Boolean> getWithRevisions();
+    Optional<Boolean> getWaitForSyncReplication();
 
     /**
-     * @return Whether or not to include document body data in the checksum calculation.
+     * @return if <code>true</code> the server will check if there are enough replicas available at creation time and
+     * bail out otherwise. Set to <code>false</code> to disable this extra check.
+     * @defaultValue <code>true</code>
      */
-    Optional<Boolean> getWithData();
+    Optional<Boolean> getEnforceReplicationFactor();
 
 }

@@ -53,7 +53,7 @@ public interface DatabaseApi extends ArangoClient {
      * @return a Mono completing on operation completion
      * @see <a href="https://www.arangodb.com/docs/stable/http/database-database-management.html#create-database">API
      * Documentation</a>
-     * @since ArangoDB 3.6.0
+     * @since ArangoDB 3.6
      */
     Mono<Void> createDatabase(DatabaseCreateOptions options);
 

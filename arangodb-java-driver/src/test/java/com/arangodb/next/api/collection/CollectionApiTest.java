@@ -21,6 +21,7 @@
 package com.arangodb.next.api.collection;
 
 import com.arangodb.next.api.collection.entity.*;
+import com.arangodb.next.api.collection.options.*;
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.api.reactive.ConversationManager;
 import com.arangodb.next.api.utils.ArangoApiTest;
@@ -53,6 +54,7 @@ class CollectionApiTest {
         assertThat(graphs.getIsSystem()).isTrue();
         assertThat(graphs.getType()).isEqualTo(CollectionType.DOCUMENT);
         assertThat(graphs.getGloballyUniqueId()).isNotNull();
+        assertThat(graphs.getStatus()).isNotNull();
 
         SimpleCollectionEntity collection = collectionApi
                 .getCollections(CollectionsReadParams.builder().excludeSystem(true).build())
@@ -67,6 +69,19 @@ class CollectionApiTest {
 
     @ArangoApiTest
     void createCollectionAndGetCollectionProperties(TestContext ctx, CollectionApi collectionApi) {
+        CollectionSchema collectionSchema = CollectionSchema.builder()
+                .level(CollectionSchema.Level.NEW)
+                .rule(("{  " +
+                        "           \"properties\": {" +
+                        "               \"number\": {" +
+                        "                   \"type\": \"number\"" +
+                        "               }" +
+                        "           }" +
+                        "       }")
+                        .replaceAll("\\s", ""))
+                .message("The document has problems!")
+                .build();
+
         CollectionCreateOptions options = CollectionCreateOptions.builder()
                 .name("myCollection-" + UUID.randomUUID().toString())
                 .replicationFactor(ReplicationFactor.of(2))
@@ -77,6 +92,7 @@ class CollectionApiTest {
                         .build()
                 )
                 .waitForSync(true)
+                .schema(collectionSchema)
                 .addShardKeys("a:")
                 .numberOfShards(3)
                 .isSystem(false)
@@ -101,7 +117,12 @@ class CollectionApiTest {
         assertThat(createdCollection.getIsSystem()).isEqualTo(options.getIsSystem());
         assertThat(createdCollection.getType()).isEqualTo(options.getType());
         assertThat(createdCollection.getGloballyUniqueId()).isNotNull();
+        assertThat(createdCollection.getStatus()).isNotNull();
         assertThat(createdCollection.getCacheEnabled()).isEqualTo(options.getCacheEnabled());
+
+        if (ctx.isAtLeastVersion(3, 7)) {
+            assertThat(createdCollection.getSchema()).isEqualTo(options.getSchema());
+        }
 
         if (ctx.isCluster()) {
             assertThat(createdCollection.getReplicationFactor()).isEqualTo(options.getReplicationFactor());
@@ -127,13 +148,25 @@ class CollectionApiTest {
         DetailedCollectionEntity readCollectionProperties = collectionApi.getCollectionProperties(options.getName()).block();
         assertThat(readCollectionProperties).isEqualTo(createdCollection);
 
+        CollectionSchema changedCollectionSchema = CollectionSchema.builder()
+                .rule(collectionSchema.getRule())
+                .message("Another message!")
+                .level(CollectionSchema.Level.NONE)
+                .build();
+
         // changeCollectionProperties
         DetailedCollectionEntity changedCollectionProperties = collectionApi.changeCollectionProperties(
                 options.getName(),
-                CollectionChangePropertiesOptions.builder().waitForSync(!createdCollection.getWaitForSync()).build()
+                CollectionChangePropertiesOptions.builder()
+                        .waitForSync(!createdCollection.getWaitForSync())
+                        .schema(changedCollectionSchema)
+                        .build()
         ).block();
         assertThat(changedCollectionProperties).isNotNull();
         assertThat(changedCollectionProperties.getWaitForSync()).isEqualTo(!createdCollection.getWaitForSync());
+        if (ctx.isAtLeastVersion(3, 7)) {
+            assertThat(changedCollectionProperties.getSchema()).isEqualTo(changedCollectionSchema);
+        }
     }
 
     @ArangoApiTest
