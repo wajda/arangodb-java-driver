@@ -35,12 +35,12 @@ public final class VPackSerializers {
     private VPackSerializers() {
     }
 
-    private static final ObjectMapper jsonMapper = new ObjectMapper();
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
-    public static class RawJsonSerializer extends JsonSerializer<String> {
+    public static final class RawJsonSerializer extends JsonSerializer<String> {
         @Override
-        public void serialize(String value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-            gen.writeTree(jsonMapper.readTree(value));
+        public void serialize(final String value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
+            gen.writeTree(JSON_MAPPER.readTree(value));
         }
     }
 

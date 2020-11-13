@@ -53,9 +53,9 @@ public final class VPackDeserializers {
         }
     };
 
-    public static class RawJsonDeserializer extends JsonDeserializer<String> {
+    public static final class RawJsonDeserializer extends JsonDeserializer<String> {
         @Override
-        public String deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+        public String deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException, JsonProcessingException {
             return p.readValueAsTree().toString();
         }
     }

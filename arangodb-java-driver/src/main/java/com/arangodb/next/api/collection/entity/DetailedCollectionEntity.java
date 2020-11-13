@@ -20,7 +20,6 @@
 
 package com.arangodb.next.api.collection.entity;
 
-import com.arangodb.next.api.collection.options.CollectionCreateOptions;
 import com.arangodb.next.api.collection.options.KeyOptions;
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.entity.GeneratePackagePrivateBuilder;
@@ -40,7 +39,7 @@ public interface DetailedCollectionEntity extends CollectionEntity {
 
     /**
      * @note cluster only
-     * @see CollectionCreateOptions#getReplicationFactor()
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getReplicationFactor()
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -48,24 +47,24 @@ public interface DetailedCollectionEntity extends CollectionEntity {
 
     /**
      * @note cluster only
-     * @see CollectionCreateOptions#getMinReplicationFactor()
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getMinReplicationFactor()
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     Integer getMinReplicationFactor();
 
     /**
-     * @see CollectionCreateOptions#getKeyOptions()
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getKeyOptions()
      */
     KeyOptions getKeyOptions();
 
     /**
-     * @see CollectionCreateOptions#getWaitForSync()
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getWaitForSync()
      */
     Boolean getWaitForSync();
 
     /**
-     * @see CollectionCreateOptions#getSchema()
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getSchema()
      * @since ArangoDB 3.7
      */
     @Nullable
@@ -73,7 +72,7 @@ public interface DetailedCollectionEntity extends CollectionEntity {
 
     /**
      * @note cluster only
-     * @see CollectionCreateOptions#getShardKeys()
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getShardKeys()
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -81,7 +80,7 @@ public interface DetailedCollectionEntity extends CollectionEntity {
 
     /**
      * @note cluster only
-     * @see CollectionCreateOptions#getNumberOfShards()
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getNumberOfShards()
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -89,7 +88,7 @@ public interface DetailedCollectionEntity extends CollectionEntity {
 
     /**
      * @apiNote enterprise cluster only
-     * @see CollectionCreateOptions#getDistributeShardsLike()
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getDistributeShardsLike()
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -97,7 +96,7 @@ public interface DetailedCollectionEntity extends CollectionEntity {
 
     /**
      * @note cluster only
-     * @see CollectionCreateOptions#getShardingStrategy()
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getShardingStrategy()
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -105,14 +104,14 @@ public interface DetailedCollectionEntity extends CollectionEntity {
 
     /**
      * @apiNote enterprise cluster only
-     * @see CollectionCreateOptions#getSmartJoinAttribute()
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getSmartJoinAttribute()
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     String getSmartJoinAttribute();
 
     /**
-     * @see CollectionCreateOptions#getCacheEnabled()
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getCacheEnabled()
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)

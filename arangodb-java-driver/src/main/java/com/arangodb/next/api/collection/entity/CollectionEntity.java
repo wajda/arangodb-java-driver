@@ -20,20 +20,18 @@
 
 package com.arangodb.next.api.collection.entity;
 
-import com.arangodb.next.api.collection.options.CollectionCreateOptions;
-
 /**
  * @author Michele Rastelli
  */
 public interface CollectionEntity {
 
     /**
-     * @see CollectionCreateOptions#getName()
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getName()
      */
     String getName();
 
     /**
-     * @see CollectionCreateOptions#getIsSystem()
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getIsSystem()
      */
     boolean getIsSystem();
 
@@ -43,7 +41,7 @@ public interface CollectionEntity {
     CollectionStatus getStatus();
 
     /**
-     * @see CollectionCreateOptions#getType()
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getType()
      */
     CollectionType getType();
 

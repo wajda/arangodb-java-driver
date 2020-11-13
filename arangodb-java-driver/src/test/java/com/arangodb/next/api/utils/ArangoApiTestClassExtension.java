@@ -20,14 +20,16 @@
 
 package com.arangodb.next.api.utils;
 
-import com.arangodb.next.api.database.DatabaseApiSync;
+import com.arangodb.next.api.database.DatabaseApi;
 import com.arangodb.next.api.reactive.impl.ArangoDBImpl;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -49,12 +51,16 @@ public class ArangoApiTestClassExtension implements BeforeAllCallback, AfterAllC
         doForeachTopology(dbApi -> dbApi.createDatabase(dbName));
     }
 
-    private void doForeachTopology(Consumer<DatabaseApiSync> action) {
-        contexts.stream()
-                .collect(Collectors.groupingBy(it -> it.getConfig().getTopology()))
-                .values()
-                .stream()
-                .map(ctxList -> new ArangoDBImpl(ctxList.get(0).getConfig()).sync())
-                .forEach(testClient -> action.accept(testClient.db().databaseApi()));
+    private void doForeachTopology(Function<DatabaseApi, Mono<?>> action) {
+        Flux
+                .fromStream(
+                        contexts.stream()
+                                .collect(Collectors.groupingBy(it -> it.getConfig().getTopology()))
+                                .values()
+                                .stream()
+                                .map(ctxList -> new ArangoDBImpl(ctxList.get(0).getConfig()))
+                )
+                .flatMap(testClient -> action.apply(testClient.db().databaseApi()))
+                .then().block();
     }
 }
