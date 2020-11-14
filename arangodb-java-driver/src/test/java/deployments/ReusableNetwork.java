@@ -40,6 +40,11 @@ public class ReusableNetwork implements Network {
     private final String name;
     private final String id;
 
+    private ReusableNetwork(String name) {
+        this.name = name;
+        id = ensureNetwork();
+    }
+
     synchronized public static ReusableNetwork of(String namePrefix) {
         String name = namePrefix + NAME_SUFFIX;
         ReusableNetwork instance = instances.get(name);
@@ -50,23 +55,18 @@ public class ReusableNetwork implements Network {
         return instance;
     }
 
-    private ReusableNetwork(String name) {
-        this.name = name;
-        id = ensureNetwork();
-    }
-
     @Override
     public String getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     @Override
     public void close() {
 
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override

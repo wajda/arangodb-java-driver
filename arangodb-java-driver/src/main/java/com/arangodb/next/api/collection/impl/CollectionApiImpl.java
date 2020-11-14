@@ -33,6 +33,8 @@ import com.arangodb.next.connection.ArangoResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+
 import static com.arangodb.next.api.util.ArangoResponseField.RESULT_JSON_POINTER;
 
 /**
@@ -195,7 +197,7 @@ public final class CollectionApiImpl extends ArangoClientImpl implements Collect
     }
 
     @Override
-    public Mono<Object> getCollectionStatistics(final String name) {
+    public Mono<Map<String, Object>> getCollectionStatistics(final String name) {
         return getCommunication()
                 .execute(ArangoRequest.builder()
                         .database(dbName)
@@ -203,7 +205,7 @@ public final class CollectionApiImpl extends ArangoClientImpl implements Collect
                         .path(PATH_API + "/" + name + "/figures")
                         .build())
                 .map(ArangoResponse::getBody)
-                .map(bytes -> getSerde().deserializeAtJsonPointer("/figures", bytes, Object.class));
+                .map(bytes -> getSerde().deserializeAtJsonPointer("/figures", bytes, Map.class));
     }
 
     @Override

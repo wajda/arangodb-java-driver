@@ -51,6 +51,12 @@ public abstract class ContainerDeployment implements Startable {
     private static final ContainerDeployment REUSABLE_SINGLE_SERVER_DEPLOYMENT = new SingleServerDeployment();
     private static final ContainerDeployment REUSABLE_CLUSTER_DEPLOYMENT = new ClusterDeployment(2, 2);
     private static final ContainerDeployment REUSABLE_ACTIVE_FAILOVER_DEPLOYMENT = new ActiveFailoverDeployment(3);
+    private final boolean reuse;
+    private volatile boolean started = false;
+
+    public ContainerDeployment() {
+        reuse = TestUtils.INSTANCE.isTestContainersReuse();
+    }
 
     public static ContainerDeployment ofReusableSingleServer() {
         return REUSABLE_SINGLE_SERVER_DEPLOYMENT;
@@ -82,13 +88,6 @@ public abstract class ContainerDeployment implements Startable {
                 TestUtils.INSTANCE.getTopology(),
                 TestUtils.INSTANCE.getAuthentication()
         );
-    }
-
-    private final boolean reuse;
-    private volatile boolean started = false;
-
-    public ContainerDeployment() {
-        reuse = TestUtils.INSTANCE.isTestContainersReuse();
     }
 
     public abstract List<HostDescription> getHosts();

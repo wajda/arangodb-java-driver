@@ -60,6 +60,14 @@ class CommunicationResiliencyTest {
     private final static ProxiedContainerDeployment deployment = ProxiedContainerDeployment.ofCluster(2, 2);
     private final CommunicationConfigBuilder config;
 
+    CommunicationResiliencyTest() {
+        config = CommunicationConfig.builder()
+                .addAllHosts(deployment.getHosts())
+                .authenticationMethod(deployment.getAuthentication())
+                // use proxied hostDescriptions
+                .acquireHostList(false);
+    }
+
     static private Stream<Arguments> argumentsProvider() {
         List<ArangoProtocol> protocols = new ArrayList<>();
         protocols.add(ArangoProtocol.VST);
@@ -70,14 +78,6 @@ class CommunicationResiliencyTest {
         }
 
         return protocols.stream().map(Arguments::arguments);
-    }
-
-    CommunicationResiliencyTest() {
-        config = CommunicationConfig.builder()
-                .addAllHosts(deployment.getHosts())
-                .authenticationMethod(deployment.getAuthentication())
-                // use proxied hostDescriptions
-                .acquireHostList(false);
     }
 
     @BeforeEach

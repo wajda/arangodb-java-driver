@@ -33,6 +33,10 @@ public enum Sharding {
 
     private final String value;
 
+    Sharding(final String v) {
+        value = v;
+    }
+
     @JsonCreator
     public static Sharding of(final String value) {
         for (Sharding e : values()) {
@@ -44,10 +48,6 @@ public enum Sharding {
             return FLEXIBLE;
         }
         throw new IllegalArgumentException("Unknown value for sharding: " + value);
-    }
-
-    Sharding(final String v) {
-        value = v;
     }
 
     @JsonValue

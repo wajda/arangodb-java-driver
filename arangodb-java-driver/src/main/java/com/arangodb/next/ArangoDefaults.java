@@ -35,6 +35,7 @@ public final class ArangoDefaults {
     private static final int INTEGER_BYTES = Integer.SIZE / Byte.SIZE;
     private static final int LONG_BYTES = Long.SIZE / Byte.SIZE;
     public static final int HEADER_SIZE = INTEGER_BYTES + INTEGER_BYTES + LONG_BYTES + LONG_BYTES;
+
     private ArangoDefaults() {
         super();
     }

@@ -54,6 +54,14 @@ class CommunicationTest {
     private final CommunicationConfigBuilder config;
     private final List<HostDescription> hosts;
 
+    CommunicationTest() {
+        hosts = deployment.getHosts();
+        config = CommunicationConfig.builder()
+                .addAllHosts(hosts)
+                .acquireHostList(true)
+                .authenticationMethod(deployment.getAuthentication());
+    }
+
     static private Stream<Arguments> argumentsProvider() {
         List<ArangoProtocol> protocols = new ArrayList<>();
         protocols.add(ArangoProtocol.VST);
@@ -64,14 +72,6 @@ class CommunicationTest {
         }
 
         return protocols.stream().map(Arguments::arguments);
-    }
-
-    CommunicationTest() {
-        hosts = deployment.getHosts();
-        config = CommunicationConfig.builder()
-                .addAllHosts(hosts)
-                .acquireHostList(true)
-                .authenticationMethod(deployment.getAuthentication());
     }
 
     @ParameterizedTest

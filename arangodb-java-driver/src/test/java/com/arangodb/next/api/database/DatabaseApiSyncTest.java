@@ -20,9 +20,9 @@
 
 package com.arangodb.next.api.database;
 
-import com.arangodb.next.api.database.options.DatabaseCreateOptions;
 import com.arangodb.next.api.database.entity.DatabaseEntity;
 import com.arangodb.next.api.database.entity.Sharding;
+import com.arangodb.next.api.database.options.DatabaseCreateOptions;
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.api.sync.ThreadConversation;
 import com.arangodb.next.api.utils.ArangoApiTest;
@@ -30,6 +30,7 @@ import com.arangodb.next.api.utils.ArangoApiTestClass;
 import com.arangodb.next.api.utils.TestContext;
 import com.arangodb.next.exceptions.server.ArangoServerException;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,7 +42,6 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  */
 @ArangoApiTestClass
 class DatabaseApiSyncTest {
-
 
     @ArangoApiTest
     void createDatabase(TestContext ctx, DatabaseApiSync db) {
@@ -103,6 +103,8 @@ class DatabaseApiSyncTest {
                 assertThat(dbEntity.getSharding()).isEqualTo(Sharding.SINGLE);
             }
 
+            // TODO: access db with created user
+
             db.dropDatabase(name);
 
             // get database
@@ -130,6 +132,20 @@ class DatabaseApiSyncTest {
             assertThat(dbEntity.getReplicationFactor()).isEqualTo(ReplicationFactor.of(1));
             assertThat(dbEntity.getSharding()).isEqualTo(Sharding.FLEXIBLE);
         }
+    }
+
+    @ArangoApiTest
+    void getDatabases(DatabaseApiSync db) {
+        List<String> databases = db.getDatabases();
+        assertThat(databases).isNotNull();
+        assertThat(databases).contains("_system");
+    }
+
+    @ArangoApiTest
+    void getAccessibleDatabases(DatabaseApiSync db) {
+        List<String> databases = db.getAccessibleDatabases();
+        assertThat(databases).isNotNull();
+        assertThat(databases).contains("_system");
     }
 
 }

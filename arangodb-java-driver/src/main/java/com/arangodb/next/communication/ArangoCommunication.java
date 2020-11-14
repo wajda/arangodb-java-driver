@@ -29,6 +29,11 @@ import reactor.core.publisher.Mono;
  */
 public interface ArangoCommunication {
 
+    /**
+     * Reactor Context key identifying the conversation
+     */
+    String CONVERSATION_CTX = "conversation";
+
     static Mono<ArangoCommunication> create(CommunicationConfig config) {
         ConnectionConfig connectionConfig = ConnectionConfig.builder().from(config.getConnectionConfig())
                 // override connection content type
@@ -42,11 +47,6 @@ public interface ArangoCommunication {
         );
         return new ArangoCommunicationImpl(config, connectionFactory).initialize();
     }
-
-    /**
-     * Reactor Context key identifying the conversation
-     */
-    String CONVERSATION_CTX = "conversation";
 
     /**
      * Initializes the communication asynchronously performing the following tasks:

@@ -51,6 +51,15 @@ class CommunicationActiveFailoverTest {
     private final CommunicationConfigBuilder config;
     private final List<HostDescription> hosts;
 
+    CommunicationActiveFailoverTest() {
+        hosts = deployment.getHosts();
+        config = CommunicationConfig.builder()
+                .topology(ArangoTopology.ACTIVE_FAILOVER)
+                .addAllHosts(hosts)
+                .acquireHostList(true)
+                .authenticationMethod(deployment.getAuthentication());
+    }
+
     static private Stream<Arguments> argumentsProvider() {
         List<ArangoProtocol> protocols = new ArrayList<>();
         protocols.add(ArangoProtocol.VST);
@@ -61,15 +70,6 @@ class CommunicationActiveFailoverTest {
         }
 
         return protocols.stream().map(Arguments::arguments);
-    }
-
-    CommunicationActiveFailoverTest() {
-        hosts = deployment.getHosts();
-        config = CommunicationConfig.builder()
-                .topology(ArangoTopology.ACTIVE_FAILOVER)
-                .addAllHosts(hosts)
-                .acquireHostList(true)
-                .authenticationMethod(deployment.getAuthentication());
     }
 
     @ParameterizedTest

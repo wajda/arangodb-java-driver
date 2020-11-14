@@ -21,16 +21,6 @@ public class ProvidedDeployment extends ContainerDeployment {
     }
 
     @Override
-    CompletableFuture<ContainerDeployment> asyncStart() {
-        return CompletableFuture.completedFuture(this);
-    }
-
-    @Override
-    CompletableFuture<ContainerDeployment> asyncStop() {
-        return CompletableFuture.completedFuture(this);
-    }
-
-    @Override
     public List<HostDescription> getHosts() {
         return hosts;
     }
@@ -38,6 +28,16 @@ public class ProvidedDeployment extends ContainerDeployment {
     @Override
     public ArangoTopology getTopology() {
         return topology;
+    }
+
+    @Override
+    CompletableFuture<ContainerDeployment> asyncStart() {
+        return CompletableFuture.completedFuture(this);
+    }
+
+    @Override
+    CompletableFuture<ContainerDeployment> asyncStop() {
+        return CompletableFuture.completedFuture(this);
     }
 
     @Override

@@ -34,6 +34,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonDeserialize(builder = EngineBuilder.class)
 public interface Engine {
 
+    StorageEngineName getName();
+
     enum StorageEngineName {
 
         @JsonProperty("mmfiles")
@@ -43,7 +45,5 @@ public interface Engine {
         ROCKSDB
 
     }
-
-    StorageEngineName getName();
 
 }

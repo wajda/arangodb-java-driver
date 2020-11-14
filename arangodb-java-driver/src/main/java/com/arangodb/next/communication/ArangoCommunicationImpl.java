@@ -117,25 +117,6 @@ final class ArangoCommunicationImpl implements ArangoCommunication {
                 .then(Mono.just(this));
     }
 
-    private Mono<Void> updateConnections(final Set<HostDescription> hostList) {
-        return connectionPool.updateConnections(hostList)
-                // check if at least 1 coordinator is connected
-                .doOnSuccess(it -> connectionPool.createConversation(Conversation.Level.REQUIRED));
-    }
-
-    private ArangoServerException buildError(final ArangoResponse response) {
-        return ArangoServerException.of(
-                response.getResponseCode(),
-                serde.deserialize(response.getBody(), ErrorEntity.class)
-        );
-    }
-
-    private void checkError(final ArangoResponse response) {
-        if (response.getResponseCode() < 200 || response.getResponseCode() >= 300) {
-            throw buildError(response);
-        }
-    }
-
     @Override
     public Mono<ArangoResponse> execute(final ArangoRequest request) {
         LOGGER.atDebug()
@@ -155,6 +136,37 @@ final class ArangoCommunicationImpl implements ArangoCommunication {
                         .addArgument(() -> serde.toJsonString(response.getBody()))
                         .log("received response: {}, {}"))
                 .doOnNext(this::checkError);
+    }
+
+    @Override
+    public Conversation createConversation(final Conversation.Level level) {
+        return connectionPool.createConversation(level);
+    }
+
+    @Override
+    public Mono<Void> close() {
+        LOGGER.debug("close()");
+        Optional.ofNullable(scheduledUpdateHostListSubscription).ifPresent(Disposable::dispose);
+        return connectionPool.close().then();
+    }
+
+    private Mono<Void> updateConnections(final Set<HostDescription> hostList) {
+        return connectionPool.updateConnections(hostList)
+                // check if at least 1 coordinator is connected
+                .doOnSuccess(it -> connectionPool.createConversation(Conversation.Level.REQUIRED));
+    }
+
+    private ArangoServerException buildError(final ArangoResponse response) {
+        return ArangoServerException.of(
+                response.getResponseCode(),
+                serde.deserialize(response.getBody(), ErrorEntity.class)
+        );
+    }
+
+    private void checkError(final ArangoResponse response) {
+        if (response.getResponseCode() < 200 || response.getResponseCode() >= 300) {
+            throw buildError(response);
+        }
     }
 
     private Mono<ArangoResponse> execute(final ArangoRequest request, final ConnectionPool cp) {
@@ -184,18 +196,6 @@ final class ArangoCommunicationImpl implements ArangoCommunication {
         return Mono.defer(() -> connectionPool.execute(request, host))
                 .checkpoint("[ArangoCommunicationImpl.execute()]")
                 .timeout(config.getTimeout());
-    }
-
-    @Override
-    public Conversation createConversation(final Conversation.Level level) {
-        return connectionPool.createConversation(level);
-    }
-
-    @Override
-    public Mono<Void> close() {
-        LOGGER.debug("close()");
-        Optional.ofNullable(scheduledUpdateHostListSubscription).ifPresent(Disposable::dispose);
-        return connectionPool.close().then();
     }
 
     ConnectionPool getConnectionPool() {

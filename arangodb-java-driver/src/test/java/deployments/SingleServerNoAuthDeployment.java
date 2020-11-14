@@ -30,26 +30,6 @@ public class SingleServerNoAuthDeployment extends ContainerDeployment {
     }
 
     @Override
-    public AuthenticationMethod getAuthentication() {
-        return null;
-    }
-
-    @Override
-    public String getUser() {
-        return null;
-    }
-
-    @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
-    public String getBasicAuthentication() {
-        return null;
-    }
-
-    @Override
     public List<HostDescription> getHosts() {
         return Collections.singletonList(HostDescription.of(container.getContainerIpAddress(), container.getFirstMappedPort()));
     }
@@ -67,6 +47,26 @@ public class SingleServerNoAuthDeployment extends ContainerDeployment {
     @Override
     CompletableFuture<ContainerDeployment> asyncStop() {
         return CompletableFuture.runAsync(container::stop).thenAccept((v) -> log.info("Stopped!")).thenApply((v) -> this);
+    }
+
+    @Override
+    public AuthenticationMethod getAuthentication() {
+        return null;
+    }
+
+    @Override
+    public String getUser() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getBasicAuthentication() {
+        return null;
     }
 
 }

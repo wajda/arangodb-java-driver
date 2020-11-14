@@ -26,6 +26,13 @@ public class GenerateSyncApiProcessor extends AbstractProcessor {
     private TypeElement syncParentClient;
     private TypeElement syncParentClientImpl;
 
+    private static String getPackageName(Element e) {
+        while (e.getEnclosingElement().getKind() != ElementKind.PACKAGE) {
+            e = e.getEnclosingElement();
+        }
+        return ((PackageElement) e.getEnclosingElement()).getQualifiedName().toString();
+    }
+
     private Element findExactOneElementAnnotatedWith(Class<? extends Annotation> annotation, RoundEnvironment roundEnv) {
         final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(annotation);
         if (elements.isEmpty()) {
@@ -77,14 +84,6 @@ public class GenerateSyncApiProcessor extends AbstractProcessor {
 
         return true;
     }
-
-    private static String getPackageName(Element e) {
-        while (e.getEnclosingElement().getKind() != ElementKind.PACKAGE) {
-            e = e.getEnclosingElement();
-        }
-        return ((PackageElement) e.getEnclosingElement()).getQualifiedName().toString();
-    }
-
 
     private MethodSpec mapMethod(MethodSymbol symbol) {
         String methodName = symbol.getSimpleName().toString();

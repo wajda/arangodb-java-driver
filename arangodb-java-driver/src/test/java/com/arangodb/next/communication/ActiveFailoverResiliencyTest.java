@@ -57,6 +57,15 @@ class ActiveFailoverResiliencyTest {
     private final static ProxiedContainerDeployment deployment = ProxiedContainerDeployment.ofActiveFailover(3);
     private final CommunicationConfigBuilder config;
 
+    ActiveFailoverResiliencyTest() {
+        config = CommunicationConfig.builder()
+                .topology(ArangoTopology.ACTIVE_FAILOVER)
+                .addAllHosts(deployment.getHosts())
+                .authenticationMethod(deployment.getAuthentication())
+                // use proxied hostDescriptions
+                .acquireHostList(false);
+    }
+
     static private Stream<Arguments> argumentsProvider() {
         List<ArangoProtocol> protocols = new ArrayList<>();
         protocols.add(ArangoProtocol.VST);
@@ -67,15 +76,6 @@ class ActiveFailoverResiliencyTest {
         }
 
         return protocols.stream().map(Arguments::arguments);
-    }
-
-    ActiveFailoverResiliencyTest() {
-        config = CommunicationConfig.builder()
-                .topology(ArangoTopology.ACTIVE_FAILOVER)
-                .addAllHosts(deployment.getHosts())
-                .authenticationMethod(deployment.getAuthentication())
-                // use proxied hostDescriptions
-                .acquireHostList(false);
     }
 
     @BeforeEach

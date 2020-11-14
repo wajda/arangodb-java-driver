@@ -36,9 +36,6 @@ import java.io.IOException;
  */
 public final class VPackDeserializers {
 
-    private VPackDeserializers() {
-    }
-
     static final JsonDeserializer<ReplicationFactor> REPLICATION_FACTOR = new JsonDeserializer<ReplicationFactor>() {
         @Override
         public ReplicationFactor deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
@@ -52,6 +49,9 @@ public final class VPackDeserializers {
             }
         }
     };
+
+    private VPackDeserializers() {
+    }
 
     public static final class RawJsonDeserializer extends JsonDeserializer<String> {
         @Override

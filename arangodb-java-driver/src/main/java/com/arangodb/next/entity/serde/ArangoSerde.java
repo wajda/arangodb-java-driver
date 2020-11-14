@@ -43,8 +43,6 @@ public abstract class ArangoSerde {
         objectMapper.registerModule(ArangoDriverModule.INSTANCE.get());
     }
 
-    public abstract String toJsonString(byte[] buffer);
-
     public static ArangoSerde of(final ContentType contentType) {
         switch (contentType) {
             case VPACK:
@@ -55,6 +53,8 @@ public abstract class ArangoSerde {
                 throw new IllegalArgumentException(String.valueOf(contentType));
         }
     }
+
+    public abstract String toJsonString(byte[] buffer);
 
     public final byte[] serialize(final Object value) {
         return wrapSerdeException(() ->

@@ -73,12 +73,6 @@ abstract class HttpConnection extends ArangoConnection {
         cookieStore = new CookieStore();
     }
 
-    protected abstract HttpProtocol getProtocol();
-
-    protected ConnectionConfig getConfig() {
-        return config;
-    }
-
     private static String buildUrl(final ArangoRequest request) {
         final StringBuilder sb = new StringBuilder();
         sb.append("/_db/").append(request.getDatabase());
@@ -100,6 +94,12 @@ abstract class HttpConnection extends ArangoConnection {
         for (final Entry<String, String> header : request.getHeaderParams().entrySet()) {
             headers.add(header.getKey(), header.getValue());
         }
+    }
+
+    protected abstract HttpProtocol getProtocol();
+
+    protected ConnectionConfig getConfig() {
+        return config;
     }
 
     @Override

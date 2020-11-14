@@ -52,6 +52,18 @@ public class ProxiedClusterDeployment extends ProxiedContainerDeployment {
     }
 
     @Override
+    public List<HostDescription> getHosts() {
+        return getProxiedHosts().stream()
+                .map(ProxiedHost::getHostDescription)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ArangoTopology getTopology() {
+        return ArangoTopology.CLUSTER;
+    }
+
+    @Override
     CompletableFuture<ContainerDeployment> asyncStart() {
         return CompletableFuture
                 .runAsync(() -> {
@@ -102,18 +114,6 @@ public class ProxiedClusterDeployment extends ProxiedContainerDeployment {
                 .thenAcceptAsync(__ -> network.close())
                 .thenAccept(__ -> log.info("Cluster has been shutdown!"))
                 .thenApply(__ -> this);
-    }
-
-    @Override
-    public List<HostDescription> getHosts() {
-        return getProxiedHosts().stream()
-                .map(ProxiedHost::getHostDescription)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public ArangoTopology getTopology() {
-        return ArangoTopology.CLUSTER;
     }
 
     private GenericContainer<?> createContainer(String name, int port) {

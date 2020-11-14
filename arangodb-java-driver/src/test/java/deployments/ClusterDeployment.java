@@ -46,33 +46,6 @@ public class ClusterDeployment extends ContainerDeployment {
 
     }
 
-    @Override
-    CompletableFuture<ContainerDeployment> asyncStart() {
-        return CompletableFuture
-                .runAsync(() -> {
-                    network = ReusableNetwork.of("cluster");
-                    agents.forEach(agent -> agent.withNetwork(network));
-                    dbServers.forEach(agent -> agent.withNetwork(network));
-                    coordinators.values().forEach(agent -> agent.withNetwork(network));
-                })
-                .thenCompose(__ -> performActionOnGroup(agents, GenericContainer::start))
-                .thenCompose(__ -> CompletableFuture.allOf(
-                        performActionOnGroup(dbServers, GenericContainer::start),
-                        performActionOnGroup(coordinators.values(), GenericContainer::start)
-                ))
-                .thenCompose(__ -> verifyClusterAuthentication())
-                .thenCompose(authenticationConfigured -> {
-                    if (authenticationConfigured) {
-                        return CompletableFuture.completedFuture(null);
-                    } else {
-                        return configureClusterAuthentication();
-                    }
-                })
-                .thenCompose(__ -> CompletableFuture.runAsync(() -> ContainerUtils.waitForAuthenticationUpdate(this)))
-                .thenAccept(__ -> log.info("Cluster is ready!"))
-                .thenApply(__ -> this);
-    }
-
     private CompletableFuture<Boolean> verifyClusterAuthentication() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         try {
@@ -109,22 +82,6 @@ public class ClusterDeployment extends ContainerDeployment {
         return future;
     }
 
-    @Override
-    CompletableFuture<ContainerDeployment> asyncStop() {
-        if (isReuse() && isStarted()) {
-            return CompletableFuture.completedFuture(this);
-        }
-
-        return CompletableFuture.allOf(
-                performActionOnGroup(agents, GenericContainer::stop),
-                performActionOnGroup(dbServers, GenericContainer::stop),
-                performActionOnGroup(coordinators.values(), GenericContainer::stop)
-        )
-                .thenAcceptAsync(__ -> network.close())
-                .thenAccept((v) -> log.info("Cluster has been shutdown!"))
-                .thenApply((v) -> this);
-    }
-
     private String getContainerIP(final GenericContainer<?> container) {
         return container.getContainerInfo()
                 .getNetworkSettings()
@@ -143,6 +100,49 @@ public class ClusterDeployment extends ContainerDeployment {
     @Override
     public ArangoTopology getTopology() {
         return ArangoTopology.CLUSTER;
+    }
+
+    @Override
+    CompletableFuture<ContainerDeployment> asyncStart() {
+        return CompletableFuture
+                .runAsync(() -> {
+                    network = ReusableNetwork.of("cluster");
+                    agents.forEach(agent -> agent.withNetwork(network));
+                    dbServers.forEach(agent -> agent.withNetwork(network));
+                    coordinators.values().forEach(agent -> agent.withNetwork(network));
+                })
+                .thenCompose(__ -> performActionOnGroup(agents, GenericContainer::start))
+                .thenCompose(__ -> CompletableFuture.allOf(
+                        performActionOnGroup(dbServers, GenericContainer::start),
+                        performActionOnGroup(coordinators.values(), GenericContainer::start)
+                ))
+                .thenCompose(__ -> verifyClusterAuthentication())
+                .thenCompose(authenticationConfigured -> {
+                    if (authenticationConfigured) {
+                        return CompletableFuture.completedFuture(null);
+                    } else {
+                        return configureClusterAuthentication();
+                    }
+                })
+                .thenCompose(__ -> CompletableFuture.runAsync(() -> ContainerUtils.waitForAuthenticationUpdate(this)))
+                .thenAccept(__ -> log.info("Cluster is ready!"))
+                .thenApply(__ -> this);
+    }
+
+    @Override
+    CompletableFuture<ContainerDeployment> asyncStop() {
+        if (isReuse() && isStarted()) {
+            return CompletableFuture.completedFuture(this);
+        }
+
+        return CompletableFuture.allOf(
+                performActionOnGroup(agents, GenericContainer::stop),
+                performActionOnGroup(dbServers, GenericContainer::stop),
+                performActionOnGroup(coordinators.values(), GenericContainer::stop)
+        )
+                .thenAcceptAsync(__ -> network.close())
+                .thenAccept((v) -> log.info("Cluster has been shutdown!"))
+                .thenApply((v) -> this);
     }
 
     private GenericContainer<?> createContainer(String name, int port) {

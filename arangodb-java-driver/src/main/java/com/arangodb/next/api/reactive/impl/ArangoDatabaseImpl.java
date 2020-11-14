@@ -58,13 +58,13 @@ public final class ArangoDatabaseImpl extends ArangoClientImpl implements Arango
     }
 
     @Override
-    public ArangoDB arango() {
-        return arango;
+    public String name() {
+        return name;
     }
 
     @Override
-    public String name() {
-        return name;
+    public ArangoDB arango() {
+        return arango;
     }
 
     @Override

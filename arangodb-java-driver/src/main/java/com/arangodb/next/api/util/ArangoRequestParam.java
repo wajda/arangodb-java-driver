@@ -25,14 +25,14 @@ package com.arangodb.next.api.util;
  */
 public final class ArangoRequestParam {
 
-    private ArangoRequestParam() {
-    }
-
     public static final String SYSTEM = "_system";
     public static final String DATABASE = "database";
     public static final String WAIT_FOR_SYNC = "waitForSync";
     public static final String IF_NONE_MATCH = "If-None-Match";
     public static final String IF_MATCH = "If-Match";
     public static final String KEEP_NULL = "keepNull";
+
+    private ArangoRequestParam() {
+    }
 
 }

@@ -28,14 +28,6 @@ import javax.annotation.Nullable;
  */
 public abstract class ArangoException extends RuntimeException {
 
-    @Override
-    public abstract String toString();
-
-    @Nullable
-    @Override
-    @SuppressWarnings("squid:S3551")    // Overrides should match their parent class methods in synchronization
-    public abstract Throwable getCause();
-
     /**
      * @return exception message
      */
@@ -43,5 +35,13 @@ public abstract class ArangoException extends RuntimeException {
     public String getMessage() {
         return toString();
     }
+
+    @Nullable
+    @Override
+    @SuppressWarnings("squid:S3551")    // Overrides should match their parent class methods in synchronization
+    public abstract Throwable getCause();
+
+    @Override
+    public abstract String toString();
 
 }

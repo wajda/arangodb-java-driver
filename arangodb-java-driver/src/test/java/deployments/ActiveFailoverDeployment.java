@@ -34,29 +34,6 @@ public class ActiveFailoverDeployment extends ContainerDeployment {
 
     }
 
-    @Override
-    CompletableFuture<ContainerDeployment> asyncStart() {
-        return CompletableFuture
-                .runAsync(() -> {
-                    network = ReusableNetwork.of("active-failover");
-                    servers.values().forEach(agent -> agent.withNetwork(network));
-                })
-                .thenCompose(__ -> CompletableFuture.allOf(
-                        performActionOnGroup(servers.values(), GenericContainer::start)
-                ))
-                .thenCompose(__ -> verifyAuthentication())
-                .thenCompose(authenticationConfigured -> {
-                    if (authenticationConfigured) {
-                        return CompletableFuture.completedFuture(null);
-                    } else {
-                        return configureAuthentication();
-                    }
-                })
-                .thenCompose(__ -> CompletableFuture.runAsync(() -> ContainerUtils.waitForAuthenticationUpdate(this)))
-                .thenAccept(__ -> log.info("Cluster is ready!"))
-                .thenApply(__ -> this);
-    }
-
     private CompletableFuture<Void> configureAuthentication() {
         CompletableFuture<Void> future = new CompletableFuture<>();
         try {
@@ -97,20 +74,6 @@ public class ActiveFailoverDeployment extends ContainerDeployment {
         return future;
     }
 
-    @Override
-    CompletableFuture<ContainerDeployment> asyncStop() {
-        if (isReuse() && isStarted()) {
-            return CompletableFuture.completedFuture(this);
-        }
-
-        return CompletableFuture.allOf(
-                performActionOnGroup(servers.values(), GenericContainer::stop)
-        )
-                .thenAcceptAsync(__ -> network.close())
-                .thenAccept((v) -> log.info("Cluster has been shutdown!"))
-                .thenApply((v) -> this);
-    }
-
     private String getContainerIP(final GenericContainer<?> container) {
         return container.getContainerInfo()
                 .getNetworkSettings()
@@ -129,6 +92,43 @@ public class ActiveFailoverDeployment extends ContainerDeployment {
     @Override
     public ArangoTopology getTopology() {
         return ArangoTopology.ACTIVE_FAILOVER;
+    }
+
+    @Override
+    CompletableFuture<ContainerDeployment> asyncStart() {
+        return CompletableFuture
+                .runAsync(() -> {
+                    network = ReusableNetwork.of("active-failover");
+                    servers.values().forEach(agent -> agent.withNetwork(network));
+                })
+                .thenCompose(__ -> CompletableFuture.allOf(
+                        performActionOnGroup(servers.values(), GenericContainer::start)
+                ))
+                .thenCompose(__ -> verifyAuthentication())
+                .thenCompose(authenticationConfigured -> {
+                    if (authenticationConfigured) {
+                        return CompletableFuture.completedFuture(null);
+                    } else {
+                        return configureAuthentication();
+                    }
+                })
+                .thenCompose(__ -> CompletableFuture.runAsync(() -> ContainerUtils.waitForAuthenticationUpdate(this)))
+                .thenAccept(__ -> log.info("Cluster is ready!"))
+                .thenApply(__ -> this);
+    }
+
+    @Override
+    CompletableFuture<ContainerDeployment> asyncStop() {
+        if (isReuse() && isStarted()) {
+            return CompletableFuture.completedFuture(this);
+        }
+
+        return CompletableFuture.allOf(
+                performActionOnGroup(servers.values(), GenericContainer::stop)
+        )
+                .thenAcceptAsync(__ -> network.close())
+                .thenAccept((v) -> log.info("Cluster has been shutdown!"))
+                .thenApply((v) -> this);
     }
 
     private GenericContainer<?> createContainer(String name) {

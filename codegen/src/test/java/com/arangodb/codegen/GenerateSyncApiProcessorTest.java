@@ -49,21 +49,6 @@ class GenerateSyncApiProcessorTest {
     private final static String SOURCE_DIR = GENERATED_DIR + "/source";
     private final static String COMPILED_DIR = GENERATED_DIR + "/compiled";
 
-    @Test
-    void loadGeneratedClasses() throws Exception {
-        ClassLoader cl = new URLClassLoader(new URL[]{new File(COMPILED_DIR).toURI().toURL()});
-
-        String testApiSyncClassName = TestApi.class.getCanonicalName() + "Sync";
-        String packageName = TestApi.class.getPackageName();
-        String testApiSyncImplClassName = packageName + ".impl." + TestApi.class.getSimpleName() + "SyncImpl";
-
-        Class<?> testApiSyncClass = cl.loadClass(testApiSyncClassName);
-        Class<?> testApiSyncImplClass = cl.loadClass(testApiSyncImplClassName);
-
-        assertThat(testApiSyncClass.getCanonicalName()).isEqualTo(testApiSyncClassName);
-        assertThat(testApiSyncImplClass.getCanonicalName()).isEqualTo(testApiSyncImplClassName);
-    }
-
     @BeforeAll
     static void generateAndCompile() throws IOException {
         cleanup();
@@ -95,6 +80,21 @@ class GenerateSyncApiProcessorTest {
     static void cleanup() throws IOException {
         // clean generated directory
         FileUtils.deleteDirectory(new File(GENERATED_DIR));
+    }
+
+    @Test
+    void loadGeneratedClasses() throws Exception {
+        ClassLoader cl = new URLClassLoader(new URL[]{new File(COMPILED_DIR).toURI().toURL()});
+
+        String testApiSyncClassName = TestApi.class.getCanonicalName() + "Sync";
+        String packageName = TestApi.class.getPackageName();
+        String testApiSyncImplClassName = packageName + ".impl." + TestApi.class.getSimpleName() + "SyncImpl";
+
+        Class<?> testApiSyncClass = cl.loadClass(testApiSyncClassName);
+        Class<?> testApiSyncImplClass = cl.loadClass(testApiSyncImplClassName);
+
+        assertThat(testApiSyncClass.getCanonicalName()).isEqualTo(testApiSyncClassName);
+        assertThat(testApiSyncImplClass.getCanonicalName()).isEqualTo(testApiSyncImplClassName);
     }
 
 }

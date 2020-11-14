@@ -40,6 +40,12 @@ public final class ThreadConversation implements AutoCloseable {
     private final Conversation threadConversation;
     private final long threadId;
 
+    private ThreadConversation(final Conversation conversation) {
+        THREAD_LOCAL_CONVERSATION.set(conversation);
+        threadConversation = conversation;
+        threadId = Thread.currentThread().getId();
+    }
+
     public static Optional<Conversation> getThreadLocalConversation() {
         return Optional.ofNullable(THREAD_LOCAL_CONVERSATION.get());
     }
@@ -49,12 +55,6 @@ public final class ThreadConversation implements AutoCloseable {
             throw new IllegalStateException("Already existing ThreadConversation for thread " + Thread.currentThread().getName());
         }
         return new ThreadConversation(conversation);
-    }
-
-    private ThreadConversation(final Conversation conversation) {
-        THREAD_LOCAL_CONVERSATION.set(conversation);
-        threadConversation = conversation;
-        threadId = Thread.currentThread().getId();
     }
 
     public Conversation getThreadConversation() {

@@ -151,16 +151,6 @@ public class ActiveFailoverCommunicationMockTest {
 
         MockConnectionFactory factory = new MockConnectionFactory() {
             @Override
-            protected void stubExecute(ArangoConnection connection, HostDescription host) {
-                when(connection.execute(any(ArangoRequest.class))).thenReturn(Mono.just(
-                        ArangoResponse.builder()
-                                .responseCode(503)
-                                .body(ArangoSerde.of(contentType).serialize(error))
-                                .build()
-                ));
-            }
-
-            @Override
             protected void stubUserRequest(ArangoConnection connection, HostDescription host) {
                 if (host.equals(hosts.get(0))) {
                     when(connection.requestUser())
@@ -175,6 +165,16 @@ public class ActiveFailoverCommunicationMockTest {
                 } else {
                     when(connection.requestUser()).thenReturn(Mono.just(ArangoResponse.builder().responseCode(503).build()));
                 }
+            }
+
+            @Override
+            protected void stubExecute(ArangoConnection connection, HostDescription host) {
+                when(connection.execute(any(ArangoRequest.class))).thenReturn(Mono.just(
+                        ArangoResponse.builder()
+                                .responseCode(503)
+                                .body(ArangoSerde.of(contentType).serialize(error))
+                                .build()
+                ));
             }
         };
 
@@ -201,11 +201,6 @@ public class ActiveFailoverCommunicationMockTest {
         MockConnectionFactory factory = new MockConnectionFactory() {
 
             @Override
-            protected void stubExecute(ArangoConnection connection, HostDescription host) {
-                when(connection.execute(any(ArangoRequest.class))).thenReturn(Mono.error(new RuntimeException("disconnected!")));
-            }
-
-            @Override
             protected void stubUserRequest(ArangoConnection connection, HostDescription host) {
                 if (host.equals(hosts.get(0))) {
                     when(connection.requestUser())
@@ -220,6 +215,11 @@ public class ActiveFailoverCommunicationMockTest {
                 } else {
                     when(connection.requestUser()).thenReturn(Mono.just(ArangoResponse.builder().responseCode(503).build()));
                 }
+            }
+
+            @Override
+            protected void stubExecute(ArangoConnection connection, HostDescription host) {
+                when(connection.execute(any(ArangoRequest.class))).thenReturn(Mono.error(new RuntimeException("disconnected!")));
             }
         };
 

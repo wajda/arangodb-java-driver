@@ -44,6 +44,11 @@ public class TestContext {
     private final ContainerDeployment deployment;
     private final CommunicationConfig config;
 
+    private TestContext(final ContainerDeployment deployment, final CommunicationConfig config) {
+        this.deployment = deployment;
+        this.config = config;
+    }
+
     public static Stream<TestContext> createContexts(final ContainerDeployment deployment) {
         List<Map.Entry<ArangoProtocol, ContentType>> contexts = new ArrayList<>();
         contexts.add(MapEntry.entry(ArangoProtocol.VST, ContentType.VPACK));
@@ -69,11 +74,6 @@ public class TestContext {
                         .build()
                 )
                 .map(config -> new TestContext(deployment, config));
-    }
-
-    private TestContext(final ContainerDeployment deployment, final CommunicationConfig config) {
-        this.deployment = deployment;
-        this.config = config;
     }
 
     public CommunicationConfig getConfig() {

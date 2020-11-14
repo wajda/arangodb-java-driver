@@ -36,14 +36,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class ConnectionTestUtils {
     public static final ConnectionSchedulerFactory DEFAULT_SCHEDULER_FACTORY = new ConnectionSchedulerFactory(4);
-    private static final String AQL_QUERY_VALUE = new String(new char[1_000_000]).replace('\0', 'x');
-
     public static final ArangoRequest VERSION_REQUEST = ArangoRequest.builder()
             .database("_system")
             .path("/_api/version")
             .requestType(ArangoRequest.RequestType.GET)
             .putQueryParams("details", Optional.of("true"))
             .build();
+    private static final String AQL_QUERY_VALUE = new String(new char[1_000_000]).replace('\0', 'x');
 
     public static ArangoRequest postRequest() {
         return ArangoRequest.builder()

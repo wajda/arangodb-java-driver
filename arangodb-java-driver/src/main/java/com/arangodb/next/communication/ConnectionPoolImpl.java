@@ -66,6 +66,16 @@ class ConnectionPoolImpl implements ConnectionPool {
     }
 
     @Override
+    public Mono<Void> close() {
+        LOGGER.debug("close()");
+        List<Mono<Void>> closedConnections = connectionsByHost.values().stream()
+                .flatMap(Collection::stream)
+                .map(ArangoConnection::close)
+                .collect(Collectors.toList());
+        return Flux.merge(closedConnections).doFinally(v -> connectionFactory.close()).then();
+    }
+
+    @Override
     public Mono<ArangoResponse> execute(final ArangoRequest request) {
         ArangoConnection connection;
         try {
@@ -92,20 +102,6 @@ class ConnectionPoolImpl implements ConnectionPool {
             return Mono.error(new IOException("No open connections!"));
         }
         return connection.execute(request);
-    }
-
-    @Override
-    public Mono<Void> close() {
-        LOGGER.debug("close()");
-        List<Mono<Void>> closedConnections = connectionsByHost.values().stream()
-                .flatMap(Collection::stream)
-                .map(ArangoConnection::close)
-                .collect(Collectors.toList());
-        return Flux.merge(closedConnections).doFinally(v -> connectionFactory.close()).then();
-    }
-
-    protected Map<HostDescription, List<ArangoConnection>> getConnectionsByHost() {
-        return connectionsByHost;
     }
 
     @Override
@@ -165,6 +161,10 @@ class ConnectionPoolImpl implements ConnectionPool {
         } catch (NoSuchElementException e) {
             throw NoHostsAvailableException.create();
         }
+    }
+
+    protected Map<HostDescription, List<ArangoConnection>> getConnectionsByHost() {
+        return connectionsByHost;
     }
 
     /**

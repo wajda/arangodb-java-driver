@@ -32,10 +32,10 @@ import java.io.IOException;
  */
 public final class VPackSerializers {
 
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
+
     private VPackSerializers() {
     }
-
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     public static final class RawJsonSerializer extends JsonSerializer<String> {
         @Override

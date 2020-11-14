@@ -30,6 +30,8 @@ import com.arangodb.next.api.reactive.ArangoClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+
 /**
  * @author Michele Rastelli
  */
@@ -133,6 +135,7 @@ public interface CollectionApi extends ArangoClient {
      * @param name    collection name
      * @param options request options
      * @return information about the collection
+     * @note single-server only
      * @see <a href="https://www.arangodb.com/docs/stable/http/collection-modifying.html#rename-collection">API
      * Documentation</a>
      */
@@ -177,7 +180,7 @@ public interface CollectionApi extends ArangoClient {
      * "https://www.arangodb.com/docs/stable/http/collection-getting.html#return-statistics-for-a-collection">API
      * Documentation</a>
      */
-    Mono<Object> getCollectionStatistics(String name);
+    Mono<Map<String, Object>> getCollectionStatistics(String name);
 
     /**
      * Loads a collection into memory.

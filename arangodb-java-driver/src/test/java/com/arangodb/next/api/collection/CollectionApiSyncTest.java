@@ -28,10 +28,7 @@ import com.arangodb.next.api.utils.ArangoApiTest;
 import com.arangodb.next.api.utils.ArangoApiTestClass;
 import com.arangodb.next.api.utils.TestContext;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -251,7 +248,7 @@ class CollectionApiSyncTest {
     void getCollectionStatistics(CollectionApiSync collectionApi) {
         String name = "collection-" + UUID.randomUUID().toString();
         collectionApi.createCollection(CollectionCreateOptions.builder().name(name).build());
-        Object collectionStatistics = collectionApi.getCollectionStatistics(name);
+        Map<String, Object> collectionStatistics = collectionApi.getCollectionStatistics(name);
         System.out.println(collectionStatistics);
         assertThat(collectionStatistics).isNotNull();
     }

@@ -55,11 +55,6 @@ final class ActiveFailoverConnectionPool extends ConnectionPoolImpl {
     }
 
     @Override
-    public Mono<Void> updateConnections(final Set<HostDescription> hostList) {
-        return super.updateConnections(hostList).then(Mono.defer(this::findLeader));
-    }
-
-    @Override
     public Mono<ArangoResponse> execute(final ArangoRequest request) {
         LOGGER.debug("execute({})", request);
 
@@ -75,6 +70,16 @@ final class ActiveFailoverConnectionPool extends ConnectionPoolImpl {
             return executeOnLeader(request);
         }
 
+    }
+
+    @Override
+    public Mono<Void> updateConnections(final Set<HostDescription> hostList) {
+        return super.updateConnections(hostList).then(Mono.defer(this::findLeader));
+    }
+
+    @Override
+    public Conversation createConversation(final Conversation.Level level) {
+        return Conversation.of(leader, level);
     }
 
     private Mono<ArangoResponse> executeOnLeader(final ArangoRequest request) {
@@ -131,11 +136,6 @@ final class ActiveFailoverConnectionPool extends ConnectionPoolImpl {
                 })
                 .doFinally(type -> findLeaderSemaphore.release())
                 .then();
-    }
-
-    @Override
-    public Conversation createConversation(final Conversation.Level level) {
-        return Conversation.of(leader, level);
     }
 
 }

@@ -49,6 +49,11 @@ class BasicConnectionNoAuthTest {
     private static HostDescription host;
     private final ConnectionConfig config;
 
+    BasicConnectionNoAuthTest() {
+        config = ConnectionConfig.builder()
+                .build();
+    }
+
     static private Stream<Arguments> argumentsProvider() {
         List<ArangoProtocol> protocols = new ArrayList<>();
         protocols.add(ArangoProtocol.VST);
@@ -59,11 +64,6 @@ class BasicConnectionNoAuthTest {
         }
 
         return protocols.stream().map(Arguments::arguments);
-    }
-
-    BasicConnectionNoAuthTest() {
-        config = ConnectionConfig.builder()
-                .build();
     }
 
     @BeforeAll

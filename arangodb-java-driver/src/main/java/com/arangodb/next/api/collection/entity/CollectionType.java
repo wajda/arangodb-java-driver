@@ -45,11 +45,6 @@ public enum CollectionType {
         value = typeValue;
     }
 
-    @JsonValue
-    public int getValue() {
-        return value;
-    }
-
     @JsonCreator
     public static CollectionType of(final int value) {
         for (CollectionType cType : CollectionType.values()) {
@@ -58,6 +53,11 @@ public enum CollectionType {
             }
         }
         throw new IllegalArgumentException("Unknown value for collection type: " + value);
+    }
+
+    @JsonValue
+    public int getValue() {
+        return value;
     }
 
 }
