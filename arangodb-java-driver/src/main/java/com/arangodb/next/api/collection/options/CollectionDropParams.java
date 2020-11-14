@@ -37,6 +37,6 @@ public interface CollectionDropParams {
         return new CollectionDropParamsBuilder();
     }
 
-    Optional<Boolean> getIsSystem();
+    Optional<Boolean> isSystem();
 
 }

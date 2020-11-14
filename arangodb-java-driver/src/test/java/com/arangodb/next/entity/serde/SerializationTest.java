@@ -98,7 +98,7 @@ class SerializationTest {
         );
     }
 
-    private void testRoundTrip(Object original, ContentType contentType, Class<?> clazz) {
+    private <T> void testRoundTrip(T original, ContentType contentType, Class<? super T> clazz) {
         ArangoSerde serde = ArangoSerde.of(contentType);
         byte[] serialized = serde.serialize(original, clazz);
         System.out.println(serde.toJsonString(serialized));

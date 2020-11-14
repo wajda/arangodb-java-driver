@@ -22,7 +22,9 @@ package com.arangodb.next.api.collection;
 
 
 import com.arangodb.codegen.GenerateSyncApi;
-import com.arangodb.next.api.collection.entity.*;
+import com.arangodb.next.api.collection.entity.CollectionChecksumEntity;
+import com.arangodb.next.api.collection.entity.DetailedCollectionEntity;
+import com.arangodb.next.api.collection.entity.SimpleCollectionEntity;
 import com.arangodb.next.api.collection.options.*;
 import com.arangodb.next.api.reactive.ArangoClient;
 import reactor.core.publisher.Flux;
@@ -78,7 +80,7 @@ public interface CollectionApi extends ArangoClient {
      * Deletes the collection from the database.
      *
      * @return a Mono completing on operation completion
-     * @see <a href="https://www.arangodb.com/docs/stable/http/collection-creating.html#drops-collection">API
+     * @see <a href="https://www.arangodb.com/docs/stable/http/collection-creating.html#drops-a-collection">API
      * Documentation</a>
      */
     default Mono<Void> dropCollection(String name) {
@@ -90,7 +92,7 @@ public interface CollectionApi extends ArangoClient {
      *
      * @param params request params
      * @return a Mono completing on operation completion
-     * @see <a href="https://www.arangodb.com/docs/stable/http/collection-creating.html#drops-collection">API
+     * @see <a href="https://www.arangodb.com/docs/stable/http/collection-creating.html#drops-a-collection">API
      * Documentation</a>
      */
     Mono<Void> dropCollection(String name, CollectionDropParams params);
@@ -103,12 +105,6 @@ public interface CollectionApi extends ArangoClient {
      * Documentation</a>
      */
     Mono<SimpleCollectionEntity> getCollection(String name);
-
-    /**
-     * @param name collection name
-     * @return <code>true</code> if the collection exists, otherwise <code>false</code>
-     */
-    Mono<Boolean> existsCollection(String name);
 
     /**
      * @param name collection name
@@ -154,7 +150,7 @@ public interface CollectionApi extends ArangoClient {
     /**
      * @param name collection name
      * @return checksum for the specified collection
-     * @apiNote this method is not available in a cluster
+     * @note single-server only
      * @see <a href=
      * "https://www.arangodb.com/docs/stable/http/collection-getting.html#return-checksum-for-the-collection">API
      * Documentation</a>
@@ -167,7 +163,7 @@ public interface CollectionApi extends ArangoClient {
      * @param name   collection name
      * @param params request params
      * @return checksum for the specified collection
-     * @apiNote this method is not available in a cluster
+     * @note single-server only
      * @see <a href=
      * "https://www.arangodb.com/docs/stable/http/collection-getting.html#return-checksum-for-the-collection">API
      * Documentation</a>

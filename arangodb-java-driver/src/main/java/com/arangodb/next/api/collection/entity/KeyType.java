@@ -35,8 +35,10 @@ public enum KeyType {
     TRADITIONAL,
 
     /**
-     * The autoincrement key generator generates numerical keys in ascending order, the inital offset and the spacing
+     * The autoincrement key generator generates numerical keys in ascending order, the initial offset and the spacing
      * can be configured
+     *
+     * @note single-server only
      */
     @JsonProperty("autoincrement")
     AUTOINCREMENT,

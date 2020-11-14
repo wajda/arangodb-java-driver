@@ -20,6 +20,8 @@
 
 package com.arangodb.next.api.collection.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Michele Rastelli
  */
@@ -31,14 +33,10 @@ public interface CollectionEntity {
     String getName();
 
     /**
-     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getIsSystem()
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#isSystem()
      */
-    boolean getIsSystem();
-
-    /**
-     * @return The status of the collection
-     */
-    CollectionStatus getStatus();
+    @JsonProperty("isSystem")
+    boolean isSystem();
 
     /**
      * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getType()

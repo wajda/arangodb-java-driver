@@ -23,7 +23,7 @@ package com.arangodb.next.api.collection.entity;
 import com.arangodb.next.api.collection.options.KeyOptions;
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.entity.GeneratePackagePrivateBuilder;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import javax.annotation.Nullable;
@@ -38,20 +38,39 @@ import java.util.List;
 public interface DetailedCollectionEntity extends CollectionEntity {
 
     /**
-     * @note cluster only
+     * @return whether the collection is used in a SmartGraph
+     * @note Enterprise Edition only
+     * TODO: test
+     */
+    @Nullable
+    @JsonProperty("isSmart")
+    Boolean isSmart();
+
+    /**
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getSmartJoinAttribute()
+     */
+    @Nullable
+    String getSmartJoinAttribute();
+
+    /**
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getNumberOfShards()
+     */
+    @Nullable
+    Integer getNumberOfShards();
+
+    /**
+     * @return attribute that is used in SmartGraphs
+     * @note Enterprise Edition cluster only
+     * TODO: test
+     */
+    @Nullable
+    String getSmartGraphAttribute();
+
+    /**
      * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getReplicationFactor()
      */
     @Nullable
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     ReplicationFactor getReplicationFactor();
-
-    /**
-     * @note cluster only
-     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getMinReplicationFactor()
-     */
-    @Nullable
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    Integer getMinReplicationFactor();
 
     /**
      * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getKeyOptions()
@@ -59,62 +78,61 @@ public interface DetailedCollectionEntity extends CollectionEntity {
     KeyOptions getKeyOptions();
 
     /**
-     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getWaitForSync()
-     */
-    Boolean getWaitForSync();
-
-    /**
      * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getSchema()
-     * @since ArangoDB 3.7
      */
     @Nullable
     CollectionSchema getSchema();
 
     /**
-     * @note cluster only
-     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getShardKeys()
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getWaitForSync()
      */
-    @Nullable
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    List<String> getShardKeys();
+    Boolean getWaitForSync();
 
     /**
-     * @note cluster only
-     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getNumberOfShards()
-     */
-    @Nullable
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    Integer getNumberOfShards();
-
-    /**
-     * @apiNote enterprise cluster only
-     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getDistributeShardsLike()
-     */
-    @Nullable
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    String getDistributeShardsLike();
-
-    /**
-     * @note cluster only
      * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getShardingStrategy()
      */
     @Nullable
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     ShardingStrategy getShardingStrategy();
 
     /**
-     * @apiNote enterprise cluster only
-     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getSmartJoinAttribute()
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getWriteConcern()
      */
     @Nullable
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    String getSmartJoinAttribute();
+    @JsonProperty("minReplicationFactor")
+    Integer getWriteConcern();
+
+    /**
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getShardKeys()
+     */
+    @Nullable
+    List<String> getShardKeys();
+
+    /**
+     * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getDistributeShardsLike()
+     */
+    @Nullable
+    String getDistributeShardsLike();
 
     /**
      * @see com.arangodb.next.api.collection.options.CollectionCreateOptions#getCacheEnabled()
      */
     @Nullable
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     Boolean getCacheEnabled();
+
+    /**
+     * @return TODO
+     * TODO: test
+     */
+    @Nullable
+    @JsonProperty("isSmartChild")
+    Boolean isSmartChild();
+
+    /**
+     * @return TODO
+     * TODO: test
+     */
+    @Nullable
+    @JsonProperty("isDisjoint")
+    Boolean isDisjoint();
 
 }

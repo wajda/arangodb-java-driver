@@ -22,13 +22,14 @@ package com.arangodb.next.api.collection.impl;
 
 
 import com.arangodb.next.api.collection.CollectionApi;
-import com.arangodb.next.api.collection.entity.*;
+import com.arangodb.next.api.collection.entity.CollectionChecksumEntity;
+import com.arangodb.next.api.collection.entity.DetailedCollectionEntity;
+import com.arangodb.next.api.collection.entity.SimpleCollectionEntity;
 import com.arangodb.next.api.collection.options.*;
 import com.arangodb.next.api.reactive.ArangoDatabase;
 import com.arangodb.next.api.reactive.impl.ArangoClientImpl;
 import com.arangodb.next.connection.ArangoRequest;
 import com.arangodb.next.connection.ArangoResponse;
-import com.arangodb.next.exceptions.server.CollectionOrViewNotFoundException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -103,7 +104,7 @@ public final class CollectionApiImpl extends ArangoClientImpl implements Collect
                                 .path(PATH_API + "/" + name)
                                 .putQueryParams(
                                         CollectionDropParams.IS_SYSTEM_PARAM,
-                                        params.getIsSystem().map(String::valueOf)
+                                        params.isSystem().map(String::valueOf)
                                 )
                                 .build()
                 )
@@ -120,13 +121,6 @@ public final class CollectionApiImpl extends ArangoClientImpl implements Collect
                         .build())
                 .map(ArangoResponse::getBody)
                 .map(bytes -> getSerde().deserialize(bytes, SimpleCollectionEntity.class));
-    }
-
-    @Override
-    public Mono<Boolean> existsCollection(final String name) {
-        return getCollection(name)
-                .thenReturn(true)
-                .onErrorReturn(CollectionOrViewNotFoundException.class, false);
     }
 
     @Override

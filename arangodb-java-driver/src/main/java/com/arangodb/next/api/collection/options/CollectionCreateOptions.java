@@ -26,6 +26,7 @@ import com.arangodb.next.api.collection.entity.ShardingStrategy;
 import com.arangodb.next.api.entity.ReplicationFactor;
 import com.arangodb.next.entity.GenerateBuilder;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -65,7 +66,8 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    Integer getMinReplicationFactor();
+    @JsonProperty("minReplicationFactor")
+    Integer getWriteConcern();
 
     /**
      * @return additional options for key generation
@@ -78,8 +80,8 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      * @return this attribute determines which document attributes are used to determine the target shard
      * for documents. Documents are sent to shards based on the values of their shard key attributes. The values of all
      * shard key attributes in a document are hashed, and the hash value is used to determine the target shard.
-     * @defaultValue <code>"_key"</code>
-     * @apiNote Values of shard key attributes cannot be changed once set
+     * Values of shard key attributes cannot be changed once set.
+     * @defaultValue <code>["_key"]</code>
      * @note cluster only
      */
     @Nullable
@@ -103,7 +105,8 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    Boolean getIsSystem();
+    @JsonProperty("isSystem")
+    Boolean isSystem();
 
     /**
      * @return the type of the collection to create.
@@ -119,7 +122,7 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      * prototype collection. It can no longer be dropped, before the sharding-imitating collections are dropped. Equally,
      * backups and restores of imitating collections alone will generate warnings (which can be overridden) about missing
      * sharding prototype.
-     * @apiNote enterprise cluster only
+     * @note enterprise cluster only
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -143,12 +146,11 @@ public interface CollectionCreateOptions extends CollectionPropertiesOptions, Co
      * @return determines an attribute of the collection that
      * contains the shard key value of the referred-to smart join collection. Additionally, the shard key for a document
      * in this collection must contain the value of this attribute, followed by a colon, followed by the actual primary
-     * key of the document.
-     * @apiNote enterprise cluster only
-     * @apiNote requires:
-     * - the `distributeShardsLike` attribute of the collection to be set to the name of another collection
-     * - shardKeys attribute of the collection to be set to a single shard key attribute, with an additional ‘:’ at the end
-     * - value stored in the smartJoinAttribute the must be a string
+     * key of the document. It requires:
+     * - {@link #getDistributeShardsLike()} attribute to be set to the name of another collection
+     * - {@link #getShardKeys()} attribute to be set to a single shard key attribute, with an additional ‘:’ at the end
+     * - for documents stored in the collection, the value of the `smartJoinAttribute` field must be a string
+     * @note enterprise cluster only
      */
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
