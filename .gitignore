@@ -112,7 +112,7 @@ codegen.iml
 
 .idea/
 
-arangodb-java-driver-bundle.iml
+arangodb-java-reactive-driver-bundle.iml
 
 lsp
 allure-results/

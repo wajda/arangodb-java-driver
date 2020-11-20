@@ -98,12 +98,12 @@ mvn test -Dgroups="api" \
 
 ## GH Actions
 
-Check results [here](https://github.com/arangodb/arangodb-java-driver/actions?query=branch%3Anext+).
+Check results [here](https://github.com/arangodb/arangodb-java-reactive-driver/actions).
 
 
 ## SonarCloud
 
-Check results [here](https://sonarcloud.io/dashboard?branch=next&id=arangodb_arangodb-java-driver).
+Check results [here](https://sonarcloud.io/dashboard?id=arangodb_arangodb-java-reactive-driver).
 
 
 ## check dependecies updates

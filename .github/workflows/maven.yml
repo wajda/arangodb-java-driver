@@ -73,7 +73,7 @@ jobs:
         if: ${{ cancelled() || failure() }}
         with:
           name: containers-logs
-          path: arangodb-java-driver/log/deployments
+          path: arangodb-java-reactive-driver/log/deployments
 
   sonar:
 
