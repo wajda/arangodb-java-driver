@@ -1,9 +1,9 @@
 package deployments;
 
 
-import com.arangodb.next.communication.ArangoTopology;
-import com.arangodb.next.connection.AuthenticationMethod;
-import com.arangodb.next.connection.HostDescription;
+import com.arangodb.reactive.communication.ArangoTopology;
+import com.arangodb.reactive.connection.AuthenticationMethod;
+import com.arangodb.reactive.connection.HostDescription;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

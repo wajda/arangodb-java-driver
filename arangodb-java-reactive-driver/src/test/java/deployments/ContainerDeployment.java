@@ -20,9 +20,9 @@
 
 package deployments;
 
-import com.arangodb.next.communication.ArangoTopology;
-import com.arangodb.next.connection.AuthenticationMethod;
-import com.arangodb.next.connection.HostDescription;
+import com.arangodb.reactive.communication.ArangoTopology;
+import com.arangodb.reactive.connection.AuthenticationMethod;
+import com.arangodb.reactive.connection.HostDescription;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.ssl.SslContext;

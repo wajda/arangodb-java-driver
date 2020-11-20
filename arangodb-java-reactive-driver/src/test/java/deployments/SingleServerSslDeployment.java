@@ -1,8 +1,8 @@
 package deployments;
 
 
-import com.arangodb.next.communication.ArangoTopology;
-import com.arangodb.next.connection.HostDescription;
+import com.arangodb.reactive.communication.ArangoTopology;
+import com.arangodb.reactive.connection.HostDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.BindMode;

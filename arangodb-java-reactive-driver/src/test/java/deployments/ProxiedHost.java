@@ -21,7 +21,7 @@
 
 package deployments;
 
-import com.arangodb.next.connection.HostDescription;
+import com.arangodb.reactive.connection.HostDescription;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.buffer.Unpooled;
 import org.immutables.value.Value;

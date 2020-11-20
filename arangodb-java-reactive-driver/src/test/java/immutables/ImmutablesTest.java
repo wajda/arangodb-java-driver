@@ -20,7 +20,7 @@
 
 package immutables;
 
-import com.arangodb.next.communication.CommunicationConfig;
+import com.arangodb.reactive.communication.CommunicationConfig;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;

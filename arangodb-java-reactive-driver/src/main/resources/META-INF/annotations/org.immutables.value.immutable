@@ -1,2 +1,2 @@
-com.arangodb.next.entity.GenerateBuilder
-com.arangodb.next.entity.GeneratePackagePrivateBuilder
+com.arangodb.reactive.entity.GenerateBuilder
+com.arangodb.reactive.entity.GeneratePackagePrivateBuilder

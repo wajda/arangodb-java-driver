@@ -21,9 +21,9 @@
 package utils;
 
 
-import com.arangodb.next.communication.ArangoTopology;
-import com.arangodb.next.connection.AuthenticationMethod;
-import com.arangodb.next.connection.HostDescription;
+import com.arangodb.reactive.communication.ArangoTopology;
+import com.arangodb.reactive.connection.AuthenticationMethod;
+import com.arangodb.reactive.connection.HostDescription;
 import deployments.ArangoVersion;
 import deployments.ImmutableArangoVersion;
 import org.slf4j.Logger;
