@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>com.arangodb</groupId>
-    <artifactId>arangodb-java-driver-bundle</artifactId>
-    <version>1.0.0</version>
+    <artifactId>arangodb-java-reactive-driver-bundle</artifactId>
+    <version>0.0.1</version>
     <packaging>pom</packaging>
+
     <modules>
-        <module>arangodb-java-driver</module>
+        <module>arangodb-java-reactive-driver</module>
         <module>codegen</module>
     </modules>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
         <!-- sonarcloud-->
-        <sonar.projectKey>arangodb_arangodb-java-driver</sonar.projectKey>
+        <sonar.projectKey>arangodb_arangodb-java-reactive-driver</sonar.projectKey>
         <sonar.organization>arangodb-1</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <!--suppress UnresolvedMavenProperty -->
@@ -28,11 +30,16 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint:unchecked</arg>
+                        <arg>-Xlint:deprecation</arg>
+                    </compilerArgs>
                     <showWarnings>true</showWarnings>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
 </project>

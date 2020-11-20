@@ -3,13 +3,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.arangodb</groupId>
-    <artifactId>arangodb-java-driver</artifactId>
-    <version>7.0.1-SNAPSHOT</version>
-    <inceptionYear>2016</inceptionYear>
+    <parent>
+        <groupId>com.arangodb</groupId>
+        <artifactId>arangodb-java-reactive-driver-bundle</artifactId>
+        <version>0.0.1</version>
+    </parent>
+
+    <artifactId>arangodb-java-reactive-driver</artifactId>
+    <version>0.0.1</version>
+    <inceptionYear>2019</inceptionYear>
     <packaging>jar</packaging>
 
-    <name>arangodb-java-driver</name>
+    <name>arangodb-java-reactive-driver</name>
     <description>ArangoDB Java Driver</description>
     <url>https://www.arangodb.com/docs/stable/drivers/java.html</url>
 
@@ -20,11 +25,6 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    </properties>
 
     <developers>
         <developer>
@@ -41,26 +41,14 @@
     <distributionManagement>
         <snapshotRepository>
             <id>github</id>
-            <name>GitHub arangodb/arangodb-java-driver Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/arangodb/arangodb-java-driver</url>
+            <name>GitHub arangodb/arangodb-java-reactive-driver Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/arangodb/arangodb-java-reactive-driver</url>
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
-
-    <profiles>
-        <profile>
-            <id>doclint-java8-disable</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <properties>
-                <doclint>none</doclint>
-            </properties>
-        </profile>
-    </profiles>
 
     <build>
         <plugins>
@@ -74,17 +62,6 @@
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                     <stagingProfileId>84aff6e87e214c</stagingProfileId>
                     <autoReleaseAfterClose>false</autoReleaseAfterClose>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <compilerArgument>-Xlint:unchecked</compilerArgument>
-                    <showWarnings>true</showWarnings>
-                    <source>1.8</source>
-                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -261,7 +238,7 @@
         <dependency>
             <groupId>com.arangodb</groupId>
             <artifactId>codegen</artifactId>
-            <version>1.0.0</version>
+            <version>0.0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -362,13 +339,13 @@
     </dependencyManagement>
 
     <scm>
-        <url>https://github.com/arangodb/arangodb-java-driver</url>
-        <connection>scm:git:git://github.com/arangodb/arangodb-java-driver.git</connection>
-        <developerConnection>scm:git:git://github.com/arangodb/arangodb-java-driver.git</developerConnection>
+        <url>https://github.com/arangodb/arangodb-java-reactive-driver</url>
+        <connection>scm:git:git://github.com/arangodb/arangodb-java-reactive-driver.git</connection>
+        <developerConnection>scm:git:git://github.com/arangodb/arangodb-java-reactive-driver.git</developerConnection>
     </scm>
 
     <issueManagement>
-        <url>https://github.com/arangodb/arangodb-java-driver/issues</url>
+        <url>https://github.com/arangodb/arangodb-java-reactive-driver/issues</url>
     </issueManagement>
 
     <organization>

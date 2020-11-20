@@ -4,15 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!--    <parent>-->
-    <!--        <artifactId>arangodb-java-driver</artifactId>-->
-    <!--        <groupId>com.arangodb</groupId>-->
-    <!--        <version>7.0.1-SNAPSHOT</version>-->
-    <!--    </parent>-->
+    <parent>
+        <groupId>com.arangodb</groupId>
+        <artifactId>arangodb-java-reactive-driver-bundle</artifactId>
+        <version>0.0.1</version>
+    </parent>
 
-    <groupId>com.arangodb</groupId>
     <artifactId>codegen</artifactId>
-    <version>1.0.0</version>
+    <version>0.0.1</version>
 
     <dependencies>
         <dependency>
@@ -50,12 +49,12 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
                 <configuration>
                     <compilerArgs>
                         <arg>-proc:none</arg>
@@ -64,8 +63,6 @@
                         <arg>--add-exports</arg>
                         <arg>jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
                     </compilerArgs>
-                    <source>11</source>
-                    <target>11</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -76,10 +73,4 @@
         </plugins>
     </build>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-    </properties>
 </project>
