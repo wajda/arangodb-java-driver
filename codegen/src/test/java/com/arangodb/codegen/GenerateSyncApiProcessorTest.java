@@ -22,6 +22,7 @@ package com.arangodb.codegen;
 
 
 import api.TestApi;
+import api.TestApiImpl;
 import api.TestClientSync;
 import api.TestClientSyncImpl;
 import com.sun.tools.javac.Main;
@@ -29,14 +30,19 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,6 +54,12 @@ class GenerateSyncApiProcessorTest {
     private final static String GENERATED_DIR = "generated";
     private final static String SOURCE_DIR = GENERATED_DIR + "/source";
     private final static String COMPILED_DIR = GENERATED_DIR + "/compiled";
+
+    private final ClassLoader cl;
+
+    GenerateSyncApiProcessorTest() throws MalformedURLException {
+        cl = new URLClassLoader(new URL[]{new File(COMPILED_DIR).toURI().toURL()});
+    }
 
     @BeforeAll
     static void generateAndCompile() throws IOException {
@@ -84,17 +96,51 @@ class GenerateSyncApiProcessorTest {
 
     @Test
     void loadGeneratedClasses() throws Exception {
-        ClassLoader cl = new URLClassLoader(new URL[]{new File(COMPILED_DIR).toURI().toURL()});
+        loadTestApiSyncClass();
+        Class<?> testApiSyncImplClass = loadTestApiSyncImplClass();
 
+        var reactiveInstance = new TestApiImpl();
+        var syncInstance = testApiSyncImplClass
+                .getConstructor(TestApi.class)
+                .newInstance(reactiveInstance);
+
+        for (Method reactiveMethod : TestApiImpl.class.getDeclaredMethods()) {
+            Method syncMethod = testApiSyncImplClass.getDeclaredMethod(reactiveMethod.getName(), reactiveMethod.getParameterTypes());
+
+            Object[] args = createStringArguments(syncMethod);
+
+            var reactiveResult = reactiveMethod.invoke(reactiveInstance, args);
+            var syncResult = syncMethod.invoke(syncInstance, args);
+
+            Object expectedResult;
+            if (reactiveResult instanceof Mono) {
+                expectedResult = ((Mono<?>) reactiveResult).block();
+            } else if (reactiveResult instanceof Flux) {
+                expectedResult = ((Flux<?>) reactiveResult).collectList().block();
+            } else {
+                throw new UnsupportedOperationException("Unsupported reactive return type.");
+            }
+
+            assertThat(syncResult).isEqualTo(expectedResult);
+        }
+
+    }
+
+    private static Object[] createStringArguments(Method m) {
+        return IntStream.range(0, m.getParameterCount())
+                .mapToObj(String::valueOf)
+                .toArray();
+    }
+
+    private Class<?> loadTestApiSyncClass() throws ClassNotFoundException {
         String testApiSyncClassName = TestApi.class.getCanonicalName() + "Sync";
+        return cl.loadClass(testApiSyncClassName);
+    }
+
+    private Class<?> loadTestApiSyncImplClass() throws ClassNotFoundException {
         String packageName = TestApi.class.getPackageName();
         String testApiSyncImplClassName = packageName + ".impl." + TestApi.class.getSimpleName() + "SyncImpl";
-
-        Class<?> testApiSyncClass = cl.loadClass(testApiSyncClassName);
-        Class<?> testApiSyncImplClass = cl.loadClass(testApiSyncImplClassName);
-
-        assertThat(testApiSyncClass.getCanonicalName()).isEqualTo(testApiSyncClassName);
-        assertThat(testApiSyncImplClass.getCanonicalName()).isEqualTo(testApiSyncImplClassName);
+        return cl.loadClass(testApiSyncImplClassName);
     }
 
 }

@@ -20,26 +20,33 @@
 
 package api;
 
-
-import com.arangodb.codegen.GenerateSyncApi;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
  * @author Michele Rastelli
  */
-@GenerateSyncApi
-public interface TestApi {
+public class TestApiImpl implements TestApi {
 
-    default Mono<String> defaultMethod() {
-        return Mono.just("defaultMethod");
+    @Override
+    public Mono<Void> voidMethod() {
+        return Mono.empty();
     }
 
-    Mono<Void> voidMethod();
+    @Override
+    public Flux<String> stringsCollectionMethod() {
+        return Flux.just("a", "b", "c");
+    }
 
-    Flux<String> stringsCollectionMethod();
+    @Override
+    public Mono<String> stringMethodWithStringArgument(String value) {
+        return Mono.just(value);
+    }
 
-    Mono<String> stringMethodWithStringArgument(String value);
+    @Override
+    public Flux<String> stringsCollectionMethodWithStringArgument(String a, String b, String c) {
+        return Flux.just(a, b, c);
+    }
 
-    Flux<String> stringsCollectionMethodWithStringArgument(String a, String b, String c);
+
 }
